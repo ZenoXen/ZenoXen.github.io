@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hexo博客更换主题</title>
+    <url>/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
+<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
+<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
+<p><img src="hexo-default.png"></p>
+<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
+<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
+<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
+<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
+<p><img src="download-next.png" alt="download-next"></p>
+<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
+<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
+<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
+<p><img src="switch-theme.png" alt="switch-theme"></p>
+<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
+<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
+<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
+<p><img src="error.png" alt="error"></p>
+<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
+<p>在hexo项目根目录使用下列指令进行安装。</p>
+<p><code>npm install hexo-renderer-swig --save</code></p>
+<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
+<p><img src="next-theme.png" alt="next-theme"></p>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
+<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringCache和redis进行整合</title>
+    <url>/2021/03/01/SpringCache%E5%92%8Credis%E8%BF%9B%E8%A1%8C%E6%95%B4%E5%90%88/</url>
+    <content><![CDATA[<p>占位符</p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>Cache</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>缓存</tag>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringValidation使用指南--Controller与Service入参校验</title>
+    <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
+<h1 id="JSR-303、Hibernate-Validator与Spring-Validation之间的关系"><a href="#JSR-303、Hibernate-Validator与Spring-Validation之间的关系" class="headerlink" title="JSR-303、Hibernate Validator与Spring Validation之间的关系"></a>JSR-303、Hibernate Validator与Spring Validation之间的关系</h1><p>做SpingBoot程序时，我们经常需要进行方法参数校验，相信很多人都用过@Valid注解以及@NotNull、@NotEmpty、@Min、@Max这样的注解，这些注解实际上是Java标准JSR-303定义的，而且JDK本身不提供这些参数校验的实现。</p>
+<p>Hibernate为JSR-303提供了一套实现，并在原先的基础上又扩展了一些功能，即Hibernate Validator，它可以单独引入使用，比如这样。</p>
+<p><img src="1.png" alt="1"></p>
+<p>Spring的不少模块都集成了Hibernate Validator，所以现在的主流的开发环境一般都是通过Spring或者Spring Boot的起步依赖将其引入的,比如spring-boot-starter-validation，其内部就包含了Hibernate Validator。在Hibernate的基础上，Spring Validation又提供了一系列AOP支持，使各种自定义的Validator以及校验注解能更方便的整合进我们的Spring程序中。</p>
+<p><img src="2.png" alt="2"></p>
+<p>如此，JSR-303、HIbernate Validator以及Spring Validation之间的关系就明朗了。</p>
+<p>JSR-303 &lt;– Hibernate Validator实现 &lt;–Spring Validation二次封装</p>
+<h1 id="Spring-Validation的功能"><a href="#Spring-Validation的功能" class="headerlink" title="Spring Validation的功能"></a>Spring Validation的功能</h1><h2 id="Request-Body校验"><a href="#Request-Body校验" class="headerlink" title="Request Body校验"></a>Request Body校验</h2><p>大部人最先接触到的一般是Spring MVC的Controller层入参校验，比如下面这个例子。</p>
+<p><img src="3.png" alt="3"></p>
+<p>RequestBody绑定了一个DTO（Data Transfer Object）对象，里面的一些字段需要进行校验。</p>
+<p><img src="4.png" alt="4"></p>
+<p>在Controller方法的入参前面加上一个@Valid注解，Spring Validation就会自动校验DTO中的数据，若一个或多个字段没通过校验，那么就会抛出MethodArgumentNotValidException。</p>
+<p>这里的Valid注解是JSR-303定义的，可以替换为@Validated注解，它是SpringValidation提供的，虽然两者功能不同，但在这个场景下，它们作用是一样的。</p>
+<p>稍微复杂有点的情况是，如果DTO中又包含了另一个需要校验的复杂对象，比如下面这个例子。</p>
+<p><img src="7.png" alt="7"></p>
+<p>假设NameBo里也有一些需要校验的字段，那么应该在NameBo字段上再加一个@Valid注解，当Spring检测到这个NameBo字段时，会递归进行校验，可以看看@Valid注解的源码。</p>
+<p><img src="8.png" alt="8"></p>
+<p>源码的注释已经说明了，这种校验行为会递归进行。</p>
+<h2 id="方法入参校验"><a href="#方法入参校验" class="headerlink" title="方法入参校验"></a>方法入参校验</h2><p>有时候我们希望不只是在Controller层进行校验，而是在各种各样的地方应用校验，比如Service层，也希望能对平铺开来的参数进行校验，而不单纯的是对DTO进行校验，比如下面这样。</p>
+<p><img src="5.png" alt="5"></p>
+<p>但与Controller层的情况稍微不同了，在非Controller类中想要让Spring自动校验，需要在类定义加上一个@Validated注解。</p>
+<p><img src="6.png" alt="6"></p>
+<p>如此一来，MyService类中的所有方法，一旦入参上加了校验注解，都会被SpringValidation处理，如果有参数没通过校验，抛出的是ConstraintViolationException，与前面提到的MethodArgumentNotValidException不同，ConstraintViolationException是JSR-303提供的，而它是Spring提供的。</p>
+<p>如果想要对Controller内的入参（不是RequestBody）进行校验，也需要在Controller类上加@Validated注解，比如下面这个例子，是对PathVariable和RequestParam进行校验。</p>
+<p><img src="9.png" alt="9"></p>
+<p>如果想要在Service层对DTO内的字段进行校验，在Service类上已经使用了@Validated注解的前提下，只需要在DTO入参的前面加上@Valid注解即可。</p>
+<p><img src="10.png" alt="10"></p>
+<h1 id="自定义校验规则"><a href="#自定义校验规则" class="headerlink" title="自定义校验规则"></a>自定义校验规则</h1><h2 id="定义Validator"><a href="#定义Validator" class="headerlink" title="定义Validator"></a>定义Validator</h2><p>相信你已经发现了，JSR-303这一套校验规范实际上是围绕注解展开的，比如@NotNull、@NotEmpty这些，针对这些JSR-303已有的注解，SpringValidation或者HibernateValidator实现了一部分，但如果现在有一个自定义的DTO类，需要同时检查多个字段，比如下面这个类。</p>
+<p><img src="11.png" alt="11"></p>
+<p>按照User类的定义，对其进行校验时需要同时检查username和password，单检查一个username或者单检查一个password都是没有意义的，此时预设的注解就无法满足我们的需求了，我们自己手动写一套校验规则。</p>
+<p>首先写自定义类型的校验器，实现ConstraintValidator接口，第一个泛型是我们自定义的校验注解，后面会讲到，第二个泛型是我们要校验的类型，这里我们要同时检查username和password，所以直接检查整个User对象。</p>
+<p><img src="12.png" alt="12"></p>
+<p>一般来说重写isValid方法即可，校验时调用的是这个方法,如果isValid返回true，则说明校验通过，程序正常运行，若返回false，则校验不通过，触发ConstraintViolationException。</p>
+<h2 id="自定义校验注解"><a href="#自定义校验注解" class="headerlink" title="自定义校验注解"></a>自定义校验注解</h2><p>有了Validator还不够，因为此时Spring的校验代理还不知道应该对User执行UserValidator的校验方法，为了让Spring去自动校验User，我们要写一个自定义注解标注在User类上，就像给一个产品打上标签，指明它该使用哪种机器处理。</p>
+<p><img src="13.png" alt="13"></p>
+<p>由于要校验的是整个User类，所以@Target指定的是TYPE，@Constraint(validatedBy=UserValidator.class)则代表这个注解所标注的类应该被UserVlidator校验。</p>
+<p>message方法有一个默认返回值，这里指定未通过校验时的message；groups方法是用于分组校验的，分组是什么概念？你可以理解为类似于Spring Profile的一种东西，指明了哪个分组下应该检查User，哪些分组下不应该检查User，具体的会在后续文章中说明，这里不展开。</p>
+<p><img src="14.png" alt="14"></p>
+<p>最后将UserValid注解标注在User类上，如上图所示，在Controller层或者Service层使用Valid注解做DTO校验的标注。</p>
+<p><img src="15.png" alt="15"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了SpringValidation与JSR-303、HibernateValidator的关系，并简单的对其使用进行了说明，但SpringValidation的功能实际上还不止如此，比如手动调用Validator、分组校验等等，后续文章会补全这些内容。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/205151764">Spring Validation最佳实践与实现原理</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringValidation</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>数据校验</tag>
+        <tag>HibernateValidator</tag>
+        <tag>SpringValidation</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringWebFlow初学记录</title>
+    <url>/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p>占位符</p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringWebFlow</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>SpringWebFlow</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo博客的定制化</title>
+    <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
+<h1 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h1><p>相信你已经发现了，hexo有两份配置文件同时生效，一是<strong>hexo全局配置文件</strong>即_config.yml，二是<strong>主题配置文件</strong>，比如我用的是next主题，那么它就是themes/next/_config.yml，定制化主要依靠这两个文件来进行，尤其是主题配置文件，大多数hexo主题其实已经高度集成了许多功能，比如next主题就集成了valine评论插件，可以直接通过主题配置文件打开。</p>
+<h1 id="按需阅读"><a href="#按需阅读" class="headerlink" title="按需阅读"></a>按需阅读</h1><p>接下来就说一下，目前我的博客是怎么配置的，你可以根据自己的需求自行食用。</p>
+<hr>
+<h1 id="修改语言和时区"><a href="#修改语言和时区" class="headerlink" title="修改语言和时区"></a>修改语言和时区</h1><p>在全局配置文件中，language配置项，简体中文是zh-Hans；时区是timezone，中国地区可以修改为Asia/Shanghai</p>
+<h1 id="去除页脚Powered和Theme"><a href="#去除页脚Powered和Theme" class="headerlink" title="去除页脚Powered和Theme"></a>去除页脚Powered和Theme</h1><p>一般在主题配置文件中，找到footer配置项，其中包含powered配置项，修改为false，theme.enabled修改为false，theme.version修改为false。<br><img src="footer.png" alt="footer"></p>
+<h1 id="修改页面布局"><a href="#修改页面布局" class="headerlink" title="修改页面布局"></a>修改页面布局</h1><p>以next主题为例，一共有四种布局，Muse（默认）、Mist、Pisces（我在用的）、Gemini。<br>修改主题配置文件的scheme项，修改为你想要的布局，比如修改为Pisces，即scheme: Pisces</p>
+<h1 id="添加菜单选项"><a href="#添加菜单选项" class="headerlink" title="添加菜单选项"></a>添加菜单选项</h1><p>next主题默认只有home和archive两个选项，如何添加<strong>作者</strong>、<strong>标签</strong>、<strong>分类</strong>这样的页面呢。<br><img src="menu.png" alt="menu"><br>如上图所示，修改menu项，将tags、about、categories前面的<strong>井号</strong>去掉。<br>如此一来，博客菜单栏会展示出这些按钮，但你点击这些按钮时，会发现超链接是无效的，大概率会出现这样的一串玩意。<br><img src="url-error.png" alt="url-error"><br>实际上是因为menu项里url配置不对导致的，你可以仔细看看上面的menu配置项，是不是发现所有路径中间都有一对||符号，实际上，符号左边是菜单项的url，右边是菜单项的图标，next主题的菜单用的是<a href="http://www.fontawesome.com.cn/faicons/">font-awesome</a>图标，你可以参考font-awesome的图标名称随意更改，这里不展开说。这一对||符号左边右边都有一个空格，把这两个空格去掉，即可使菜单url恢复正常。<br>修改完url后再打开发现菜单url还是打不开，这是因为hexo默认就是不包含这些页面的，你需要自己生成。<br>执行下面的代码。<br><code>hexo new page &quot;about&quot;</code><br><code>hexo new page &quot;categories&quot;</code><br><code>hexo new page &quot;tags&quot;</code><br>随后修改source/about/index.md即可，它是完全遵守markdown语法的，categories和tags则不需要修改。</p>
+<h1 id="作者头像"><a href="#作者头像" class="headerlink" title="作者头像"></a>作者头像</h1><p>将你想要设置的头像图片放到source/uploads（自建目录）里，重命名为avatar.png。<br>修改主题配置文件中avatar项，比如这样avatar: /uploads/avatar.png。<br><em>注：如果你项用URI的形式也是可以的，不一定非要用本地图片。</em></p>
+<h1 id="开启评论和阅读量功能"><a href="#开启评论和阅读量功能" class="headerlink" title="开启评论和阅读量功能"></a>开启评论和阅读量功能</h1><p>在开启这两个功能之前，需要你注册一个LeanCloud的账号（免费注册，不需要充值），这里注册步骤不展开说了，详细说说LeanCloud需要做些什么。<br>首先创建应用，这里应用名称和应用描述随便选一下就可以了，方案选开发版即可，不收费。<br><img src="create-app.png" alt="create-app"><br>随后进入应用管理界面，选择<strong>存储</strong>-&gt;<strong>结构化数据</strong>，其中以下划线开头的这些Class是默认自带的，不用管他们。<br><img src="create-var.png" alt="create-var"><br>我们创建一下两个Class，一个叫Comment一个叫Counter，注意访问权限需要选择<strong>无限制</strong>。<br><img src="comment.png" alt="comment"><br>此时，你可以去应用的设置界面找一下两个关键的东西，即AppId和AppKey，后续会需要这两个字符串。<br><img src="app.png" alt="app"><br>编辑主题配置文件，找到leancloud_visitors项，enabled改为true，app_id和app_key修改为自己的就可以了，这是阅读量统计。<br><img src="leancloud-visitors.png" alt="leancloud-visitors"><br>找到valine项，这是评论功能，enabled改为true，appid和appkey改成自己的，placeholder是评论未输入时的默认占位符，guest_info是评论者需要输入的信息，默认nick、mail、link代表昵称、邮箱地址、个人站点，可以按照你自己的需要删减。<br><img src="valine.png" alt="valine"></p>
+<hr>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>以上内容都只是hexo和next配置的一小部分，我只是单纯把一些比较直观的地方捡出来说了，其他配置项你也可以自行探索，可以参考hexo官方文档也可以参考next官方文档，我都在参考文章那部分列出来了。到此为止，hexo博客系列的文章就告一段落了，如果今后我有发现有什么有趣的东西，也许会再更新，大家对这几篇文章有什么建议都可以在评论区告诉我。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://github.com/iissnan/hexo-theme-next/wiki">github.com/iissnan/hexo-theme-next/wiki</a><br><a href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方起步指南</a><br><a href="https://blog.csdn.net/fullbug/article/details/103844424">解决Hexo博客导航栏链接URL乱码问题</a><br><a href="https://notes.doublemine.me/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">为NexT主题添加文章阅读量统计功能</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo如何发布博客</title>
+    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
+<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
+<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
+<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一些个人老项目的汇总</title>
+    <url>/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<p>最近我往我的Github仓库上传了几个项目，都是之前学Java时做的小项目，虽然代码质量不高，但算是我学习Java路上几个不同阶段的标志吧，传到Github的目的是为了做一个历史代码的保存，毕竟Github相对于自己的硬盘来说还是相对稳定的。</p>
+<h1 id="基于Swing的局域网聊天软件"><a href="#基于Swing的局域网聊天软件" class="headerlink" title="基于Swing的局域网聊天软件"></a>基于Swing的局域网聊天软件</h1><p>算是我做的第一个Java项目吧（如果那玩意能称为项目的话），实际上可以当作一个小Demo，当时学了Java的io、socket以后，迫切想要实践一下，那时候还不会做前端，所以用了我当时唯一会的客户端技术–Swing，就放两张图片感受一下。</p>
+<h2 id="打开软件要求输入聊天昵称"><a href="#打开软件要求输入聊天昵称" class="headerlink" title="打开软件要求输入聊天昵称"></a>打开软件要求输入聊天昵称</h2><p><img src="1.png" alt="1"></p>
+<h2 id="聊天界面"><a href="#聊天界面" class="headerlink" title="聊天界面"></a>聊天界面</h2><p><img src="2.png" alt="2"></p>
+<p>就这么简单，两张图就完全概括了这软件全部的功能。</p>
+<ol>
+<li>右边这一列空白我称之为上下线通报，当局域网内有一台主机运行了这个jar包，会发一个广播消息，其他的客户端列表上会显示上线的用户。</li>
+<li>中间三个按钮，发送消息也可以用CTRL+回车代替；清屏就是把消息列表清掉；发送文件这玩意我觉得反而是这demo的主要功能…</li>
+<li>发送文件时，局域网内至少要有两个在线的用户，其中一个人选择发送文件。</li>
+</ol>
+<p><img src="3.png" alt="3"></p>
+<p>由于我这边没有其他人在用，所以显示了个空白列表，操作也相当简单，当时还做了个进度条…那时候连MVC都没有学，我这套代码里的MVC是我自己脑补出来的…不过跟真正的MVC其实也是一个道理吧。</p>
+<h1 id="基于Servlet的个人网盘"><a href="#基于Servlet的个人网盘" class="headerlink" title="基于Servlet的个人网盘"></a>基于Servlet的个人网盘</h1><p>学了JSP+Servlet那一套以后，突然想到做这个东西练手，界面就不放出来了，简直惨不忍睹…那时候还是初学网页这一套技术，连js都不会，让我写个html+css简直要我命，所以我就去网上到处找相关的页面，比如要做注册功能，就去网上找注册页面的模板，要做网盘主页，就去找开源的网盘系统，扒出里面的页面源码；总之到最后究竟缝合了多少个页面我自己都记不清了，现在也没法考究了。</p>
+<p>主要功能的话就是注册-&gt;上传文件-&gt;下载文件，上传和下载用的是apache-commons那一套，专门做了个上传进度条，依稀记得用的是ajax，而且这ajax还是网上抄的…</p>
+<p>总之最后做出来的东西就是可以用，但没必要用…</p>
+<h1 id="图书馆选座系统"><a href="#图书馆选座系统" class="headerlink" title="图书馆选座系统"></a>图书馆选座系统</h1><p>这算是我学完SSM后做的第一个练手小项目，算是第一次实践了前后端分离吧，前端页面也是缝合怪，但样式相比个人网盘来说好了不少，放一张图感受一下。</p>
+<p><img src="4.png" alt="4"></p>
+<p>总共两个模块，上图这个模块就是普通用户的选座模块，其实功能极其简单…</p>
+<p><img src="5.png" alt="5"></p>
+<p>第二个模块就是管理模块，可以对各种数据进行管理，其实其他功能都是扯淡，也就楼层管理和选座是主要功能，然而也不是我自己做的…</p>
+<p>其实这个选座模块的原理是这样的，有一个Floor表和一个Seat表，Floor表保存了这个楼层的座位的排数和列数，Seat表则保存一个座位的状态，一个座位有四个重要的属性：楼层号、排号、列号、选座状态，也就是说Floor对Seat表是一对多。</p>
+<p>初始化选座页面的时候，列出所有可用楼层，点击查看后，根据楼层的排数、列数去初始化一个座位矩阵，然后根据每个座位的选座状态决定是否要显示、显示成什么样，总共就这几种状态：不可用、可选、已预约、已使用，不同状态图标都是不一样的。</p>
+<p>可以在管理系统中添加新的楼层，初始化一个排数、列数，点击一下对应座位的图标，就可以把它禁用掉，以此达到自定义座位布局的效果。</p>
+<p><img src="6.png" alt="6"></p>
+<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这几个项目当初写完其实就产生了重构的想法，然而最初写的时候根本都没用过版本管理，现在代码比较杂，尤其是那个Swing项目，代码已经乱到我看都不想看…与其重构，还不如重写来的方便。</p>
+<p>这几个项目传到Github上的目的就是留一个怀念，以后想看看曾经写的项目，还可以下过来在本地玩玩。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Github和Hexo搭建个人博客</title>
+    <url>/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ol>
+<li>安装Git</li>
+<li>安装Node.js</li>
+<li>注册一个Github账号</li>
+</ol>
+<hr>
+<h1 id="搭建思路"><a href="#搭建思路" class="headerlink" title="搭建思路"></a>搭建思路</h1><p>本文介绍的个人博客属于静态页面，不需要自己管理数据库或者服务器。部署服务是Github的一个福利Github Pages提供的，博客页面使用基于Node.js的一个框架Hexo生成。在继续往下阅读之前，你需要先知道Git和Github怎么用，这里不详细展开这些内容。</p>
+<h1 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h1><p>Github提供的一个服务，创建一个指定名称的Github仓库，向其中上传html代码，Github会自动为用户部署这些内容，非常方便。但Github Pages都是一些静态页面，即不连接数据库，所有的页面内容都是静态的html、js（包括博客文章也是）。每个Github用户可以拥有一个以用户名为前缀的Github Page，也可以拥有无限个以项目为单位的Github Page。</p>
+<p>本文后续搭建的博客使用的是用户名为前缀的Github Page。</p>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><p>Hexo是一个基于Node.js的博客页面生成框架，用户只需要通过yml格式的配置文件进行配置，就可以对博客页面进行个性化的定制，由于作者是台湾人，所以这个框架对中文的支持很好，官方的中文文档也很详细，易于上手。</p>
+<p>Hexo有多款主题，如果想要让博客焕然一新，只需要从Github上找一个自己喜欢的主题并安装到自己的项目目录里，少量配置后即可切换主题。</p>
+<p>此外Hexo的扩展性也非常好，如果想要对自己的博客功能进行扩展（比如加一个评论功能），可以下载相应的插件并集成到项目中。</p>
+<h1 id="搭建步骤"><a href="#搭建步骤" class="headerlink" title="搭建步骤"></a>搭建步骤</h1><p>首先让我们能够在本地把项目跑起来看看效果吧。</p>
+<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>从<a href="https://nodejs.org/zh-cn/">Node中文官网</a>下载即可，安装过程就不详细介绍了，这里主要讲一讲怎么让Node.js使用国内的淘宝镜像，因为我们后续的许多操作都需要通过Node.js来下载相应的js依赖，而默认的镜像是国外的，下载实在太慢。</p>
+<p>在cmd中使用下列命令。</p>
+<p><code>npm config set registry https://registry.npm.taobao.org</code></p>
+<p>完成后我们的npm命令就会从淘宝镜像下载js依赖。</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p><code>npm install -g hexo-cli</code></p>
+<p>安装完hexo-cli后，我们就可以使用hexo的专用命令很方便的生成博客页面了。</p>
+<h2 id="生成Hexo项目"><a href="#生成Hexo项目" class="headerlink" title="生成Hexo项目"></a>生成Hexo项目</h2><p><code>hexo init &lt;folder&gt;</code></p>
+<p>其中folder是目录名称，如果不填的话，则所有项目文件默认生成到当前目录。</p>
+<p>随后进入生成的项目根目录，使用以下指令安装js依赖。</p>
+<p><code>npm install</code></p>
+<p>生成后可以查看目录，几个比较重要的文件合目录如下：</p>
+<ol>
+<li>_config.yml，hexo的全局配置文件</li>
+<li>source目录，用于存放静态页面内容，比如html、js、图片之类的</li>
+<li>themes，用于存放hexo主题，下载过来的新主题可以放到这个目录下</li>
+</ol>
+<h2 id="试运行"><a href="#试运行" class="headerlink" title="试运行"></a>试运行</h2><p>此时即使不进行其他配置，Hexo博客也可以运行了，连续使用两条命令。</p>
+<p><code>hexo generate</code>（可缩写为hexo g）</p>
+<p><code>hexo server</code>（可缩写为hexo s）</p>
+<p>此时去访问localhost:4000应该就能看到Hexo的默认页面效果，一般来说是下面这样的。</p>
+<p><img src="hexo-default.png" alt="hexo-default"></p>
+<h2 id="创建Github-Page的仓库"><a href="#创建Github-Page的仓库" class="headerlink" title="创建Github Page的仓库"></a>创建Github Page的仓库</h2><p>登录自己的Github账号，创建一个仓库，命名规则如下。</p>
+<p><code>&lt;username&gt;.github.io</code></p>
+<p>这里的username是你的github账户名，创建成功后，你可以试着往里面存一个Index.html，随后访问&lt;username&gt;.github.io，应该就会显示你放进去的index.html渲染内容。</p>
+<h2 id="简单配置一下Hexo"><a href="#简单配置一下Hexo" class="headerlink" title="简单配置一下Hexo"></a>简单配置一下Hexo</h2><p>现在博客里只有一篇默认的文章“Hello World”，同时页面的标题、作者等信息都是预设的，可以通过_config.yml进行一些简单的配置，并将网站部署到Github Page上。</p>
+<p>用记事本打开项目根目录下的_config.yml，找到Site配置项。</p>
+<p><code># Site</code></p>
+<p><code>title: Hexo（即html的title标签）</code></p>
+<p><code>subtitle: &#39;&#39;（副标题）</code></p>
+<p><code>description: &#39;&#39;（页面的简介，可在搜索引擎上显示出来）</code></p>
+<p><code>keywords:（关键字词）</code></p>
+<p><code>author: John Doe（作者名）</code></p>
+<p><code>language: en（语言，中文是zh-Hans）</code></p>
+<p><code>timezone: &#39;&#39;（时区，中国地区是Asia/Shanghai）</code></p>
+<p>默认配置应该像上面这样，自己修改掉需要的条目即可。</p>
+<p>然后找到Deployment配置项。</p>
+<p><code>deploy:  </code></p>
+<p>​    <code>type: git  </code></p>
+<p>​    <code>   repo: &lt;repository url&gt; </code></p>
+<p>​    <code>branch: [branch]</code></p>
+<p>type填git，repo填你的Github项目SSH地址或者Https地址，branch是分支名（一般master就行）。</p>
+<p>完成以上配置后，就可以保存退出了。</p>
+<h2 id="部署到Github-Page上"><a href="#部署到Github-Page上" class="headerlink" title="部署到Github Page上"></a>部署到Github Page上</h2><p>在项目根目录下使用下列命令安装hexo的部署插件。</p>
+<p><code>npm install hexo-deployer-git --save</code></p>
+<p>使用hexo clean &amp;&amp; hexo deploy即可将现有的Hexo项目部署到Github Page上，访问你的github.io即可查看，注意部署上去一般是需要一到两分钟的，在此之前你访问页面可能看不到效果。</p>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，Github Page+Hexo的博客搭建指南就结束了，但重头戏还没开始呢，怎么发文章？碰到报错了怎么办？怎么进一步对Hexo配置？怎么更换Hexo主题？上面这些问题就留着后面说吧，应该会很快更新的。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://pages.github.com/">Github Pages官方指南</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/33720429">npm使用淘宝镜像</a></p>
+<p><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何让hexo个人博客被搜索引擎收录</title>
+    <url>/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/</url>
+    <content><![CDATA[<p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的（百度最终还是没收录，不知道什么原因）。</p>
+<h1 id="Github-Pages的一个问题"><a href="#Github-Pages的一个问题" class="headerlink" title="Github Pages的一个问题"></a>Github Pages的一个问题</h1><p>如果你直接尝试让百度去收录你的github pages的话，会发现一个问题，百度抓取不到github pages的地址，由于历史原因，github把百度的爬虫给禁用了，所以虽然github pages是真的好用，但还是得忍痛割爱，换个路子。</p>
+<h1 id="使用Vercel网站托管服务"><a href="#使用Vercel网站托管服务" class="headerlink" title="使用Vercel网站托管服务"></a>使用Vercel网站托管服务</h1><p>有很多网站提供静态网站托管服务，我试过Coding.net和vercel这两个，coding.net的托管服务是依托于腾讯云的，很早以前是免费的，但现在貌似有一定限制了，具体什么情况我有点记不清了；后来试了vercel，它也能提供免费的静态网站托管服务，而且操作起来比coding.net舒服，目前是免费的，这是它的官网<a href="https://vercel.com/">vercel</a>。</p>
+<h2 id="vercel如何与github联动"><a href="#vercel如何与github联动" class="headerlink" title="vercel如何与github联动"></a>vercel如何与github联动</h2><p>进入vercel，可以使用github账号登录。<br><img src="1.png" alt="1"><br>coding.net与vercel都可以从github上导入repository，但vercel比coding.net好的一点在于第一次与github关联并授权以后，你以后往github上push的任何更改，都会同步到vercel上，而coding.net并不能这样（虽然可以通过hexo的deploy配置往coding.net自动部署）。<br>在vercel上选择New Project，然后如果你是用Github账号登录的话，这边会显示你的所有Github仓库，选择github pages的仓库即可。<br><img src="2.png" alt="2"><br>中间导入的几个步骤就不截图了，按默认设置一直点下一步即可。最后成功导入后应该可以看到congratulations，点击那个visit就可以查看托管在vercel上的网站了。<br><img src="3.png" alt="3"><br>这里有一点要注意的是，虽然内容与github pages上部署的那个网页一模一样，但vercel是一个独立的副本，只不过每次github pages那个仓库更新的时候，会同步更新到vercel这边而已。</p>
+<h2 id="设置自己的域名"><a href="#设置自己的域名" class="headerlink" title="设置自己的域名"></a>设置自己的域名</h2><p>在你的vercel项目这边找到settings项。<br><img src="4.png" alt="4"><br>点击Domains项，可以看到里面有一条默认的域名项，这是vercel提供给你免费使用的，如果你的项目名没改的话，一般就是github里那个仓库名为前缀，看起来怪怪的，你可以自己点击edit来修改域名记录，注意一下，vercel.app是固定的域名，不要改掉，你可以改的是这个vercel.app前面那一堆。<br><img src="5.png" alt="5"></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://blog.csdn.net/liutao43/article/details/106324954/">hexo设置主动推送</a><br><a href="https://zhuanlan.zhihu.com/p/111773896">如何让百度收录 GitHub Pages 个人博客</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇文章</title>
+    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
+    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
+<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
+<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+</search>
