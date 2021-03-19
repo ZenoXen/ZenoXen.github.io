@@ -37,35 +37,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringCache和redis进行整合</title>
-    <url>/2021/03/01/SpringCache%E5%92%8Credis%E8%BF%9B%E8%A1%8C%E6%95%B4%E5%90%88/</url>
-    <content><![CDATA[<p>占位符</p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-        <category>Cache</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>缓存</tag>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringWebFlow初学记录</title>
-    <url>/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<p>占位符</p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-        <category>SpringWebFlow</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>SpringWebFlow</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringValidation使用指南--Controller与Service入参校验</title>
     <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
     <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
@@ -125,6 +96,71 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringValidation使用指南--手动与分组校验以及自定义异常处理</title>
+    <url>/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p>上一篇文章主要讲了如何利用SpringValidation提供的便利，来进行多种场景下的自动数据校验，虽然功能很强，但有时候我们想要自己触发校验机制，将主动权掌握在自己手中，而不是将校验时机完全交给Spring，那么可以不使用方法入参校验。</p>
+<h1 id="手动触发校验"><a href="#手动触发校验" class="headerlink" title="手动触发校验"></a>手动触发校验</h1><p>手动触发校验，或者说编程式数据校验，依赖于javax.Validator这个类来进行。</p>
+<p><img src="1.png" alt="1"></p>
+<p>如果你引入了spring-boot-starter-validation这个起步依赖，那么Spring会为你自动预配置一个Validator的bean，你只需要注入到你想要的地方用就可以了。</p>
+<p>上图中，使用Validator的validate方法可以校验User类，User类定义的结构如下，有两个JSR-303的校验注解和一个自定义校验注解。</p>
+<p><img src="2.png" alt="2"></p>
+<p>可以看到，方法的返回值是一个Set&lt;ConstraintViolation&lt;User&gt;&gt;，即校验出的所有不规范的字段，我们可以自由处理这些信息，比如可以像下面这样。</p>
+<p><img src="3.png" alt="3"></p>
+<p>还有其他更多的ConstraintViolation的用法，这里不展开说。实际上最常见的做法就是像第一张图里那样，用Set构造一个ConstraintViolationException抛出。</p>
+<h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>假设我们的User类有一个Id属性，它对应的是User表的主键。用过JPA或者Hibernate的朋友应该知道，插入数据时，我们一般指定自己需要的属性，但不主动指定Id这个字段，因为我们想要让JPA/Hibernate自己生成主键；而更新数据时，一般是先从数据库里查出一条记录，在Entity对象上set过属性后，再save进数据库，这个过程中，id由于之前被插进去，所以不是null。</p>
+<p>假设现在我想要在插入的方法上进行校验，要求User的id为null，而在更新的方法上进行校验时，id不能为null，要实现这个需求，使用分组校验正合适。</p>
+<h2 id="定义分组标志"><a href="#定义分组标志" class="headerlink" title="定义分组标志"></a>定义分组标志</h2><p>首先定义两个空接口OnUpdate和OnInsert，它们不用有任何方法，实际上我们只是拿它们作为一个分组标识。</p>
+<p><img src="4.png" alt="image-20210317232603803"></p>
+<p>User类定义如下，可以看到对于id属性，指定了NotNull和Null，而且指定了groups属性，如此一来，两个校验注解就不会同时生效，只有当OnUpdate的时候，NotNull会生效，只有当OnInsert的时候，Null会生效。</p>
+<p><img src="5.png" alt="5"></p>
+<h2 id="指定方法所使用的分组"><a href="#指定方法所使用的分组" class="headerlink" title="指定方法所使用的分组"></a>指定方法所使用的分组</h2><p>那么如何决定何时启用OnUpdate和OnInsert呢？也许你已经注意到了，Spring提供的Vlidated注解是可以用在方法上的，但实际上Validated用在方法上必须配合分组的接口，比如下面这个例子。</p>
+<p><img src="6.png" alt="6"></p>
+<p>假设我们在Service层使用校验，在Service类上先加上Validated注解，如此一来，MyService中的所有方法都具有了数据校验的能力；其次在方法上指定Validated注解，我们希望对于updateUser方法指定的是OnUpdate的情景，对insertUser方法指定的是OnInsert的情景，在方法的User入参上使用Valid注解，只有这样，才会在方法调用时进行校验。</p>
+<h2 id="自定义校验注解中的groups属性"><a href="#自定义校验注解中的groups属性" class="headerlink" title="自定义校验注解中的groups属性"></a>自定义校验注解中的groups属性</h2><p>前一篇文章讲过如何使用自定义校验注解，来执行我们自己的校验逻辑，比如下面这个校验注解。</p>
+<p><img src="12.png" alt="12"></p>
+<p>可以看到其中有一个groups属性，这个groups属性其实就跟我们上面使用的groups属性作用完全一致，NotNull、NotEmpty、NotBlank这些注解也统统都包含了groups属性，所以，如果我们想要对一个自定义校验注解进行分组校验，那么标注在校验处时使用groups属性即可，比如下面这个例子。</p>
+<p><img src="13.png" alt="13"></p>
+<h1 id="自定义异常处理"><a href="#自定义异常处理" class="headerlink" title="自定义异常处理"></a>自定义异常处理</h1><p>虽然我们可以指定一个字段校验不通过时所输出的message，但实际上，默认的异常处理相当粗糙，放一张图感受一下。</p>
+<p><img src="7.png" alt="7"></p>
+<p>我们其实并不需要过于完整的报错信息，只是想看到哪个字段违反了哪个校验规则，所以这个信息只能自己处理了。</p>
+<h2 id="两种校验异常"><a href="#两种校验异常" class="headerlink" title="两种校验异常"></a>两种校验异常</h2><p>此外，之前一篇文章曾经提过SpringValidation相关的两个异常，MethodArgumentNotValidException和ConstraintViolationException，前者是在Controller层校验失败时抛出的异常，并且报的是http 400的Bad Request，后者则是在非Controller层校验失败时抛出的异常，报的是http 500的Internal Server Error，这个两个异常其实有必要进行统一处理。</p>
+<p>那么需求就明确了，我们希望返回给前端的是简单的校验结果，即字段名和message的组合，同时又希望统一处理两种异常，返回http 400 BadRequest错误。</p>
+<h2 id="自定义校验结果返回数据"><a href="#自定义校验结果返回数据" class="headerlink" title="自定义校验结果返回数据"></a>自定义校验结果返回数据</h2><p>按照需求，我们可以写一个建议的自定义校验结果类，ValidationResult里包含一个ValidationError列表，列表中的每个元素都包含一个字段和其校验失败的message，最终我们将会把这个类作为json数据返回给前端。</p>
+<p><img src="8.png" alt="8"></p>
+<h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>定义一个类并用ControllerAdive标注，如此一来，里面的异常处理方法就会对所有的Controller生效；用ExceptionHandler来标注异常处理的方法，指定要处理哪种异常；ResponseStatus用来指定返回给前端的是哪种http响应码，ResponseBody用来将返回值转换为json数据响应给前端，一般来说，只要你的项目中引入了spring-boot-starter-web，就会包含jackson的包，使用ResponseBody就能自动将Controller返回值转换为json格式。</p>
+<p><img src="9.png" alt="9"></p>
+<p>注意还需要处理MethodArgumentNotValidException。</p>
+<p><img src="10.png" alt="10"></p>
+<p>这次再违反一次数据校验规则，来看看返回的结果，格式清爽了不少，而且清一色的都是返回http 400 BadRequest。</p>
+<p><img src="11.png" alt="11"></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringValidation</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>数据校验</tag>
+        <tag>HibernateValidator</tag>
+        <tag>SpringValidation</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringWebFlow初学记录</title>
+    <url>/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p>占位符</p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringWebFlow</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>SpringWebFlow</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo博客的定制化</title>
     <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
     <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
@@ -146,6 +182,56 @@
       </categories>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring与Redis整合</title>
+    <url>/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/</url>
+    <content><![CDATA[<p>如果你学过Redis，应该知道它是一个键值对的内存数据库应用，一般是作为服务器后端中的数据库或者是缓存来使用（国内大环境下用作缓存更多）。</p>
+<h1 id="Redis作为数据库使用"><a href="#Redis作为数据库使用" class="headerlink" title="Redis作为数据库使用"></a>Redis作为数据库使用</h1><p>这里主要介绍两个比较常见的Redis操作库，Jedis和SpringDataRedis</p>
+<h2 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h2><p>Jedis是一个小巧、简单、易用的Redis client，Java导入Jedis依赖后，可以直接对Redis进行连接，并直接操作各种数据结构。</p>
+<p>可以使用下面的pom依赖导入Jedis。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">type</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在Spring环境下，Jedis可以类比成一个JDBC的Connection，你可以通过这个Connection对Redis进行各种操作，那么就很容易写出这样的代码。</p>
+<p>首先进行配置，将Jedis配置为Bean，在构造对象时，提供redis的服务器地址和端口号。</p>
+<p><img src="1.png" alt="1"></p>
+<p>使用的时候，注入Jedis的bean即可，随后就可以通过jedis对象操作redis了。</p>
+<p><img src="2.png" alt="2"></p>
+<h2 id="SpringDataRedis"><a href="#SpringDataRedis" class="headerlink" title="SpringDataRedis"></a>SpringDataRedis</h2><p>SpringDataRedis是SpringData这个大项目中的一个子项目，是一个高封装程度和使用自由度的Java Redis框架。</p>
+<p>使用SpringDataRedis，我们可以至少可以获得以下好处。</p>
+<ol>
+<li>自由选择Redis连接器，比如jedis、jredis、lettuce</li>
+<li>通过预先配置的RedisTemplate，直接进行Redis操作，免去了创建、释放连接的过程，与JdbcTemplate作用类似</li>
+<li>可以自由选择数据序列化的方式</li>
+<li>提供了对SpringCache整合Redis的支持，后面会讲到</li>
+</ol>
+<p>那么Jedis和SpringDataRedis的关系也就明朗了，SpringDataRedis底层使用的是redis client，比如jedis、jredis、lettuce这样的，即SpringDataRedis是对jedis这种连接器的一种封装。</p>
+<h3 id="SpringDataRedis的依赖"><a href="#SpringDataRedis的依赖" class="headerlink" title="SpringDataRedis的依赖"></a>SpringDataRedis的依赖</h3><p>SpringDataRedis可以通过以下的SpringBoot起步依赖引入。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>SpringDataRedis的官方文档上介绍的引入方式是这种。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这两种方式有什么不一样？很简单，看一下spring-boot-starter-data-redis是怎么构成的。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.7.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.lettuce<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lettuce-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上就是spring-boot-starter、spring-data-redis和lettuce-core这三个依赖组成的，同时也可以发现，SpringDataRedis默认使用的是lettuce作为连接器。</p>
+<h3 id="SpringDataRedis的使用"><a href="#SpringDataRedis的使用" class="headerlink" title="SpringDataRedis的使用"></a>SpringDataRedis的使用</h3><p>施工中</p>
+<h1 id="Redis作为缓存使用"><a href="#Redis作为缓存使用" class="headerlink" title="Redis作为缓存使用"></a>Redis作为缓存使用</h1><p>施工中</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="">spring-data-redis官方文档</a></p>
+<p><a href="https://docs.spring.io/spring-boot/docs/2.3.7.RELEASE/reference/htmlsingle/#boot-features-caching">spring-boot官方文档–caching</a></p>
+<p><a href="https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache">spring-framework官方文档–cache abstraction</a></p>
+<p><a href="https://blog.csdn.net/houpeibin2012/article/details/104364826">spring-data-redis与jedis的区别</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>Cache</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>缓存</tag>
+        <tag>redis</tag>
       </tags>
   </entry>
   <entry>

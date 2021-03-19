@@ -25,27 +25,26 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="Hexo默认的landscape主题感觉一般般啊，那就换个主题吧">
+<meta name="description" content="学了Redis却不知道如何在项目中高效率地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo博客更换主题">
-<meta property="og:url" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/index.html">
+<meta property="og:title" content="Spring与Redis整合">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/index.html">
 <meta property="og:site_name" content="ZenoX的个人博客">
-<meta property="og:description" content="Hexo默认的landscape主题感觉一般般啊，那就换个主题吧">
+<meta property="og:description" content="学了Redis却不知道如何在项目中高效率地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/hexo-default.png">
-<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/download-next.png">
-<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/switch-theme.png">
-<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/error.png">
-<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/next-theme.png">
-<meta property="article:published_time" content="2021-02-11T06:01:50.000Z">
-<meta property="article:modified_time" content="2021-03-14T06:32:02.783Z">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/1.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/2.png">
+<meta property="article:published_time" content="2021-03-01T12:18:30.000Z">
+<meta property="article:modified_time" content="2021-03-19T01:48:18.557Z">
 <meta property="article:author" content="ZenoX">
-<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="缓存">
+<meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/hexo-default.png">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/1.png">
 
 
-<link rel="canonical" href="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/">
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/">
 
 
 <script class="page-configurations">
@@ -57,7 +56,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>Hexo博客更换主题 | ZenoX的个人博客</title>
+<title>Spring与Redis整合 | ZenoX的个人博客</title>
   
 
 
@@ -196,7 +195,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%89%E4%B8%80%E4%B8%AA%E8%87%AA%E5%B7%B1%E5%96%9C%E6%AC%A2%E7%9A%84%E4%B8%BB%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">选一个自己喜欢的主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">下载安装主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E4%B8%BB%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">切换主题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%94%99%E8%AF%AF"><span class="nav-number">5.</span> <span class="nav-text">解决错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E6%96%87"><span class="nav-number">6.</span> <span class="nav-text">后文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%BD%9C%E4%B8%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Redis作为数据库使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Jedis"><span class="nav-number">1.1.</span> <span class="nav-text">Jedis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringDataRedis"><span class="nav-number">1.2.</span> <span class="nav-text">SpringDataRedis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringDataRedis%E7%9A%84%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">SpringDataRedis的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringDataRedis%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">SpringDataRedis的使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%BD%9C%E4%B8%BA%E7%BC%93%E5%AD%98%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">Redis作为缓存使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -274,7 +273,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.png">
@@ -287,7 +286,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hexo博客更换主题
+          Spring与Redis整合
         </h1>
 
         <div class="post-meta-container">
@@ -298,14 +297,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2021-02-11 14:01:50" itemprop="dateCreated datePublished" datetime="2021-02-11T14:01:50+08:00">2021-02-11</time>
+      <time title="创建时间：2021-03-01 20:18:30" itemprop="dateCreated datePublished" datetime="2021-03-01T20:18:30+08:00">2021-03-01</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-14 14:32:02" itemprop="dateModified" datetime="2021-03-14T14:32:02+08:00">2021-03-14</time>
+        <time title="修改时间：2021-03-19 09:48:18" itemprop="dateModified" datetime="2021-03-19T09:48:18+08:00">2021-03-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -313,12 +312,16 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">Hexo博客系列</span></a>
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/Cache/" itemprop="url" rel="index"><span itemprop="name">Cache</span></a>
         </span>
     </span>
 
   
-    <span id="/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="Hexo博客更换主题" title="阅读次数">
+    <span id="/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/" class="post-meta-item leancloud_visitors" data-flag-title="Spring与Redis整合" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -332,18 +335,18 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.1k</span>
+      <span>2.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
-            <div class="post-description">Hexo默认的landscape主题感觉一般般啊，那就换个主题吧</div>
+            <div class="post-description">学了Redis却不知道如何在项目中高效率地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解</div>
         </div>
       </header>
 
@@ -351,31 +354,42 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
-<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
-<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
-<p><img src="hexo-default.png"></p>
-<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a target="_blank" rel="noopener" href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
-<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
-<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
-<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
-<p><img src="download-next.png" alt="download-next"></p>
-<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
-<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
-<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
-<p><img src="switch-theme.png" alt="switch-theme"></p>
-<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
-<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
-<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
-<p><img src="error.png" alt="error"></p>
-<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
-<p>在hexo项目根目录使用下列指令进行安装。</p>
-<p><code>npm install hexo-renderer-swig --save</code></p>
-<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
-<p><img src="next-theme.png" alt="next-theme"></p>
-<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
+        <p>如果你学过Redis，应该知道它是一个键值对的内存数据库应用，一般是作为服务器后端中的数据库或者是缓存来使用（国内大环境下用作缓存更多）。</p>
+<h1 id="Redis作为数据库使用"><a href="#Redis作为数据库使用" class="headerlink" title="Redis作为数据库使用"></a>Redis作为数据库使用</h1><p>这里主要介绍两个比较常见的Redis操作库，Jedis和SpringDataRedis</p>
+<h2 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h2><p>Jedis是一个小巧、简单、易用的Redis client，Java导入Jedis依赖后，可以直接对Redis进行连接，并直接操作各种数据结构。</p>
+<p>可以使用下面的pom依赖导入Jedis。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">type</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在Spring环境下，Jedis可以类比成一个JDBC的Connection，你可以通过这个Connection对Redis进行各种操作，那么就很容易写出这样的代码。</p>
+<p>首先进行配置，将Jedis配置为Bean，在构造对象时，提供redis的服务器地址和端口号。</p>
+<p><img src="1.png" alt="1"></p>
+<p>使用的时候，注入Jedis的bean即可，随后就可以通过jedis对象操作redis了。</p>
+<p><img src="2.png" alt="2"></p>
+<h2 id="SpringDataRedis"><a href="#SpringDataRedis" class="headerlink" title="SpringDataRedis"></a>SpringDataRedis</h2><p>SpringDataRedis是SpringData这个大项目中的一个子项目，是一个高封装程度和使用自由度的Java Redis框架。</p>
+<p>使用SpringDataRedis，我们可以至少可以获得以下好处。</p>
+<ol>
+<li>自由选择Redis连接器，比如jedis、jredis、lettuce</li>
+<li>通过预先配置的RedisTemplate，直接进行Redis操作，免去了创建、释放连接的过程，与JdbcTemplate作用类似</li>
+<li>可以自由选择数据序列化的方式</li>
+<li>提供了对SpringCache整合Redis的支持，后面会讲到</li>
+</ol>
+<p>那么Jedis和SpringDataRedis的关系也就明朗了，SpringDataRedis底层使用的是redis client，比如jedis、jredis、lettuce这样的，即SpringDataRedis是对jedis这种连接器的一种封装。</p>
+<h3 id="SpringDataRedis的依赖"><a href="#SpringDataRedis的依赖" class="headerlink" title="SpringDataRedis的依赖"></a>SpringDataRedis的依赖</h3><p>SpringDataRedis可以通过以下的SpringBoot起步依赖引入。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>SpringDataRedis的官方文档上介绍的引入方式是这种。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这两种方式有什么不一样？很简单，看一下spring-boot-starter-data-redis是怎么构成的。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.7.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.lettuce<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lettuce-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上就是spring-boot-starter、spring-data-redis和lettuce-core这三个依赖组成的，同时也可以发现，SpringDataRedis默认使用的是lettuce作为连接器。</p>
+<h3 id="SpringDataRedis的使用"><a href="#SpringDataRedis的使用" class="headerlink" title="SpringDataRedis的使用"></a>SpringDataRedis的使用</h3><p>施工中</p>
+<h1 id="Redis作为缓存使用"><a href="#Redis作为缓存使用" class="headerlink" title="Redis作为缓存使用"></a>Redis作为缓存使用</h1><p>施工中</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="">spring-data-redis官方文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.3.7.RELEASE/reference/htmlsingle/#boot-features-caching">spring-boot官方文档–caching</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache">spring-framework官方文档–cache abstraction</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/houpeibin2012/article/details/104364826">spring-data-redis与jedis的区别</a></p>
 
     </div>
 
@@ -385,20 +399,22 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hexo/" rel="tag"><i class="fa fa-tag"></i> hexo</a>
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+              <a href="/tags/%E7%BC%93%E5%AD%98/" rel="tag"><i class="fa fa-tag"></i> 缓存</a>
+              <a href="/tags/redis/" rel="tag"><i class="fa fa-tag"></i> redis</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="使用Github和Hexo搭建个人博客">
-                  <i class="fa fa-chevron-left"></i> 使用Github和Hexo搭建个人博客
+                <a href="/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/" rel="prev" title="一些个人老项目的汇总">
+                  <i class="fa fa-chevron-left"></i> 一些个人老项目的汇总
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/" rel="next" title="hexo如何发布博客">
-                  hexo如何发布博客 <i class="fa fa-chevron-right"></i>
+                <a href="/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/" rel="next" title="SpringWebFlow初学记录">
+                  SpringWebFlow初学记录 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
