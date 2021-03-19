@@ -25,17 +25,21 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="学了Redis却不知道如何在项目中高效率地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解">
+<meta name="description" content="学了Redis却不知道如何在项目中有效地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring与Redis整合">
 <meta property="og:url" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/index.html">
 <meta property="og:site_name" content="ZenoX的个人博客">
-<meta property="og:description" content="学了Redis却不知道如何在项目中高效率地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解">
+<meta property="og:description" content="学了Redis却不知道如何在项目中有效地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/1.png">
 <meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/2.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/3.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/4.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/5.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/6.png">
 <meta property="article:published_time" content="2021-03-01T12:18:30.000Z">
-<meta property="article:modified_time" content="2021-03-19T01:48:18.557Z">
+<meta property="article:modified_time" content="2021-03-19T07:20:09.165Z">
 <meta property="article:author" content="ZenoX">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="缓存">
@@ -195,7 +199,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%BD%9C%E4%B8%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Redis作为数据库使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Jedis"><span class="nav-number">1.1.</span> <span class="nav-text">Jedis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringDataRedis"><span class="nav-number">1.2.</span> <span class="nav-text">SpringDataRedis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringDataRedis%E7%9A%84%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">SpringDataRedis的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringDataRedis%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">SpringDataRedis的使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%BD%9C%E4%B8%BA%E7%BC%93%E5%AD%98%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">Redis作为缓存使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%BD%9C%E4%B8%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BD%BF%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">Redis作为数据库使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Jedis"><span class="nav-number">1.1.</span> <span class="nav-text">Jedis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SpringDataRedis"><span class="nav-number">1.2.</span> <span class="nav-text">SpringDataRedis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringDataRedis%E7%9A%84%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.1.</span> <span class="nav-text">SpringDataRedis的依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SpringDataRedis%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.2.</span> <span class="nav-text">SpringDataRedis的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E5%88%B0Redis"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">连接到Redis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8RedisTemplate"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">使用RedisTemplate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RedisTemplate%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%9C%BA%E5%88%B6"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">RedisTemplate的序列化机制</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis%E4%BD%9C%E4%B8%BA%E7%BC%93%E5%AD%98%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">Redis作为缓存使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -304,7 +308,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-03-19 09:48:18" itemprop="dateModified" datetime="2021-03-19T09:48:18+08:00">2021-03-19</time>
+        <time title="修改时间：2021-03-19 15:20:09" itemprop="dateModified" datetime="2021-03-19T15:20:09+08:00">2021-03-19</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -335,18 +339,18 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.5k</span>
+      <span>4.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
-            <div class="post-description">学了Redis却不知道如何在项目中高效率地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解</div>
+            <div class="post-description">学了Redis却不知道如何在项目中有效地使用它？来看看这篇文章，之后你会对Redis在Spring项目中的应用有一个大致的了解</div>
         </div>
       </header>
 
@@ -365,7 +369,7 @@
 <p><img src="1.png" alt="1"></p>
 <p>使用的时候，注入Jedis的bean即可，随后就可以通过jedis对象操作redis了。</p>
 <p><img src="2.png" alt="2"></p>
-<h2 id="SpringDataRedis"><a href="#SpringDataRedis" class="headerlink" title="SpringDataRedis"></a>SpringDataRedis</h2><p>SpringDataRedis是SpringData这个大项目中的一个子项目，是一个高封装程度和使用自由度的Java Redis框架。</p>
+<h2 id="SpringDataRedis"><a href="#SpringDataRedis" class="headerlink" title="SpringDataRedis"></a>SpringDataRedis</h2><p>SpringDataRedis是SpringData这个大项目中的一个子项目，与Spring高度集成，是我们在Spring项目中整合Redis的不二之选。</p>
 <p>使用SpringDataRedis，我们可以至少可以获得以下好处。</p>
 <ol>
 <li>自由选择Redis连接器，比如jedis、jredis、lettuce</li>
@@ -384,7 +388,67 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.7.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.lettuce<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lettuce-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>实际上就是spring-boot-starter、spring-data-redis和lettuce-core这三个依赖组成的，同时也可以发现，SpringDataRedis默认使用的是lettuce作为连接器。</p>
-<h3 id="SpringDataRedis的使用"><a href="#SpringDataRedis的使用" class="headerlink" title="SpringDataRedis的使用"></a>SpringDataRedis的使用</h3><p>施工中</p>
+<h3 id="SpringDataRedis的使用"><a href="#SpringDataRedis的使用" class="headerlink" title="SpringDataRedis的使用"></a>SpringDataRedis的使用</h3><h4 id="连接到Redis"><a href="#连接到Redis" class="headerlink" title="连接到Redis"></a>连接到Redis</h4><p>与Jedis类似，我们需要提供一个预设的连接配置。在SpringDataRedis中，负责连接到Redis的主要有两个类，RedisConnection和RedisConnectionFactory，从名字就可以看出，我们实际上是对RedisConnectionFactory提供配置，这个Factory根据我们提供的Redis连接配置，生产RedisConnection。</p>
+<p>SpringDataRedis默认选择的Redis连接器是Lettuce，这里需要注意一下，虽然Java有多种Redis连接器，但并非所有的连接器都支持Redis的所有特性，具体可以参考SpringDataRedis官方文档的<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-data/redis/docs/2.4.6/reference/html/#redis:connectors:connection">连接</a>。</p>
+<p>配置一个Lettuce实现的RedisConnectionFactory，如下所示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> LettuceConnectionFactory <span class="title">redisConnectionFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LettuceConnectionFactory(<span class="keyword">new</span> RedisStandaloneConfiguration(<span class="string">&quot;localhost&quot;</span>, <span class="number">6379</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用RedisTemplate"><a href="#使用RedisTemplate" class="headerlink" title="使用RedisTemplate"></a>使用RedisTemplate</h4><p>RedisTemplate是SpringDataRedis的核心组件，它高度封装的特性可以让我们不需要关心序列化的过程而直接将Java数据类型写入Redis。</p>
+<p>虽然RedisConnection也可以操作Redis，但相比与RedisTemplate，它们操作数据的层次不一样，RedisConnection提供偏向底层的Redis操作，即直接操作二进制数据；而RedisTemplate处于一个高层的位置，序列化Java对象后调用RedisConnection写入Redis。</p>
+<p><img src="3.png" alt="3"></p>
+<p>可以看到，上面用了RedisTempalte的opsForValue方法，实际上，它还能使用其他的operation，以下摘自SpringDataRedis官方文档。</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GeoOperations</code></td>
+<td>操作geo类型, 比如<code>GEOADD</code>, <code>GEORADIUS</code></td>
+</tr>
+<tr>
+<td><code>HashOperations</code></td>
+<td>操作hash类型</td>
+</tr>
+<tr>
+<td><code>HyperLogLogOperations</code></td>
+<td>操作HyperLogLog, 比如<code>PFADD</code>, <code>PFCOUNT</code></td>
+</tr>
+<tr>
+<td><code>ListOperations</code></td>
+<td>操作list类型</td>
+</tr>
+<tr>
+<td><code>SetOperations</code></td>
+<td>操作set类型</td>
+</tr>
+<tr>
+<td><code>ValueOperations</code></td>
+<td>操作一般的键值对类型，即字符串</td>
+</tr>
+<tr>
+<td><code>ZSetOperations</code></td>
+<td>操作zset类型</td>
+</tr>
+</tbody></table>
+<p>除了以上这些Operation，为了方便使用，还可以将一个特定的key绑定到Operation上，比如下面这样，如此一来，这个Operation专门就是为mykey这个键进行服务的了。</p>
+<p><img src="4.png" alt="4"></p>
+<h4 id="RedisTemplate的序列化机制"><a href="#RedisTemplate的序列化机制" class="headerlink" title="RedisTemplate的序列化机制"></a>RedisTemplate的序列化机制</h4><p>使用RedisTemplate时，默认使用的是jdk序列化，即如果你想存一个自定义对象，那么应该让其实现Serializable接口，否则jdk是无法进行序列化的。</p>
+<p>如果不想使用SpringBoot预配置的RedisTemplate，那么我们可以自己决定序列化方式。</p>
+<p>下面是几种常见的序列化器。</p>
+<ul>
+<li>JdkSerializationRedisSerializer：基于Jdk的序列化器，RedisTemplate默认使用的</li>
+<li>StringRedisSerializer：将key或者value序列化成字符串，存进redis时是人可读的</li>
+<li>Jackson2JsonRedisSerializer：将对象序列化为json格式</li>
+</ul>
+<p>在配置RedisTemplate时，可以自行设置序列化方式。</p>
+<p><img src="5.png" alt="5"></p>
+<p>上面的例子中，设置了普通的键和hash类型的键使用StringRedisSerializer，普通的value和hash的value使用Jackson2JsonRedisSerializer，上面这个例子中对json序列化过程也进行了一定的定制，即设置ObjectMapper，设置对象映射可见性为所有，其他的取值可以参照下图。</p>
+<p><img src="6.png" alt="6"></p>
+<p>activateDefaultTyping方法则是设置了序列化过程中，将对象中的所有字段类型也一并作为信息写入。</p>
+<p>RedisTemplate的afterPropertiesSet可以不调用，如果对其源码感兴趣可以自行阅读，这里就直接说了，它可以检查RedisTemplate中的key和value的序列化器是否都已设置妥当，若没有设置，则启用默认的序列化器，即Jdk序列化器。</p>
 <h1 id="Redis作为缓存使用"><a href="#Redis作为缓存使用" class="headerlink" title="Redis作为缓存使用"></a>Redis作为缓存使用</h1><p>施工中</p>
 <h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="">spring-data-redis官方文档</a></p>
 <p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-boot/docs/2.3.7.RELEASE/reference/htmlsingle/#boot-features-caching">spring-boot官方文档–caching</a></p>

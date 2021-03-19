@@ -1,42 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hexo博客更换主题</title>
-    <url>/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
-<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
-<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
-<p><img src="hexo-default.png"></p>
-<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
-<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
-<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
-<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
-<p><img src="download-next.png" alt="download-next"></p>
-<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
-<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
-<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
-<p><img src="switch-theme.png" alt="switch-theme"></p>
-<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
-<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
-<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
-<p><img src="error.png" alt="error"></p>
-<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
-<p>在hexo项目根目录使用下列指令进行安装。</p>
-<p><code>npm install hexo-renderer-swig --save</code></p>
-<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
-<p><img src="next-theme.png" alt="next-theme"></p>
-<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
-<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringValidation使用指南--Controller与Service入参校验</title>
     <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
     <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
@@ -161,6 +125,152 @@
       </tags>
   </entry>
   <entry>
+    <title>Spring与Redis整合</title>
+    <url>/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/</url>
+    <content><![CDATA[<p>如果你学过Redis，应该知道它是一个键值对的内存数据库应用，一般是作为服务器后端中的数据库或者是缓存来使用（国内大环境下用作缓存更多）。</p>
+<h1 id="Redis作为数据库使用"><a href="#Redis作为数据库使用" class="headerlink" title="Redis作为数据库使用"></a>Redis作为数据库使用</h1><p>这里主要介绍两个比较常见的Redis操作库，Jedis和SpringDataRedis</p>
+<h2 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h2><p>Jedis是一个小巧、简单、易用的Redis client，Java导入Jedis依赖后，可以直接对Redis进行连接，并直接操作各种数据结构。</p>
+<p>可以使用下面的pom依赖导入Jedis。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">type</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在Spring环境下，Jedis可以类比成一个JDBC的Connection，你可以通过这个Connection对Redis进行各种操作，那么就很容易写出这样的代码。</p>
+<p>首先进行配置，将Jedis配置为Bean，在构造对象时，提供redis的服务器地址和端口号。</p>
+<p><img src="1.png" alt="1"></p>
+<p>使用的时候，注入Jedis的bean即可，随后就可以通过jedis对象操作redis了。</p>
+<p><img src="2.png" alt="2"></p>
+<h2 id="SpringDataRedis"><a href="#SpringDataRedis" class="headerlink" title="SpringDataRedis"></a>SpringDataRedis</h2><p>SpringDataRedis是SpringData这个大项目中的一个子项目，与Spring高度集成，是我们在Spring项目中整合Redis的不二之选。</p>
+<p>使用SpringDataRedis，我们可以至少可以获得以下好处。</p>
+<ol>
+<li>自由选择Redis连接器，比如jedis、jredis、lettuce</li>
+<li>通过预先配置的RedisTemplate，直接进行Redis操作，免去了创建、释放连接的过程，与JdbcTemplate作用类似</li>
+<li>可以自由选择数据序列化的方式</li>
+<li>提供了对SpringCache整合Redis的支持，后面会讲到</li>
+</ol>
+<p>那么Jedis和SpringDataRedis的关系也就明朗了，SpringDataRedis底层使用的是redis client，比如jedis、jredis、lettuce这样的，即SpringDataRedis是对jedis这种连接器的一种封装。</p>
+<h3 id="SpringDataRedis的依赖"><a href="#SpringDataRedis的依赖" class="headerlink" title="SpringDataRedis的依赖"></a>SpringDataRedis的依赖</h3><p>SpringDataRedis可以通过以下的SpringBoot起步依赖引入。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>SpringDataRedis的官方文档上介绍的引入方式是这种。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这两种方式有什么不一样？很简单，看一下spring-boot-starter-data-redis是怎么构成的。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.7.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.lettuce<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lettuce-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>实际上就是spring-boot-starter、spring-data-redis和lettuce-core这三个依赖组成的，同时也可以发现，SpringDataRedis默认使用的是lettuce作为连接器。</p>
+<h3 id="SpringDataRedis的使用"><a href="#SpringDataRedis的使用" class="headerlink" title="SpringDataRedis的使用"></a>SpringDataRedis的使用</h3><h4 id="连接到Redis"><a href="#连接到Redis" class="headerlink" title="连接到Redis"></a>连接到Redis</h4><p>与Jedis类似，我们需要提供一个预设的连接配置。在SpringDataRedis中，负责连接到Redis的主要有两个类，RedisConnection和RedisConnectionFactory，从名字就可以看出，我们实际上是对RedisConnectionFactory提供配置，这个Factory根据我们提供的Redis连接配置，生产RedisConnection。</p>
+<p>SpringDataRedis默认选择的Redis连接器是Lettuce，这里需要注意一下，虽然Java有多种Redis连接器，但并非所有的连接器都支持Redis的所有特性，具体可以参考SpringDataRedis官方文档的<a href="https://docs.spring.io/spring-data/redis/docs/2.4.6/reference/html/#redis:connectors:connection">连接</a>。</p>
+<p>配置一个Lettuce实现的RedisConnectionFactory，如下所示。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RedisConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> LettuceConnectionFactory <span class="title">redisConnectionFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> LettuceConnectionFactory(<span class="keyword">new</span> RedisStandaloneConfiguration(<span class="string">&quot;localhost&quot;</span>, <span class="number">6379</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用RedisTemplate"><a href="#使用RedisTemplate" class="headerlink" title="使用RedisTemplate"></a>使用RedisTemplate</h4><p>RedisTemplate是SpringDataRedis的核心组件，它高度封装的特性可以让我们不需要关心序列化的过程而直接将Java数据类型写入Redis。</p>
+<p>虽然RedisConnection也可以操作Redis，但相比与RedisTemplate，它们操作数据的层次不一样，RedisConnection提供偏向底层的Redis操作，即直接操作二进制数据；而RedisTemplate处于一个高层的位置，序列化Java对象后调用RedisConnection写入Redis。</p>
+<p><img src="3.png" alt="3"></p>
+<p>可以看到，上面用了RedisTempalte的opsForValue方法，实际上，它还能使用其他的operation，以下摘自SpringDataRedis官方文档。</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GeoOperations</code></td>
+<td>操作geo类型, 比如<code>GEOADD</code>, <code>GEORADIUS</code></td>
+</tr>
+<tr>
+<td><code>HashOperations</code></td>
+<td>操作hash类型</td>
+</tr>
+<tr>
+<td><code>HyperLogLogOperations</code></td>
+<td>操作HyperLogLog, 比如<code>PFADD</code>, <code>PFCOUNT</code></td>
+</tr>
+<tr>
+<td><code>ListOperations</code></td>
+<td>操作list类型</td>
+</tr>
+<tr>
+<td><code>SetOperations</code></td>
+<td>操作set类型</td>
+</tr>
+<tr>
+<td><code>ValueOperations</code></td>
+<td>操作一般的键值对类型，即字符串</td>
+</tr>
+<tr>
+<td><code>ZSetOperations</code></td>
+<td>操作zset类型</td>
+</tr>
+</tbody></table>
+<p>除了以上这些Operation，为了方便使用，还可以将一个特定的key绑定到Operation上，比如下面这样，如此一来，这个Operation专门就是为mykey这个键进行服务的了。</p>
+<p><img src="4.png" alt="4"></p>
+<h4 id="RedisTemplate的序列化机制"><a href="#RedisTemplate的序列化机制" class="headerlink" title="RedisTemplate的序列化机制"></a>RedisTemplate的序列化机制</h4><p>使用RedisTemplate时，默认使用的是jdk序列化，即如果你想存一个自定义对象，那么应该让其实现Serializable接口，否则jdk是无法进行序列化的。</p>
+<p>如果不想使用SpringBoot预配置的RedisTemplate，那么我们可以自己决定序列化方式。</p>
+<p>下面是几种常见的序列化器。</p>
+<ul>
+<li>JdkSerializationRedisSerializer：基于Jdk的序列化器，RedisTemplate默认使用的</li>
+<li>StringRedisSerializer：将key或者value序列化成字符串，存进redis时是人可读的</li>
+<li>Jackson2JsonRedisSerializer：将对象序列化为json格式</li>
+</ul>
+<p>在配置RedisTemplate时，可以自行设置序列化方式。</p>
+<p><img src="5.png" alt="5"></p>
+<p>上面的例子中，设置了普通的键和hash类型的键使用StringRedisSerializer，普通的value和hash的value使用Jackson2JsonRedisSerializer，上面这个例子中对json序列化过程也进行了一定的定制，即设置ObjectMapper，设置对象映射可见性为所有，其他的取值可以参照下图。</p>
+<p><img src="6.png" alt="6"></p>
+<p>activateDefaultTyping方法则是设置了序列化过程中，将对象中的所有字段类型也一并作为信息写入。</p>
+<p>RedisTemplate的afterPropertiesSet可以不调用，如果对其源码感兴趣可以自行阅读，这里就直接说了，它可以检查RedisTemplate中的key和value的序列化器是否都已设置妥当，若没有设置，则启用默认的序列化器，即Jdk序列化器。</p>
+<h1 id="Redis作为缓存使用"><a href="#Redis作为缓存使用" class="headerlink" title="Redis作为缓存使用"></a>Redis作为缓存使用</h1><p>施工中</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="">spring-data-redis官方文档</a></p>
+<p><a href="https://docs.spring.io/spring-boot/docs/2.3.7.RELEASE/reference/htmlsingle/#boot-features-caching">spring-boot官方文档–caching</a></p>
+<p><a href="https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache">spring-framework官方文档–cache abstraction</a></p>
+<p><a href="https://blog.csdn.net/houpeibin2012/article/details/104364826">spring-data-redis与jedis的区别</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>Cache</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>缓存</tag>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo博客更换主题</title>
+    <url>/2021/02/11/hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
+<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
+<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
+<p><img src="hexo-default.png"></p>
+<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
+<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
+<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
+<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
+<p><img src="download-next.png" alt="download-next"></p>
+<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
+<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
+<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
+<p><img src="switch-theme.png" alt="switch-theme"></p>
+<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
+<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
+<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
+<p><img src="error.png" alt="error"></p>
+<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
+<p>在hexo项目根目录使用下列指令进行安装。</p>
+<p><code>npm install hexo-renderer-swig --save</code></p>
+<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
+<p><img src="next-theme.png" alt="next-theme"></p>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
+<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo博客的定制化</title>
     <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
     <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
@@ -182,56 +292,6 @@
       </categories>
       <tags>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Spring与Redis整合</title>
-    <url>/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/</url>
-    <content><![CDATA[<p>如果你学过Redis，应该知道它是一个键值对的内存数据库应用，一般是作为服务器后端中的数据库或者是缓存来使用（国内大环境下用作缓存更多）。</p>
-<h1 id="Redis作为数据库使用"><a href="#Redis作为数据库使用" class="headerlink" title="Redis作为数据库使用"></a>Redis作为数据库使用</h1><p>这里主要介绍两个比较常见的Redis操作库，Jedis和SpringDataRedis</p>
-<h2 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h2><p>Jedis是一个小巧、简单、易用的Redis client，Java导入Jedis依赖后，可以直接对Redis进行连接，并直接操作各种数据结构。</p>
-<p>可以使用下面的pom依赖导入Jedis。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">type</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">type</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在Spring环境下，Jedis可以类比成一个JDBC的Connection，你可以通过这个Connection对Redis进行各种操作，那么就很容易写出这样的代码。</p>
-<p>首先进行配置，将Jedis配置为Bean，在构造对象时，提供redis的服务器地址和端口号。</p>
-<p><img src="1.png" alt="1"></p>
-<p>使用的时候，注入Jedis的bean即可，随后就可以通过jedis对象操作redis了。</p>
-<p><img src="2.png" alt="2"></p>
-<h2 id="SpringDataRedis"><a href="#SpringDataRedis" class="headerlink" title="SpringDataRedis"></a>SpringDataRedis</h2><p>SpringDataRedis是SpringData这个大项目中的一个子项目，是一个高封装程度和使用自由度的Java Redis框架。</p>
-<p>使用SpringDataRedis，我们可以至少可以获得以下好处。</p>
-<ol>
-<li>自由选择Redis连接器，比如jedis、jredis、lettuce</li>
-<li>通过预先配置的RedisTemplate，直接进行Redis操作，免去了创建、释放连接的过程，与JdbcTemplate作用类似</li>
-<li>可以自由选择数据序列化的方式</li>
-<li>提供了对SpringCache整合Redis的支持，后面会讲到</li>
-</ol>
-<p>那么Jedis和SpringDataRedis的关系也就明朗了，SpringDataRedis底层使用的是redis client，比如jedis、jredis、lettuce这样的，即SpringDataRedis是对jedis这种连接器的一种封装。</p>
-<h3 id="SpringDataRedis的依赖"><a href="#SpringDataRedis的依赖" class="headerlink" title="SpringDataRedis的依赖"></a>SpringDataRedis的依赖</h3><p>SpringDataRedis可以通过以下的SpringBoot起步依赖引入。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>SpringDataRedis的官方文档上介绍的引入方式是这种。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>这两种方式有什么不一样？很简单，看一下spring-boot-starter-data-redis是怎么构成的。</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.7.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.data<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.lettuce<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lettuce-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>实际上就是spring-boot-starter、spring-data-redis和lettuce-core这三个依赖组成的，同时也可以发现，SpringDataRedis默认使用的是lettuce作为连接器。</p>
-<h3 id="SpringDataRedis的使用"><a href="#SpringDataRedis的使用" class="headerlink" title="SpringDataRedis的使用"></a>SpringDataRedis的使用</h3><p>施工中</p>
-<h1 id="Redis作为缓存使用"><a href="#Redis作为缓存使用" class="headerlink" title="Redis作为缓存使用"></a>Redis作为缓存使用</h1><p>施工中</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="">spring-data-redis官方文档</a></p>
-<p><a href="https://docs.spring.io/spring-boot/docs/2.3.7.RELEASE/reference/htmlsingle/#boot-features-caching">spring-boot官方文档–caching</a></p>
-<p><a href="https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache">spring-framework官方文档–cache abstraction</a></p>
-<p><a href="https://blog.csdn.net/houpeibin2012/article/details/104364826">spring-data-redis与jedis的区别</a></p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-        <category>Cache</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>缓存</tag>
-        <tag>redis</tag>
       </tags>
   </entry>
   <entry>
@@ -361,6 +421,20 @@
       </tags>
   </entry>
   <entry>
+    <title>我的第一篇文章</title>
+    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
+    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
+<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
+<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何让hexo个人博客被搜索引擎收录</title>
     <url>/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/</url>
     <content><![CDATA[<p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的。</p>
@@ -428,20 +502,6 @@
       </categories>
       <tags>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>我的第一篇文章</title>
-    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
-    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
-<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
-<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
       </tags>
   </entry>
 </search>
