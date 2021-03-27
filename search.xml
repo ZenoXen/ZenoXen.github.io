@@ -1,57 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>SpringValidation使用指南--手动与分组校验以及自定义异常处理</title>
-    <url>/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/</url>
-    <content><![CDATA[<p>上一篇文章主要讲了如何利用SpringValidation提供的便利，来进行多种场景下的自动数据校验，虽然功能很强，但有时候我们想要自己触发校验机制，将主动权掌握在自己手中，而不是将校验时机完全交给Spring，那么可以不使用方法入参校验。</p>
-<h1 id="手动触发校验"><a href="#手动触发校验" class="headerlink" title="手动触发校验"></a>手动触发校验</h1><p>手动触发校验，或者说编程式数据校验，依赖于javax.Validator这个类来进行。</p>
-<p><img src="1.png" alt="1"></p>
-<p>如果你引入了spring-boot-starter-validation这个起步依赖，那么Spring会为你自动预配置一个Validator的bean，你只需要注入到你想要的地方用就可以了。</p>
-<p>上图中，使用Validator的validate方法可以校验User类，User类定义的结构如下，有两个JSR-303的校验注解和一个自定义校验注解。</p>
-<p><img src="2.png" alt="2"></p>
-<p>可以看到，方法的返回值是一个Set&lt;ConstraintViolation&lt;User&gt;&gt;，即校验出的所有不规范的字段，我们可以自由处理这些信息，比如可以像下面这样。</p>
-<p><img src="3.png" alt="3"></p>
-<p>还有其他更多的ConstraintViolation的用法，这里不展开说。实际上最常见的做法就是像第一张图里那样，用Set构造一个ConstraintViolationException抛出。</p>
-<h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>假设我们的User类有一个Id属性，它对应的是User表的主键。用过JPA或者Hibernate的朋友应该知道，插入数据时，我们一般指定自己需要的属性，但不主动指定Id这个字段，因为我们想要让JPA/Hibernate自己生成主键；而更新数据时，一般是先从数据库里查出一条记录，在Entity对象上set过属性后，再save进数据库，这个过程中，id由于之前被插进去，所以不是null。</p>
-<p>假设现在我想要在插入的方法上进行校验，要求User的id为null，而在更新的方法上进行校验时，id不能为null，要实现这个需求，使用分组校验正合适。</p>
-<h2 id="定义分组标志"><a href="#定义分组标志" class="headerlink" title="定义分组标志"></a>定义分组标志</h2><p>首先定义两个空接口OnUpdate和OnInsert，它们不用有任何方法，实际上我们只是拿它们作为一个分组标识。</p>
-<p><img src="4.png" alt="image-20210317232603803"></p>
-<p>User类定义如下，可以看到对于id属性，指定了NotNull和Null，而且指定了groups属性，如此一来，两个校验注解就不会同时生效，只有当OnUpdate的时候，NotNull会生效，只有当OnInsert的时候，Null会生效。</p>
-<p><img src="5.png" alt="5"></p>
-<h2 id="指定方法所使用的分组"><a href="#指定方法所使用的分组" class="headerlink" title="指定方法所使用的分组"></a>指定方法所使用的分组</h2><p>那么如何决定何时启用OnUpdate和OnInsert呢？也许你已经注意到了，Spring提供的Vlidated注解是可以用在方法上的，但实际上Validated用在方法上必须配合分组的接口，比如下面这个例子。</p>
-<p><img src="6.png" alt="6"></p>
-<p>假设我们在Service层使用校验，在Service类上先加上Validated注解，如此一来，MyService中的所有方法都具有了数据校验的能力；其次在方法上指定Validated注解，我们希望对于updateUser方法指定的是OnUpdate的情景，对insertUser方法指定的是OnInsert的情景，在方法的User入参上使用Valid注解，只有这样，才会在方法调用时进行校验。</p>
-<h2 id="自定义校验注解中的groups属性"><a href="#自定义校验注解中的groups属性" class="headerlink" title="自定义校验注解中的groups属性"></a>自定义校验注解中的groups属性</h2><p>前一篇文章讲过如何使用自定义校验注解，来执行我们自己的校验逻辑，比如下面这个校验注解。</p>
-<p><img src="12.png" alt="12"></p>
-<p>可以看到其中有一个groups属性，这个groups属性其实就跟我们上面使用的groups属性作用完全一致，NotNull、NotEmpty、NotBlank这些注解也统统都包含了groups属性，所以，如果我们想要对一个自定义校验注解进行分组校验，那么标注在校验处时使用groups属性即可，比如下面这个例子。</p>
-<p><img src="13.png" alt="13"></p>
-<h1 id="自定义异常处理"><a href="#自定义异常处理" class="headerlink" title="自定义异常处理"></a>自定义异常处理</h1><p>虽然我们可以指定一个字段校验不通过时所输出的message，但实际上，默认的异常处理相当粗糙，放一张图感受一下。</p>
-<p><img src="7.png" alt="7"></p>
-<p>我们其实并不需要过于完整的报错信息，只是想看到哪个字段违反了哪个校验规则，所以这个信息只能自己处理了。</p>
-<h2 id="两种校验异常"><a href="#两种校验异常" class="headerlink" title="两种校验异常"></a>两种校验异常</h2><p>此外，之前一篇文章曾经提过SpringValidation相关的两个异常，MethodArgumentNotValidException和ConstraintViolationException，前者是在Controller层校验失败时抛出的异常，并且报的是http 400的Bad Request，后者则是在非Controller层校验失败时抛出的异常，报的是http 500的Internal Server Error，这个两个异常其实有必要进行统一处理。</p>
-<p>那么需求就明确了，我们希望返回给前端的是简单的校验结果，即字段名和message的组合，同时又希望统一处理两种异常，返回http 400 BadRequest错误。</p>
-<h2 id="自定义校验结果返回数据"><a href="#自定义校验结果返回数据" class="headerlink" title="自定义校验结果返回数据"></a>自定义校验结果返回数据</h2><p>按照需求，我们可以写一个建议的自定义校验结果类，ValidationResult里包含一个ValidationError列表，列表中的每个元素都包含一个字段和其校验失败的message，最终我们将会把这个类作为json数据返回给前端。</p>
-<p><img src="8.png" alt="8"></p>
-<h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>定义一个类并用ControllerAdive标注，如此一来，里面的异常处理方法就会对所有的Controller生效；用ExceptionHandler来标注异常处理的方法，指定要处理哪种异常；ResponseStatus用来指定返回给前端的是哪种http响应码，ResponseBody用来将返回值转换为json数据响应给前端，一般来说，只要你的项目中引入了spring-boot-starter-web，就会包含jackson的包，使用ResponseBody就能自动将Controller返回值转换为json格式。</p>
-<p><img src="9.png" alt="9"></p>
-<p>注意还需要处理MethodArgumentNotValidException。</p>
-<p><img src="10.png" alt="10"></p>
-<p>这次再违反一次数据校验规则，来看看返回的结果，格式清爽了不少，而且清一色的都是返回http 400 BadRequest。</p>
-<p><img src="11.png" alt="11"></p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-        <category>SpringValidation</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>数据校验</tag>
-        <tag>HibernateValidator</tag>
-        <tag>SpringValidation</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringValidation使用指南--Controller与Service入参校验</title>
     <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
     <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
@@ -111,17 +60,54 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringWebFlow初学记录</title>
-    <url>/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<p>占位符</p>
+    <title>SpringValidation使用指南--手动与分组校验以及自定义异常处理</title>
+    <url>/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p>上一篇文章主要讲了如何利用SpringValidation提供的便利，来进行多种场景下的自动数据校验，虽然功能很强，但有时候我们想要自己触发校验机制，将主动权掌握在自己手中，而不是将校验时机完全交给Spring，那么可以不使用方法入参校验。</p>
+<h1 id="手动触发校验"><a href="#手动触发校验" class="headerlink" title="手动触发校验"></a>手动触发校验</h1><p>手动触发校验，或者说编程式数据校验，依赖于javax.Validator这个类来进行。</p>
+<p><img src="1.png" alt="1"></p>
+<p>如果你引入了spring-boot-starter-validation这个起步依赖，那么Spring会为你自动预配置一个Validator的bean，你只需要注入到你想要的地方用就可以了。</p>
+<p>上图中，使用Validator的validate方法可以校验User类，User类定义的结构如下，有两个JSR-303的校验注解和一个自定义校验注解。</p>
+<p><img src="2.png" alt="2"></p>
+<p>可以看到，方法的返回值是一个Set&lt;ConstraintViolation&lt;User&gt;&gt;，即校验出的所有不规范的字段，我们可以自由处理这些信息，比如可以像下面这样。</p>
+<p><img src="3.png" alt="3"></p>
+<p>还有其他更多的ConstraintViolation的用法，这里不展开说。实际上最常见的做法就是像第一张图里那样，用Set构造一个ConstraintViolationException抛出。</p>
+<h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>假设我们的User类有一个Id属性，它对应的是User表的主键。用过JPA或者Hibernate的朋友应该知道，插入数据时，我们一般指定自己需要的属性，但不主动指定Id这个字段，因为我们想要让JPA/Hibernate自己生成主键；而更新数据时，一般是先从数据库里查出一条记录，在Entity对象上set过属性后，再save进数据库，这个过程中，id由于之前被插进去，所以不是null。</p>
+<p>假设现在我想要在插入的方法上进行校验，要求User的id为null，而在更新的方法上进行校验时，id不能为null，要实现这个需求，使用分组校验正合适。</p>
+<h2 id="定义分组标志"><a href="#定义分组标志" class="headerlink" title="定义分组标志"></a>定义分组标志</h2><p>首先定义两个空接口OnUpdate和OnInsert，它们不用有任何方法，实际上我们只是拿它们作为一个分组标识。</p>
+<p><img src="4.png" alt="image-20210317232603803"></p>
+<p>User类定义如下，可以看到对于id属性，指定了NotNull和Null，而且指定了groups属性，如此一来，两个校验注解就不会同时生效，只有当OnUpdate的时候，NotNull会生效，只有当OnInsert的时候，Null会生效。</p>
+<p><img src="5.png" alt="5"></p>
+<h2 id="指定方法所使用的分组"><a href="#指定方法所使用的分组" class="headerlink" title="指定方法所使用的分组"></a>指定方法所使用的分组</h2><p>那么如何决定何时启用OnUpdate和OnInsert呢？也许你已经注意到了，Spring提供的Vlidated注解是可以用在方法上的，但实际上Validated用在方法上必须配合分组的接口，比如下面这个例子。</p>
+<p><img src="6.png" alt="6"></p>
+<p>假设我们在Service层使用校验，在Service类上先加上Validated注解，如此一来，MyService中的所有方法都具有了数据校验的能力；其次在方法上指定Validated注解，我们希望对于updateUser方法指定的是OnUpdate的情景，对insertUser方法指定的是OnInsert的情景，在方法的User入参上使用Valid注解，只有这样，才会在方法调用时进行校验。</p>
+<h2 id="自定义校验注解中的groups属性"><a href="#自定义校验注解中的groups属性" class="headerlink" title="自定义校验注解中的groups属性"></a>自定义校验注解中的groups属性</h2><p>前一篇文章讲过如何使用自定义校验注解，来执行我们自己的校验逻辑，比如下面这个校验注解。</p>
+<p><img src="12.png" alt="12"></p>
+<p>可以看到其中有一个groups属性，这个groups属性其实就跟我们上面使用的groups属性作用完全一致，NotNull、NotEmpty、NotBlank这些注解也统统都包含了groups属性，所以，如果我们想要对一个自定义校验注解进行分组校验，那么标注在校验处时使用groups属性即可，比如下面这个例子。</p>
+<p><img src="13.png" alt="13"></p>
+<h1 id="自定义异常处理"><a href="#自定义异常处理" class="headerlink" title="自定义异常处理"></a>自定义异常处理</h1><p>虽然我们可以指定一个字段校验不通过时所输出的message，但实际上，默认的异常处理相当粗糙，放一张图感受一下。</p>
+<p><img src="7.png" alt="7"></p>
+<p>我们其实并不需要过于完整的报错信息，只是想看到哪个字段违反了哪个校验规则，所以这个信息只能自己处理了。</p>
+<h2 id="两种校验异常"><a href="#两种校验异常" class="headerlink" title="两种校验异常"></a>两种校验异常</h2><p>此外，之前一篇文章曾经提过SpringValidation相关的两个异常，MethodArgumentNotValidException和ConstraintViolationException，前者是在Controller层校验失败时抛出的异常，并且报的是http 400的Bad Request，后者则是在非Controller层校验失败时抛出的异常，报的是http 500的Internal Server Error，这个两个异常其实有必要进行统一处理。</p>
+<p>那么需求就明确了，我们希望返回给前端的是简单的校验结果，即字段名和message的组合，同时又希望统一处理两种异常，返回http 400 BadRequest错误。</p>
+<h2 id="自定义校验结果返回数据"><a href="#自定义校验结果返回数据" class="headerlink" title="自定义校验结果返回数据"></a>自定义校验结果返回数据</h2><p>按照需求，我们可以写一个建议的自定义校验结果类，ValidationResult里包含一个ValidationError列表，列表中的每个元素都包含一个字段和其校验失败的message，最终我们将会把这个类作为json数据返回给前端。</p>
+<p><img src="8.png" alt="8"></p>
+<h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>定义一个类并用ControllerAdive标注，如此一来，里面的异常处理方法就会对所有的Controller生效；用ExceptionHandler来标注异常处理的方法，指定要处理哪种异常；ResponseStatus用来指定返回给前端的是哪种http响应码，ResponseBody用来将返回值转换为json数据响应给前端，一般来说，只要你的项目中引入了spring-boot-starter-web，就会包含jackson的包，使用ResponseBody就能自动将Controller返回值转换为json格式。</p>
+<p><img src="9.png" alt="9"></p>
+<p>注意还需要处理MethodArgumentNotValidException。</p>
+<p><img src="10.png" alt="10"></p>
+<p>这次再违反一次数据校验规则，来看看返回的结果，格式清爽了不少，而且清一色的都是返回http 400 BadRequest。</p>
+<p><img src="11.png" alt="11"></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
 ]]></content>
       <categories>
         <category>Spring</category>
-        <category>SpringWebFlow</category>
+        <category>SpringValidation</category>
       </categories>
       <tags>
         <tag>Spring</tag>
-        <tag>SpringWebFlow</tag>
+        <tag>数据校验</tag>
+        <tag>HibernateValidator</tag>
+        <tag>SpringValidation</tag>
       </tags>
   </entry>
   <entry>
@@ -161,43 +147,54 @@
       </tags>
   </entry>
   <entry>
-    <title>hexo博客的定制化</title>
-    <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
-    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
-<h1 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h1><p>相信你已经发现了，hexo有两份配置文件同时生效，一是<strong>hexo全局配置文件</strong>即_config.yml，二是<strong>主题配置文件</strong>，比如我用的是next主题，那么它就是themes/next/_config.yml，定制化主要依靠这两个文件来进行，尤其是主题配置文件，大多数hexo主题其实已经高度集成了许多功能，比如next主题就集成了valine评论插件，可以直接通过主题配置文件打开。</p>
-<h1 id="按需阅读"><a href="#按需阅读" class="headerlink" title="按需阅读"></a>按需阅读</h1><p>接下来就说一下，目前我的博客是怎么配置的，你可以根据自己的需求自行食用。</p>
-<hr>
-<h1 id="修改语言和时区"><a href="#修改语言和时区" class="headerlink" title="修改语言和时区"></a>修改语言和时区</h1><p>在全局配置文件中，language配置项，简体中文是zh-Hans；时区是timezone，中国地区可以修改为Asia/Shanghai</p>
-<h1 id="去除页脚Powered和Theme"><a href="#去除页脚Powered和Theme" class="headerlink" title="去除页脚Powered和Theme"></a>去除页脚Powered和Theme</h1><p>一般在主题配置文件中，找到footer配置项，其中包含powered配置项，修改为false，theme.enabled修改为false，theme.version修改为false。<br><img src="footer.png" alt="footer"></p>
-<h1 id="修改页面布局"><a href="#修改页面布局" class="headerlink" title="修改页面布局"></a>修改页面布局</h1><p>以next主题为例，一共有四种布局，Muse（默认）、Mist、Pisces（我在用的）、Gemini。<br>修改主题配置文件的scheme项，修改为你想要的布局，比如修改为Pisces，即scheme: Pisces</p>
-<h1 id="添加菜单选项"><a href="#添加菜单选项" class="headerlink" title="添加菜单选项"></a>添加菜单选项</h1><p>next主题默认只有home和archive两个选项，如何添加<strong>作者</strong>、<strong>标签</strong>、<strong>分类</strong>这样的页面呢。<br><img src="menu.png" alt="menu"><br>如上图所示，修改menu项，将tags、about、categories前面的<strong>井号</strong>去掉。<br>如此一来，博客菜单栏会展示出这些按钮，但你点击这些按钮时，会发现超链接是无效的，大概率会出现这样的一串玩意。<br><img src="url-error.png" alt="url-error"><br>实际上是因为menu项里url配置不对导致的，你可以仔细看看上面的menu配置项，是不是发现所有路径中间都有一对||符号，实际上，符号左边是菜单项的url，右边是菜单项的图标，next主题的菜单用的是<a href="http://www.fontawesome.com.cn/faicons/">font-awesome</a>图标，你可以参考font-awesome的图标名称随意更改，这里不展开说。这一对||符号左边右边都有一个空格，把这两个空格去掉，即可使菜单url恢复正常。<br>修改完url后再打开发现菜单url还是打不开，这是因为hexo默认就是不包含这些页面的，你需要自己生成。<br>执行下面的代码。<br><code>hexo new page &quot;about&quot;</code><br><code>hexo new page &quot;categories&quot;</code><br><code>hexo new page &quot;tags&quot;</code><br>随后修改source/about/index.md即可，它是完全遵守markdown语法的，categories和tags则不需要修改。</p>
-<h1 id="作者头像"><a href="#作者头像" class="headerlink" title="作者头像"></a>作者头像</h1><p>将你想要设置的头像图片放到source/uploads（自建目录）里，重命名为avatar.png。<br>修改主题配置文件中avatar项，比如这样avatar: /uploads/avatar.png。<br><em>注：如果你项用URI的形式也是可以的，不一定非要用本地图片。</em></p>
-<h1 id="开启评论和阅读量功能"><a href="#开启评论和阅读量功能" class="headerlink" title="开启评论和阅读量功能"></a>开启评论和阅读量功能</h1><p>在开启这两个功能之前，需要你注册一个LeanCloud的账号（免费注册，不需要充值），这里注册步骤不展开说了，详细说说LeanCloud需要做些什么。<br>首先创建应用，这里应用名称和应用描述随便选一下就可以了，方案选开发版即可，不收费。<br><img src="create-app.png" alt="create-app"><br>随后进入应用管理界面，选择<strong>存储</strong>-&gt;<strong>结构化数据</strong>，其中以下划线开头的这些Class是默认自带的，不用管他们。<br><img src="create-var.png" alt="create-var"><br>我们创建一下两个Class，一个叫Comment一个叫Counter，注意访问权限需要选择<strong>无限制</strong>。<br><img src="comment.png" alt="comment"><br>此时，你可以去应用的设置界面找一下两个关键的东西，即AppId和AppKey，后续会需要这两个字符串。<br><img src="app.png" alt="app"><br>编辑主题配置文件，找到leancloud_visitors项，enabled改为true，app_id和app_key修改为自己的就可以了，这是阅读量统计。<br><img src="leancloud-visitors.png" alt="leancloud-visitors"><br>找到valine项，这是评论功能，enabled改为true，appid和appkey改成自己的，placeholder是评论未输入时的默认占位符，guest_info是评论者需要输入的信息，默认nick、mail、link代表昵称、邮箱地址、个人站点，可以按照你自己的需要删减。<br><img src="valine.png" alt="valine"></p>
-<hr>
-<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>以上内容都只是hexo和next配置的一小部分，我只是单纯把一些比较直观的地方捡出来说了，其他配置项你也可以自行探索，可以参考hexo官方文档也可以参考next官方文档，我都在参考文章那部分列出来了。到此为止，hexo博客系列的文章就告一段落了，如果今后我有发现有什么有趣的东西，也许会再更新，大家对这几篇文章有什么建议都可以在评论区告诉我。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://github.com/iissnan/hexo-theme-next/wiki">github.com/iissnan/hexo-theme-next/wiki</a><br><a href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方起步指南</a><br><a href="https://blog.csdn.net/fullbug/article/details/103844424">解决Hexo博客导航栏链接URL乱码问题</a><br><a href="https://notes.doublemine.me/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">为NexT主题添加文章阅读量统计功能</a></p>
+    <title>SpringWebFlow初学记录</title>
+    <url>/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<p>占位符</p>
 ]]></content>
       <categories>
-        <category>Hexo博客系列</category>
+        <category>Spring</category>
+        <category>SpringWebFlow</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>Spring</tag>
+        <tag>SpringWebFlow</tag>
       </tags>
   </entry>
   <entry>
-    <title>hexo如何发布博客</title>
-    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
-<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
-<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
-<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+    <title>一些个人老项目的汇总</title>
+    <url>/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<p>最近我往我的Github仓库上传了几个项目，都是之前学Java时做的小项目，虽然代码质量不高，但算是我学习Java路上几个不同阶段的标志吧，传到Github的目的是为了做一个历史代码的保存，毕竟Github相对于自己的硬盘来说还是相对稳定的。</p>
+<h1 id="基于Swing的局域网聊天软件"><a href="#基于Swing的局域网聊天软件" class="headerlink" title="基于Swing的局域网聊天软件"></a>基于Swing的局域网聊天软件</h1><p>算是我做的第一个Java项目吧（如果那玩意能称为项目的话），实际上可以当作一个小Demo，当时学了Java的io、socket以后，迫切想要实践一下，那时候还不会做前端，所以用了我当时唯一会的客户端技术–Swing，就放两张图片感受一下。</p>
+<h2 id="打开软件要求输入聊天昵称"><a href="#打开软件要求输入聊天昵称" class="headerlink" title="打开软件要求输入聊天昵称"></a>打开软件要求输入聊天昵称</h2><p><img src="1.png" alt="1"></p>
+<h2 id="聊天界面"><a href="#聊天界面" class="headerlink" title="聊天界面"></a>聊天界面</h2><p><img src="2.png" alt="2"></p>
+<p>就这么简单，两张图就完全概括了这软件全部的功能。</p>
+<ol>
+<li>右边这一列空白我称之为上下线通报，当局域网内有一台主机运行了这个jar包，会发一个广播消息，其他的客户端列表上会显示上线的用户。</li>
+<li>中间三个按钮，发送消息也可以用CTRL+回车代替；清屏就是把消息列表清掉；发送文件这玩意我觉得反而是这demo的主要功能…</li>
+<li>发送文件时，局域网内至少要有两个在线的用户，其中一个人选择发送文件。</li>
+</ol>
+<p><img src="3.png" alt="3"></p>
+<p>由于我这边没有其他人在用，所以显示了个空白列表，操作也相当简单，当时还做了个进度条…那时候连MVC都没有学，我这套代码里的MVC是我自己脑补出来的…不过跟真正的MVC其实也是一个道理吧。</p>
+<h1 id="基于Servlet的个人网盘"><a href="#基于Servlet的个人网盘" class="headerlink" title="基于Servlet的个人网盘"></a>基于Servlet的个人网盘</h1><p>学了JSP+Servlet那一套以后，突然想到做这个东西练手，界面就不放出来了，简直惨不忍睹…那时候还是初学网页这一套技术，连js都不会，让我写个html+css简直要我命，所以我就去网上到处找相关的页面，比如要做注册功能，就去网上找注册页面的模板，要做网盘主页，就去找开源的网盘系统，扒出里面的页面源码；总之到最后究竟缝合了多少个页面我自己都记不清了，现在也没法考究了。</p>
+<p>主要功能的话就是注册-&gt;上传文件-&gt;下载文件，上传和下载用的是apache-commons那一套，专门做了个上传进度条，依稀记得用的是ajax，而且这ajax还是网上抄的…</p>
+<p>总之最后做出来的东西就是可以用，但没必要用…</p>
+<h1 id="图书馆选座系统"><a href="#图书馆选座系统" class="headerlink" title="图书馆选座系统"></a>图书馆选座系统</h1><p>这算是我学完SSM后做的第一个练手小项目，算是第一次实践了前后端分离吧，前端页面也是缝合怪，但样式相比个人网盘来说好了不少，放一张图感受一下。</p>
+<p><img src="4.png" alt="4"></p>
+<p>总共两个模块，上图这个模块就是普通用户的选座模块，其实功能极其简单…</p>
+<p><img src="5.png" alt="5"></p>
+<p>第二个模块就是管理模块，可以对各种数据进行管理，其实其他功能都是扯淡，也就楼层管理和选座是主要功能，然而也不是我自己做的…</p>
+<p>其实这个选座模块的原理是这样的，有一个Floor表和一个Seat表，Floor表保存了这个楼层的座位的排数和列数，Seat表则保存一个座位的状态，一个座位有四个重要的属性：楼层号、排号、列号、选座状态，也就是说Floor对Seat表是一对多。</p>
+<p>初始化选座页面的时候，列出所有可用楼层，点击查看后，根据楼层的排数、列数去初始化一个座位矩阵，然后根据每个座位的选座状态决定是否要显示、显示成什么样，总共就这几种状态：不可用、可选、已预约、已使用，不同状态图标都是不一样的。</p>
+<p>可以在管理系统中添加新的楼层，初始化一个排数、列数，点击一下对应座位的图标，就可以把它禁用掉，以此达到自定义座位布局的效果。</p>
+<p><img src="6.png" alt="6"></p>
+<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这几个项目当初写完其实就产生了重构的想法，然而最初写的时候根本都没用过版本管理，现在代码比较杂，尤其是那个Swing项目，代码已经乱到我看都不想看…与其重构，还不如重写来的方便。</p>
+<p>这几个项目传到Github上的目的就是留一个怀念，以后想看看曾经写的项目，还可以下过来在本地玩玩。</p>
 ]]></content>
       <categories>
-        <category>Hexo博客系列</category>
+        <category>随笔</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
+        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
@@ -274,40 +271,20 @@
       </tags>
   </entry>
   <entry>
-    <title>一些个人老项目的汇总</title>
-    <url>/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/</url>
-    <content><![CDATA[<p>最近我往我的Github仓库上传了几个项目，都是之前学Java时做的小项目，虽然代码质量不高，但算是我学习Java路上几个不同阶段的标志吧，传到Github的目的是为了做一个历史代码的保存，毕竟Github相对于自己的硬盘来说还是相对稳定的。</p>
-<h1 id="基于Swing的局域网聊天软件"><a href="#基于Swing的局域网聊天软件" class="headerlink" title="基于Swing的局域网聊天软件"></a>基于Swing的局域网聊天软件</h1><p>算是我做的第一个Java项目吧（如果那玩意能称为项目的话），实际上可以当作一个小Demo，当时学了Java的io、socket以后，迫切想要实践一下，那时候还不会做前端，所以用了我当时唯一会的客户端技术–Swing，就放两张图片感受一下。</p>
-<h2 id="打开软件要求输入聊天昵称"><a href="#打开软件要求输入聊天昵称" class="headerlink" title="打开软件要求输入聊天昵称"></a>打开软件要求输入聊天昵称</h2><p><img src="1.png" alt="1"></p>
-<h2 id="聊天界面"><a href="#聊天界面" class="headerlink" title="聊天界面"></a>聊天界面</h2><p><img src="2.png" alt="2"></p>
-<p>就这么简单，两张图就完全概括了这软件全部的功能。</p>
-<ol>
-<li>右边这一列空白我称之为上下线通报，当局域网内有一台主机运行了这个jar包，会发一个广播消息，其他的客户端列表上会显示上线的用户。</li>
-<li>中间三个按钮，发送消息也可以用CTRL+回车代替；清屏就是把消息列表清掉；发送文件这玩意我觉得反而是这demo的主要功能…</li>
-<li>发送文件时，局域网内至少要有两个在线的用户，其中一个人选择发送文件。</li>
-</ol>
-<p><img src="3.png" alt="3"></p>
-<p>由于我这边没有其他人在用，所以显示了个空白列表，操作也相当简单，当时还做了个进度条…那时候连MVC都没有学，我这套代码里的MVC是我自己脑补出来的…不过跟真正的MVC其实也是一个道理吧。</p>
-<h1 id="基于Servlet的个人网盘"><a href="#基于Servlet的个人网盘" class="headerlink" title="基于Servlet的个人网盘"></a>基于Servlet的个人网盘</h1><p>学了JSP+Servlet那一套以后，突然想到做这个东西练手，界面就不放出来了，简直惨不忍睹…那时候还是初学网页这一套技术，连js都不会，让我写个html+css简直要我命，所以我就去网上到处找相关的页面，比如要做注册功能，就去网上找注册页面的模板，要做网盘主页，就去找开源的网盘系统，扒出里面的页面源码；总之到最后究竟缝合了多少个页面我自己都记不清了，现在也没法考究了。</p>
-<p>主要功能的话就是注册-&gt;上传文件-&gt;下载文件，上传和下载用的是apache-commons那一套，专门做了个上传进度条，依稀记得用的是ajax，而且这ajax还是网上抄的…</p>
-<p>总之最后做出来的东西就是可以用，但没必要用…</p>
-<h1 id="图书馆选座系统"><a href="#图书馆选座系统" class="headerlink" title="图书馆选座系统"></a>图书馆选座系统</h1><p>这算是我学完SSM后做的第一个练手小项目，算是第一次实践了前后端分离吧，前端页面也是缝合怪，但样式相比个人网盘来说好了不少，放一张图感受一下。</p>
-<p><img src="4.png" alt="4"></p>
-<p>总共两个模块，上图这个模块就是普通用户的选座模块，其实功能极其简单…</p>
-<p><img src="5.png" alt="5"></p>
-<p>第二个模块就是管理模块，可以对各种数据进行管理，其实其他功能都是扯淡，也就楼层管理和选座是主要功能，然而也不是我自己做的…</p>
-<p>其实这个选座模块的原理是这样的，有一个Floor表和一个Seat表，Floor表保存了这个楼层的座位的排数和列数，Seat表则保存一个座位的状态，一个座位有四个重要的属性：楼层号、排号、列号、选座状态，也就是说Floor对Seat表是一对多。</p>
-<p>初始化选座页面的时候，列出所有可用楼层，点击查看后，根据楼层的排数、列数去初始化一个座位矩阵，然后根据每个座位的选座状态决定是否要显示、显示成什么样，总共就这几种状态：不可用、可选、已预约、已使用，不同状态图标都是不一样的。</p>
-<p>可以在管理系统中添加新的楼层，初始化一个排数、列数，点击一下对应座位的图标，就可以把它禁用掉，以此达到自定义座位布局的效果。</p>
-<p><img src="6.png" alt="6"></p>
-<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这几个项目当初写完其实就产生了重构的想法，然而最初写的时候根本都没用过版本管理，现在代码比较杂，尤其是那个Swing项目，代码已经乱到我看都不想看…与其重构，还不如重写来的方便。</p>
-<p>这几个项目传到Github上的目的就是留一个怀念，以后想看看曾经写的项目，还可以下过来在本地玩玩。</p>
+    <title>使用两种遍历结果构造二叉树</title>
+    <url>/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<p>本文正在施工中。</p>
 ]]></content>
       <categories>
-        <category>随笔</category>
+        <category>算法</category>
+        <category>二叉树</category>
       </categories>
       <tags>
-        <tag>随笔</tag>
+        <tag>算法</tag>
+        <tag>二叉树</tag>
+        <tag>二叉树遍历</tag>
+        <tag>递归</tag>
+        <tag>分治</tag>
       </tags>
   </entry>
   <entry>
@@ -392,6 +369,46 @@
       </categories>
       <tags>
         <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo如何发布博客</title>
+    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
+<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
+<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
+<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo博客的定制化</title>
+    <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
+<h1 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h1><p>相信你已经发现了，hexo有两份配置文件同时生效，一是<strong>hexo全局配置文件</strong>即_config.yml，二是<strong>主题配置文件</strong>，比如我用的是next主题，那么它就是themes/next/_config.yml，定制化主要依靠这两个文件来进行，尤其是主题配置文件，大多数hexo主题其实已经高度集成了许多功能，比如next主题就集成了valine评论插件，可以直接通过主题配置文件打开。</p>
+<h1 id="按需阅读"><a href="#按需阅读" class="headerlink" title="按需阅读"></a>按需阅读</h1><p>接下来就说一下，目前我的博客是怎么配置的，你可以根据自己的需求自行食用。</p>
+<hr>
+<h1 id="修改语言和时区"><a href="#修改语言和时区" class="headerlink" title="修改语言和时区"></a>修改语言和时区</h1><p>在全局配置文件中，language配置项，简体中文是zh-Hans；时区是timezone，中国地区可以修改为Asia/Shanghai</p>
+<h1 id="去除页脚Powered和Theme"><a href="#去除页脚Powered和Theme" class="headerlink" title="去除页脚Powered和Theme"></a>去除页脚Powered和Theme</h1><p>一般在主题配置文件中，找到footer配置项，其中包含powered配置项，修改为false，theme.enabled修改为false，theme.version修改为false。<br><img src="footer.png" alt="footer"></p>
+<h1 id="修改页面布局"><a href="#修改页面布局" class="headerlink" title="修改页面布局"></a>修改页面布局</h1><p>以next主题为例，一共有四种布局，Muse（默认）、Mist、Pisces（我在用的）、Gemini。<br>修改主题配置文件的scheme项，修改为你想要的布局，比如修改为Pisces，即scheme: Pisces</p>
+<h1 id="添加菜单选项"><a href="#添加菜单选项" class="headerlink" title="添加菜单选项"></a>添加菜单选项</h1><p>next主题默认只有home和archive两个选项，如何添加<strong>作者</strong>、<strong>标签</strong>、<strong>分类</strong>这样的页面呢。<br><img src="menu.png" alt="menu"><br>如上图所示，修改menu项，将tags、about、categories前面的<strong>井号</strong>去掉。<br>如此一来，博客菜单栏会展示出这些按钮，但你点击这些按钮时，会发现超链接是无效的，大概率会出现这样的一串玩意。<br><img src="url-error.png" alt="url-error"><br>实际上是因为menu项里url配置不对导致的，你可以仔细看看上面的menu配置项，是不是发现所有路径中间都有一对||符号，实际上，符号左边是菜单项的url，右边是菜单项的图标，next主题的菜单用的是<a href="http://www.fontawesome.com.cn/faicons/">font-awesome</a>图标，你可以参考font-awesome的图标名称随意更改，这里不展开说。这一对||符号左边右边都有一个空格，把这两个空格去掉，即可使菜单url恢复正常。<br>修改完url后再打开发现菜单url还是打不开，这是因为hexo默认就是不包含这些页面的，你需要自己生成。<br>执行下面的代码。<br><code>hexo new page &quot;about&quot;</code><br><code>hexo new page &quot;categories&quot;</code><br><code>hexo new page &quot;tags&quot;</code><br>随后修改source/about/index.md即可，它是完全遵守markdown语法的，categories和tags则不需要修改。</p>
+<h1 id="作者头像"><a href="#作者头像" class="headerlink" title="作者头像"></a>作者头像</h1><p>将你想要设置的头像图片放到source/uploads（自建目录）里，重命名为avatar.png。<br>修改主题配置文件中avatar项，比如这样avatar: /uploads/avatar.png。<br><em>注：如果你项用URI的形式也是可以的，不一定非要用本地图片。</em></p>
+<h1 id="开启评论和阅读量功能"><a href="#开启评论和阅读量功能" class="headerlink" title="开启评论和阅读量功能"></a>开启评论和阅读量功能</h1><p>在开启这两个功能之前，需要你注册一个LeanCloud的账号（免费注册，不需要充值），这里注册步骤不展开说了，详细说说LeanCloud需要做些什么。<br>首先创建应用，这里应用名称和应用描述随便选一下就可以了，方案选开发版即可，不收费。<br><img src="create-app.png" alt="create-app"><br>随后进入应用管理界面，选择<strong>存储</strong>-&gt;<strong>结构化数据</strong>，其中以下划线开头的这些Class是默认自带的，不用管他们。<br><img src="create-var.png" alt="create-var"><br>我们创建一下两个Class，一个叫Comment一个叫Counter，注意访问权限需要选择<strong>无限制</strong>。<br><img src="comment.png" alt="comment"><br>此时，你可以去应用的设置界面找一下两个关键的东西，即AppId和AppKey，后续会需要这两个字符串。<br><img src="app.png" alt="app"><br>编辑主题配置文件，找到leancloud_visitors项，enabled改为true，app_id和app_key修改为自己的就可以了，这是阅读量统计。<br><img src="leancloud-visitors.png" alt="leancloud-visitors"><br>找到valine项，这是评论功能，enabled改为true，appid和appkey改成自己的，placeholder是评论未输入时的默认占位符，guest_info是评论者需要输入的信息，默认nick、mail、link代表昵称、邮箱地址、个人站点，可以按照你自己的需要删减。<br><img src="valine.png" alt="valine"></p>
+<hr>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>以上内容都只是hexo和next配置的一小部分，我只是单纯把一些比较直观的地方捡出来说了，其他配置项你也可以自行探索，可以参考hexo官方文档也可以参考next官方文档，我都在参考文章那部分列出来了。到此为止，hexo博客系列的文章就告一段落了，如果今后我有发现有什么有趣的东西，也许会再更新，大家对这几篇文章有什么建议都可以在评论区告诉我。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://github.com/iissnan/hexo-theme-next/wiki">github.com/iissnan/hexo-theme-next/wiki</a><br><a href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方起步指南</a><br><a href="https://blog.csdn.net/fullbug/article/details/103844424">解决Hexo博客导航栏链接URL乱码问题</a><br><a href="https://notes.doublemine.me/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">为NexT主题添加文章阅读量统计功能</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
