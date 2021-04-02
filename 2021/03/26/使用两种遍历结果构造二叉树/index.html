@@ -25,15 +25,16 @@
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
-<meta name="description" content="如何使用先序（后序）遍历和中序遍历来构造一棵二叉树？本篇文章将会以易懂的思路来解决这个问题。">
+<meta name="description" content="如何使用先序（后序）遍历和中序遍历来构造一棵二叉树？本篇文章将会以易懂的思路来解决这个问题">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用两种遍历结果构造二叉树">
 <meta property="og:url" content="https://blog.zenoxen.cn/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/index.html">
 <meta property="og:site_name" content="ZenoX的个人博客">
-<meta property="og:description" content="如何使用先序（后序）遍历和中序遍历来构造一棵二叉树？本篇文章将会以易懂的思路来解决这个问题。">
+<meta property="og:description" content="如何使用先序（后序）遍历和中序遍历来构造一棵二叉树？本篇文章将会以易懂的思路来解决这个问题">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/1.png">
 <meta property="article:published_time" content="2021-03-26T08:17:02.000Z">
-<meta property="article:modified_time" content="2021-03-26T08:21:54.351Z">
+<meta property="article:modified_time" content="2021-04-02T12:01:14.996Z">
 <meta property="article:author" content="ZenoX">
 <meta property="article:tag" content="算法">
 <meta property="article:tag" content="二叉树">
@@ -41,6 +42,7 @@
 <meta property="article:tag" content="递归">
 <meta property="article:tag" content="分治">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/1.png">
 
 
 <link rel="canonical" href="https://blog.zenoxen.cn/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/">
@@ -181,7 +183,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -194,6 +196,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E5%BA%8F%E9%81%8D%E5%8E%86%E5%92%8C%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">后序遍历和中序遍历的特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E8%80%8C%E6%B2%BB%E4%B9%8B"><span class="nav-number">2.</span> <span class="nav-text">分而治之</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">完整代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%A8%E4%B8%AD%E5%BA%8F%E5%92%8C%E5%85%88%E5%BA%8F%E9%81%8D%E5%8E%86%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">4.</span> <span class="nav-text">用中序和先序遍历构造二叉树</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -294,10 +297,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-03-26 16:17:02 / 修改时间：16:21:54" itemprop="dateCreated datePublished" datetime="2021-03-26T16:17:02+08:00">2021-03-26</time>
+      <time title="创建时间：2021-03-26 16:17:02" itemprop="dateCreated datePublished" datetime="2021-03-26T16:17:02+08:00">2021-03-26</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-04-02 20:01:14" itemprop="dateModified" datetime="2021-04-02T20:01:14+08:00">2021-04-02</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -327,7 +336,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>8</span>
+      <span>1.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -338,7 +347,7 @@
     </span>
 </div>
 
-            <div class="post-description">如何使用先序（后序）遍历和中序遍历来构造一棵二叉树？本篇文章将会以易懂的思路来解决这个问题。</div>
+            <div class="post-description">如何使用先序（后序）遍历和中序遍历来构造一棵二叉树？本篇文章将会以易懂的思路来解决这个问题</div>
         </div>
       </header>
 
@@ -346,7 +355,23 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>本文正在施工中。</p>
+        <p>最近刷Leetcode时，遇到了一道题，给你一个二叉树的后序遍历和中序遍历的输入序列，如何把这棵树的结构构造出来？</p>
+<p>下面贴出这道题的原地址<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后续遍历序列构造二叉树</a>。</p>
+<h1 id="后序遍历和中序遍历的特点"><a href="#后序遍历和中序遍历的特点" class="headerlink" title="后序遍历和中序遍历的特点"></a>后序遍历和中序遍历的特点</h1><p>不管是先序、中序、后序，它们的不同点在于访问根节点的时机，先序先访问根节点、后序最后访问根节点。</p>
+<p>来看看原题给的样例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">中序遍历 inorder = [<span class="number">9</span>,<span class="number">3</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">7</span>]</span><br><span class="line">后序遍历 postorder = [<span class="number">9</span>,<span class="number">15</span>,<span class="number">7</span>,<span class="number">20</span>,<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  <span class="number">3</span></span><br><span class="line"> / \</span><br><span class="line"><span class="number">9</span>  <span class="number">20</span></span><br><span class="line">  /  \</span><br><span class="line"> <span class="number">15</span>   <span class="number">7</span></span><br></pre></td></tr></table></figure>
+
+<p>来观察一下，可以发现中序遍历的一个特征：在中序遍历的序列中，根节点左边是左子树，根节点右边是右子树。中序遍历序列从前往后看的规律是：左子树-&gt;根节点-&gt;右子树。</p>
+<p>也可以发现后序遍历的一个特征：左子树的叶子节点最先找到，右子树的叶子节点次之，根节点最后找到。比如后序遍历最后一个元素为3，再看看后序遍历倒数第二个元素20，它是根节点3的右子树，20再往前的元素7则是20的右子树，那么后序遍历的规律很明朗了，从遍历序列后往前看，根节点-&gt;右子树-&gt;左子树。</p>
+<p>这个遍历的性质很重要，如此一来就可以通过分治算法来将遍历结果转换为二叉树。</p>
+<h1 id="分而治之"><a href="#分而治之" class="headerlink" title="分而治之"></a>分而治之</h1><p>根据上面二叉树的性质，可以先通过后序遍历的最后一个元素找到根节点3，然后去中序遍历中找到根节点3，找到以后就可以将3左边的元素判定为左子树，3右边的元素判定为右子树。</p>
+<p><img src="1.png" alt="1"></p>
+<p>然后先递归地对右子树进行处理（因为我们看后序遍历是从后面往前看的），再递归地对左子树进行处理，得到地就是完整地二叉树。</p>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] inorder,postorder;</span><br><span class="line">	<span class="keyword">int</span> postIndex;<span class="comment">//记录后序遍历当前位置</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在中序遍历中l和r下标之间寻找tar这个元素</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findIndexForNum</span><span class="params">(<span class="keyword">int</span> tar,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=l;i&lt;=r;i++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(inorder[i]==tar) &#123;</span><br><span class="line">				<span class="keyword">return</span> i;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//建树的递归函数,l和r是当前子树在中序遍历中的范围</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">build</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(l&gt;r) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> midVal=postorder[postIndex--];<span class="comment">//从后序遍历中拿一个根节点</span></span><br><span class="line">		TreeNode root=<span class="keyword">new</span> TreeNode(midVal);</span><br><span class="line">		<span class="keyword">int</span> midIndex=findIndexForNum(midVal,l,r);</span><br><span class="line">		root.right=build(midIndex+<span class="number">1</span>,r);<span class="comment">//先建右子树</span></span><br><span class="line">		root.left=build(l,midIndex-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">return</span> root;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span>[] inorder, <span class="keyword">int</span>[] postorder)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.inorder=inorder;</span><br><span class="line">		<span class="keyword">this</span>.postorder=postorder;</span><br><span class="line">		postIndex=postorder.length-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> build(<span class="number">0</span>,postIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="用中序和先序遍历构造二叉树"><a href="#用中序和先序遍历构造二叉树" class="headerlink" title="用中序和先序遍历构造二叉树"></a>用中序和先序遍历构造二叉树</h1><p>其实道理也是一样的，只不过变成了从前往后遍历先序序列，具体做法仍然是分治+递归建树。</p>
 
     </div>
 
