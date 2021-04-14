@@ -1,6 +1,269 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>SpringWebFlow入门及案例</title>
+    <url>/2021/03/01/SpringWebFlow%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>一般我们在构建基于模板的Web应用时，会使用SpringMVC，模板技术可能会选择jsp、thymeleaf、freemarker等，如果Model、View、Controller各层次之间的交互和跳转比较简单的话，自然是再好不过的了，但如果比较复杂的话，那么一般的MVC模式就显得吃力不讨好了。</p>
+<p>SpringWebFlow是一种基于SpringMVC的web流程框架，我们可以用它来管理Model和View的交互，是的，你没看错，甚至连一个Controller也不需要写，就可以完成一整个Web应用。</p>
+<p>我们的Web应用一般都是以一个个<strong>流程</strong>组成的，比如现在有这样一个需求，披萨店需要一个Web应用来让客户订购披萨，将整个应用转换为流程，如下图所示。</p>
+<p><img src="1.png" alt="1"></p>
+<p>整个流程无非就是识别用户-&gt;创建订单-&gt;支付订单-&gt;保存订单，使用SpringWebFlow可以很直观的将它实现，而不需要写Controller层。</p>
+<h1 id="流程基本概念"><a href="#流程基本概念" class="headerlink" title="流程基本概念"></a>流程基本概念</h1><p>在Spring Web Flow中，有三个主要的组成部分，即状态(state)、转移(transition)、流程数据。</p>
+<p>假设一个完整流程是这样的。</p>
+<p>A-&gt;B-&gt;C</p>
+<p>那么A、B、C三个节点就是状态，而转移是三个节点之间的横线，它关注的是如何从一个状态转到另一个状态，在几个节点之间传递的就是流程数据。</p>
+<h2 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h2><p>状态有5种类型。</p>
+<table>
+<thead>
+<tr>
+<th>状态类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>行为（Action）</td>
+<td>简单地执行逻辑</td>
+</tr>
+<tr>
+<td>决策（Decision）</td>
+<td>即分支节点，根据运行结果决定走向哪个状态</td>
+</tr>
+<tr>
+<td>结束（End）</td>
+<td>执行结束状态后，整个流程宣告结束</td>
+</tr>
+<tr>
+<td>子流程（Subflow）</td>
+<td>在当前状态的上下文中启动一个全新的流程，子流程走完以后继续原流程的执行，也就是说一个节点代表一个流程</td>
+</tr>
+<tr>
+<td>视图（View）</td>
+<td>将视图返回给用户，用户使用完视图后，才继续执行原流程</td>
+</tr>
+</tbody></table>
+<h3 id="视图状态"><a href="#视图状态" class="headerlink" title="视图状态"></a>视图状态</h3><p>一般来说，如果没有视图状态，则整个流程是根据用户最开始的输入自动执行的。</p>
+<p>而如果在流程中中定义了一个视图状态（View State），则会向用户展示一个视图，用户通过视图进行输入，从而影响到流程后续走向。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">view-state</span> <span class="attr">id</span>=<span class="string">&quot;welcome&quot;</span> <span class="attr">view</span>=<span class="string">&quot;greeting&quot;</span> <span class="attr">model</span>=<span class="string">&quot;flowScope.paymentDetails&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>用view-state标签来表示视图状态，如果只提供一个id，比如id=”welcome”，则代表该状态的id为welcome，其对应的视图名也为welcome；提供view属性可以指定该state对应的view名；提供model属性可以指定该view绑定一个model对象，比如上面的例子，从flow作用域中取出paymentDetails对象，并交给greeting视图使用。</p>
+<h3 id="行为状态"><a href="#行为状态" class="headerlink" title="行为状态"></a>行为状态</h3><p>简单执行一些逻辑，并转移到另一个状态。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">action-state</span> <span class="attr">id</span>=<span class="string">&quot;saveOrder&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">evaluate</span> <span class="attr">expression</span>=<span class="string">&quot;pizzaFlowActions.saveOrder(order)&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">transition</span> <span class="attr">to</span>=<span class="string">&quot;thankYou&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">action-state</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>evaluate子标签可以填一个表达式（可以是SpEL、OGNL、Unified EL），比如上面的例子中，代表要执行pizzaFlowActions这个bean里的saveOrder方法。</p>
+<p>transition子标签指明下一个状态走哪个，上面的例子中，下一个状态是thankYou。</p>
+<h3 id="决策状态"><a href="#决策状态" class="headerlink" title="决策状态"></a>决策状态</h3><p>根据表达式的返回值是true或false决定后续往哪个状态走。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">decision-state</span> <span class="attr">id</span>=<span class="string">&quot;checkDeliveryArea&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;pizzaFlowActions.checkDeliveryArea(customer.zipCode)&quot;</span> </span></span><br><span class="line"><span class="tag"></span></span><br><span class="line"><span class="tag">		<span class="attr">then</span>=<span class="string">&quot;addCustomer&quot;</span></span></span><br><span class="line"><span class="tag"></span></span><br><span class="line"><span class="tag">		<span class="attr">else</span>=<span class="string">&quot;deliveryWarning&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">decision-state</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>比如上面这个例子中，根据pizzaFlowActions的checkDeliveryArea方法的返回值决定下一个状态走addCustomer还是走deliverWarning</p>
+<h3 id="子流程状态"><a href="#子流程状态" class="headerlink" title="子流程状态"></a>子流程状态</h3><p>即一个节点对应一个独立的流程，这个独立流程走完后才返回原流程执行，可以类比成在一个方法中调用另一个方法。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">subflow-state</span> <span class="attr">id</span>=<span class="string">&quot;order&quot;</span> <span class="attr">subflow</span>=<span class="string">&quot;pizza/order&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;order&quot;</span> <span class="attr">value</span>=<span class="string">&quot;order&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">transition</span> <span class="attr">on</span>=<span class="string">&quot;orderCreated&quot;</span> <span class="attr">to</span>=<span class="string">&quot;payment&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">subflow-state</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面这个例子中，状态名为order，它所对应的子流程为pizza/order，input标签指明了子流程的输入，即order对象，transition标签指出了当子流程的end-state即orderCreated执行完后，原流程order将转移到payment状态。</p>
+<h3 id="结束状态"><a href="#结束状态" class="headerlink" title="结束状态"></a>结束状态</h3><p>结束状态执行完后，接下来发生什么？不一定</p>
+<ul>
+<li>如果这个end-state属于一个子流程，则这个end-state的id将作为一个事件，决定原流程接下来走哪个状态，可以参照子流程状态的例子。</li>
+<li>如果end-state设置了view属性，则将展示指定的视图（相对于流程路径的视图模板），如果view属性加上externalRedirect的话，可以重定向到流程外部的页面；如果view属性加上flowRedirect前缀，将重定向到另一个流程中。</li>
+<li>如果既没有设置view也不是属于子流程，则流程结束，等待用户输入并执行下一个流程。</li>
+</ul>
+<h2 id="转移"><a href="#转移" class="headerlink" title="转移"></a>转移</h2><p>转移是流程中各状态的连接线，可以用于action-state、view-state、subflow-state（end-state是最终节点，而decisition-state不需要指定transition）。</p>
+<p>一个最简单的转移可以这样定义。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">transition</span> <span class="attr">to</span>=<span class="string">&quot;customerReady&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>即直接指明了后面转移到customerReady状态，只有在当前状态单一出口时才可以这样定义。</p>
+<p>如果当前状态有多个出口，那么就需要根据on属性来决定走哪个转移，on属性绑定了一个事件。</p>
+<p>比如<transition on="phoneEntered" to="lookupCustomer"/></p>
+<p>视图状态是根据用户在视图的输入产生相应的on事件，在行为状态中，事件是evaluate表达式执行的结果，在子流程状态中，事件是子流程的结束状态的id。</p>
+<p>或者也可以根据抛出的异常决定转移到哪个状态。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">transition</span> <span class="attr">on-exception</span>=<span class="string">&quot;com.springinaction.pizza.service.CustomerNotFoundException&quot;</span> <span class="attr">to</span>=<span class="string">&quot;regisrationForm&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="全局转移"><a href="#全局转移" class="headerlink" title="全局转移"></a>全局转移</h3><p>如果某些转移需要被引用多次，可以将其定义为全局转移。</p>
+<p>transition可以定义为global-transition的子元素。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">global-transition</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">transition</span> <span class="attr">on-exception</span>=<span class="string">&quot;a&quot;</span> <span class="attr">to</span>=<span class="string">&quot;b&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">global-transition</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>比如上面这个例子，所有的状态都将拥有这个转移，当前状态抛出a异常，则转移到b状态。</p>
+<h2 id="流程数据"><a href="#流程数据" class="headerlink" title="流程数据"></a>流程数据</h2><p>流程数据是保存在变量中的，可以设置这些数据的作用于，是只能在视图里访问？还是只能在当前流程访问？还是能被多个流程访问？</p>
+<p>最简单的变量可以这样定义，这种变量将在整个流程内有效。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">var</span> <span class="attr">name</span>=<span class="string">&quot;cutomer&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.springinaction.pizza.domain.Customer&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以用evaluate或者set元素来声明变量，比如下面这样。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">evaluate</span> <span class="attr">expression</span>=<span class="string">&quot;T(com.springinaction.pizza.domain.Topping.asList())&quot;</span> <span class="attr">result</span>=<span class="string">&quot;viewScope.toppingsList&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的例子中，执行了expression，并将表达式结果放到viewScope中的toppingsList变量内。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">name</span>=<span class="string">&quot;flowScope.pizza&quot;</span> <span class="attr">value</span>=<span class="string">&quot;new com.springinaction.pizza.domain.Pizza()&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的例子中，将new出来的Pizza对象放到flowScope的pizza变量内。</p>
+<h3 id="数据作用域"><a href="#数据作用域" class="headerlink" title="数据作用域"></a>数据作用域</h3><p>有5种作用域。</p>
+<table>
+<thead>
+<tr>
+<th>范围</th>
+<th>可见性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Conversation</td>
+<td>在整个流程包括其子流程内可用</td>
+</tr>
+<tr>
+<td>Flow</td>
+<td>在当前流程内可用，可能局限于一个子流程内</td>
+</tr>
+<tr>
+<td>Request</td>
+<td>一个请求内可用，如果一个请求内走了多个流程（比如重定向了多次），则这些流程都可用</td>
+</tr>
+<tr>
+<td>Flash</td>
+<td>从当前流程开始时可用，如果在这个流程中渲染了视图，则数据会被清除，如果没渲染视图，则一直可用</td>
+</tr>
+<tr>
+<td>View</td>
+<td>只在视图状态下可用</td>
+</tr>
+</tbody></table>
+<h1 id="完整案例：披萨订购"><a href="#完整案例：披萨订购" class="headerlink" title="完整案例：披萨订购"></a>完整案例：披萨订购</h1><p>这个案例将完整讲述从流程抽象、配置，到实现的过程，是我从Spring实战第四版书上找到的，原书的代码只有一部分，我根据原有代码结合整个流程，实现了一遍。</p>
+<h2 id="Maven依赖"><a href="#Maven依赖" class="headerlink" title="Maven依赖"></a>Maven依赖</h2><p>注意除了SpringMVC依赖外，还需要引入SpringWebFlow的依赖，此外为了方便我们写View层的代码，也要引入JSTL。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-webmvc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.12.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.webflow<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-webflow<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.1.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.18.16<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>jstl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jstl<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>除了对SpringMVC进行配置以外，还需要对SpringWebFlow进行配置，下面将分别对各个配置文件进行展示。</p>
+<h3 id="web-xml"><a href="#web-xml" class="headerlink" title="web.xml"></a>web.xml</h3><p>这边只需要配置一个DispatcherServlet即可，可以顺手把Spring配置文件也指定了，比如这个例子中是/WEB-INF/applicationContext.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">web-app</span> <span class="meta-keyword">PUBLIC</span></span></span><br><span class="line"><span class="meta"> <span class="meta-string">&quot;-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN&quot;</span></span></span><br><span class="line"><span class="meta"> <span class="meta-string">&quot;http://java.sun.com/dtd/web-app_2_3.dtd&quot;</span> &gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">display-name</span>&gt;</span>Archetype Created Web Application<span class="tag">&lt;/<span class="name">display-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>dispatcherServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>/WEB-INF/applicationContext.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>dispatcherServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">welcome-file-list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">welcome-file</span>&gt;</span>/WEB-INF/jsp/index.jsp<span class="tag">&lt;/<span class="name">welcome-file</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">welcome-file-list</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="SpringMVC配置"><a href="#SpringMVC配置" class="headerlink" title="SpringMVC配置"></a>SpringMVC配置</h3><p>SpringMVC只需要简单给其配置一个视图解析器即可，我这里单独建了一个文件web-mvc.xml，将其放在classpath下。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:mvc</span>=<span class="string">&quot;http://www.springframework.org/schema/mvc&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;viewResolver&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;viewClass&quot;</span> <span class="attr">value</span>=<span class="string">&quot;org.springframework.web.servlet.view.JstlView&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;prefix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;/WEB-INF/jsp/&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;suffix&quot;</span> <span class="attr">value</span>=<span class="string">&quot;.jsp&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SpringWebFlow配置"><a href="#SpringWebFlow配置" class="headerlink" title="SpringWebFlow配置"></a>SpringWebFlow配置</h3><p>这个例子中，我将SpringWebFlow的配置全都写在classpath下的web-flow.xml中。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:flow</span>=<span class="string">&quot;http://www.springframework.org/schema/webflow-config&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;</span></span></span><br><span class="line"><span class="tag"><span class="string">           http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">           http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">           http://www.springframework.org/schema/webflow-config</span></span></span><br><span class="line"><span class="tag"><span class="string">           http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    //流程执行器，用来管理flowRegistry</span><br><span class="line">    <span class="tag">&lt;<span class="name">flow:flow-executor</span> <span class="attr">id</span>=<span class="string">&quot;flowExecutor&quot;</span> <span class="attr">flow-registry</span>=<span class="string">&quot;flowRegistry&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    //注册流程，这里我将所有的flow都放在了/WEB-INF/flows/pizza目录下，并且每个流程定义都以-flow.xml结尾</span><br><span class="line">    <span class="tag">&lt;<span class="name">flow:flow-registry</span> <span class="attr">id</span>=<span class="string">&quot;flowRegistry&quot;</span> <span class="attr">flow-builder-services</span>=<span class="string">&quot;flowBuilderServices&quot;</span> <span class="attr">base-path</span>=<span class="string">&quot;/WEB-INF/flows/pizza&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">flow:flow-location-pattern</span> <span class="attr">value</span>=<span class="string">&quot;*-flow.xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">flow:flow-registry</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    //为了让SpringWebFlow的视图解析通过我们已经配置好的视图解析器，配置一个flow-builder-services，将view-factory-creator指定为一个自定义的mvcViewFactoryCreator</span><br><span class="line">    <span class="tag">&lt;<span class="name">flow:flow-builder-services</span> <span class="attr">id</span>=<span class="string">&quot;flowBuilderServices&quot;</span> <span class="attr">view-factory-creator</span>=<span class="string">&quot;mvcViewFactoryCreator&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;mvcViewFactoryCreator&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.webflow.mvc.builder.MvcViewFactoryCreator&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;viewResolvers&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;viewResolver&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    //将flowExecutor指定给FlowHandlerAdapater，可以类比成SpringMVC的HandlerAdapter，即可以像访问普通Controller接口那样访问流程</span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;flowHandlerAdapter&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.webflow.mvc.servlet.FlowHandlerAdapter&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;flowExecutor&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;flowExecutor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    //流程与Controller接口的映射，</span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.webflow.mvc.servlet.FlowHandlerMapping&quot;</span> <span class="attr">id</span>=<span class="string">&quot;flowHandlerMapping&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;flowRegistry&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;flowRegistry&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Spring主配置文件"><a href="#Spring主配置文件" class="headerlink" title="Spring主配置文件"></a>Spring主配置文件</h3><p>这边是最简单的，直接导入我们已经写好的web-mvc.xml和web-flow.xml即可，由于这个案例没有使用SpringBoot，所以顺手些一个组件扫描的配置。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">&quot;classpath:web-mvc.xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">resource</span>=<span class="string">&quot;classpath:web-flow.xml&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;org.zh.pizza&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;<span class="name">xml</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="流程实现"><a href="#流程实现" class="headerlink" title="流程实现"></a>流程实现</h2><h2 id="运行效果"><a href="#运行效果" class="headerlink" title="运行效果"></a>运行效果</h2><h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><p>可以从这个Github仓库找到上述案例的完整代码。</p>
+<p><a href="https://github.com/ZenoXen/pizza-flow-demo">SpringWebFlow案例</a></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.manning.com/books/spring-in-action-fourth-edition">Spring实战第四版</a></p>
+<p><a href="https://blog.csdn.net/u012562943/article/details/50264845">SpringWebFlow实例教程</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringWebFlow</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>SpringWebFlow</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo博客更换主题</title>
+    <url>/2021/02/11/hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
+<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
+<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
+<p><img src="hexo-default.png"></p>
+<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
+<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
+<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
+<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
+<p><img src="download-next.png" alt="download-next"></p>
+<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
+<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
+<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
+<p><img src="switch-theme.png" alt="switch-theme"></p>
+<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
+<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
+<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
+<p><img src="error.png" alt="error"></p>
+<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
+<p>在hexo项目根目录使用下列指令进行安装。</p>
+<p><code>npm install hexo-renderer-swig --save</code></p>
+<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
+<p><img src="next-theme.png" alt="next-theme"></p>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
+<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo博客的定制化</title>
+    <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
+<h1 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h1><p>相信你已经发现了，hexo有两份配置文件同时生效，一是<strong>hexo全局配置文件</strong>即_config.yml，二是<strong>主题配置文件</strong>，比如我用的是next主题，那么它就是themes/next/_config.yml，定制化主要依靠这两个文件来进行，尤其是主题配置文件，大多数hexo主题其实已经高度集成了许多功能，比如next主题就集成了valine评论插件，可以直接通过主题配置文件打开。</p>
+<h1 id="按需阅读"><a href="#按需阅读" class="headerlink" title="按需阅读"></a>按需阅读</h1><p>接下来就说一下，目前我的博客是怎么配置的，你可以根据自己的需求自行食用。</p>
+<hr>
+<h1 id="修改语言和时区"><a href="#修改语言和时区" class="headerlink" title="修改语言和时区"></a>修改语言和时区</h1><p>在全局配置文件中，language配置项，简体中文是zh-Hans；时区是timezone，中国地区可以修改为Asia/Shanghai</p>
+<h1 id="去除页脚Powered和Theme"><a href="#去除页脚Powered和Theme" class="headerlink" title="去除页脚Powered和Theme"></a>去除页脚Powered和Theme</h1><p>一般在主题配置文件中，找到footer配置项，其中包含powered配置项，修改为false，theme.enabled修改为false，theme.version修改为false。<br><img src="footer.png" alt="footer"></p>
+<h1 id="修改页面布局"><a href="#修改页面布局" class="headerlink" title="修改页面布局"></a>修改页面布局</h1><p>以next主题为例，一共有四种布局，Muse（默认）、Mist、Pisces（我在用的）、Gemini。<br>修改主题配置文件的scheme项，修改为你想要的布局，比如修改为Pisces，即scheme: Pisces</p>
+<h1 id="添加菜单选项"><a href="#添加菜单选项" class="headerlink" title="添加菜单选项"></a>添加菜单选项</h1><p>next主题默认只有home和archive两个选项，如何添加<strong>作者</strong>、<strong>标签</strong>、<strong>分类</strong>这样的页面呢。<br><img src="menu.png" alt="menu"><br>如上图所示，修改menu项，将tags、about、categories前面的<strong>井号</strong>去掉。<br>如此一来，博客菜单栏会展示出这些按钮，但你点击这些按钮时，会发现超链接是无效的，大概率会出现这样的一串玩意。<br><img src="url-error.png" alt="url-error"><br>实际上是因为menu项里url配置不对导致的，你可以仔细看看上面的menu配置项，是不是发现所有路径中间都有一对||符号，实际上，符号左边是菜单项的url，右边是菜单项的图标，next主题的菜单用的是<a href="http://www.fontawesome.com.cn/faicons/">font-awesome</a>图标，你可以参考font-awesome的图标名称随意更改，这里不展开说。这一对||符号左边右边都有一个空格，把这两个空格去掉，即可使菜单url恢复正常。<br>修改完url后再打开发现菜单url还是打不开，这是因为hexo默认就是不包含这些页面的，你需要自己生成。<br>执行下面的代码。<br><code>hexo new page &quot;about&quot;</code><br><code>hexo new page &quot;categories&quot;</code><br><code>hexo new page &quot;tags&quot;</code><br>随后修改source/about/index.md即可，它是完全遵守markdown语法的，categories和tags则不需要修改。</p>
+<h1 id="作者头像"><a href="#作者头像" class="headerlink" title="作者头像"></a>作者头像</h1><p>将你想要设置的头像图片放到source/uploads（自建目录）里，重命名为avatar.png。<br>修改主题配置文件中avatar项，比如这样avatar: /uploads/avatar.png。<br><em>注：如果你项用URI的形式也是可以的，不一定非要用本地图片。</em></p>
+<h1 id="开启评论和阅读量功能"><a href="#开启评论和阅读量功能" class="headerlink" title="开启评论和阅读量功能"></a>开启评论和阅读量功能</h1><p>在开启这两个功能之前，需要你注册一个LeanCloud的账号（免费注册，不需要充值），这里注册步骤不展开说了，详细说说LeanCloud需要做些什么。<br>首先创建应用，这里应用名称和应用描述随便选一下就可以了，方案选开发版即可，不收费。<br><img src="create-app.png" alt="create-app"><br>随后进入应用管理界面，选择<strong>存储</strong>-&gt;<strong>结构化数据</strong>，其中以下划线开头的这些Class是默认自带的，不用管他们。<br><img src="create-var.png" alt="create-var"><br>我们创建一下两个Class，一个叫Comment一个叫Counter，注意访问权限需要选择<strong>无限制</strong>。<br><img src="comment.png" alt="comment"><br>此时，你可以去应用的设置界面找一下两个关键的东西，即AppId和AppKey，后续会需要这两个字符串。<br><img src="app.png" alt="app"><br>编辑主题配置文件，找到leancloud_visitors项，enabled改为true，app_id和app_key修改为自己的就可以了，这是阅读量统计。<br><img src="leancloud-visitors.png" alt="leancloud-visitors"><br>找到valine项，这是评论功能，enabled改为true，appid和appkey改成自己的，placeholder是评论未输入时的默认占位符，guest_info是评论者需要输入的信息，默认nick、mail、link代表昵称、邮箱地址、个人站点，可以按照你自己的需要删减。<br><img src="valine.png" alt="valine"></p>
+<hr>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>以上内容都只是hexo和next配置的一小部分，我只是单纯把一些比较直观的地方捡出来说了，其他配置项你也可以自行探索，可以参考hexo官方文档也可以参考next官方文档，我都在参考文章那部分列出来了。到此为止，hexo博客系列的文章就告一段落了，如果今后我有发现有什么有趣的东西，也许会再更新，大家对这几篇文章有什么建议都可以在评论区告诉我。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://github.com/iissnan/hexo-theme-next/wiki">github.com/iissnan/hexo-theme-next/wiki</a><br><a href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方起步指南</a><br><a href="https://blog.csdn.net/fullbug/article/details/103844424">解决Hexo博客导航栏链接URL乱码问题</a><br><a href="https://notes.doublemine.me/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">为NexT主题添加文章阅读量统计功能</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringValidation使用指南--手动与分组校验以及自定义异常处理</title>
+    <url>/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p>上一篇文章主要讲了如何利用SpringValidation提供的便利，来进行多种场景下的自动数据校验，虽然功能很强，但有时候我们想要自己触发校验机制，将主动权掌握在自己手中，而不是将校验时机完全交给Spring，那么可以不使用方法入参校验。</p>
+<h1 id="手动触发校验"><a href="#手动触发校验" class="headerlink" title="手动触发校验"></a>手动触发校验</h1><p>手动触发校验，或者说编程式数据校验，依赖于javax.Validator这个类来进行。</p>
+<p><img src="1.png" alt="1"></p>
+<p>如果你引入了spring-boot-starter-validation这个起步依赖，那么Spring会为你自动预配置一个Validator的bean，你只需要注入到你想要的地方用就可以了。</p>
+<p>上图中，使用Validator的validate方法可以校验User类，User类定义的结构如下，有两个JSR-303的校验注解和一个自定义校验注解。</p>
+<p><img src="2.png" alt="2"></p>
+<p>可以看到，方法的返回值是一个Set&lt;ConstraintViolation&lt;User&gt;&gt;，即校验出的所有不规范的字段，我们可以自由处理这些信息，比如可以像下面这样。</p>
+<p><img src="3.png" alt="3"></p>
+<p>还有其他更多的ConstraintViolation的用法，这里不展开说。实际上最常见的做法就是像第一张图里那样，用Set构造一个ConstraintViolationException抛出。</p>
+<h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>假设我们的User类有一个Id属性，它对应的是User表的主键。用过JPA或者Hibernate的朋友应该知道，插入数据时，我们一般指定自己需要的属性，但不主动指定Id这个字段，因为我们想要让JPA/Hibernate自己生成主键；而更新数据时，一般是先从数据库里查出一条记录，在Entity对象上set过属性后，再save进数据库，这个过程中，id由于之前被插进去，所以不是null。</p>
+<p>假设现在我想要在插入的方法上进行校验，要求User的id为null，而在更新的方法上进行校验时，id不能为null，要实现这个需求，使用分组校验正合适。</p>
+<h2 id="定义分组标志"><a href="#定义分组标志" class="headerlink" title="定义分组标志"></a>定义分组标志</h2><p>首先定义两个空接口OnUpdate和OnInsert，它们不用有任何方法，实际上我们只是拿它们作为一个分组标识。</p>
+<p><img src="4.png" alt="image-20210317232603803"></p>
+<p>User类定义如下，可以看到对于id属性，指定了NotNull和Null，而且指定了groups属性，如此一来，两个校验注解就不会同时生效，只有当OnUpdate的时候，NotNull会生效，只有当OnInsert的时候，Null会生效。</p>
+<p><img src="5.png" alt="5"></p>
+<h2 id="指定方法所使用的分组"><a href="#指定方法所使用的分组" class="headerlink" title="指定方法所使用的分组"></a>指定方法所使用的分组</h2><p>那么如何决定何时启用OnUpdate和OnInsert呢？也许你已经注意到了，Spring提供的Vlidated注解是可以用在方法上的，但实际上Validated用在方法上必须配合分组的接口，比如下面这个例子。</p>
+<p><img src="6.png" alt="6"></p>
+<p>假设我们在Service层使用校验，在Service类上先加上Validated注解，如此一来，MyService中的所有方法都具有了数据校验的能力；其次在方法上指定Validated注解，我们希望对于updateUser方法指定的是OnUpdate的情景，对insertUser方法指定的是OnInsert的情景，在方法的User入参上使用Valid注解，只有这样，才会在方法调用时进行校验。</p>
+<h2 id="自定义校验注解中的groups属性"><a href="#自定义校验注解中的groups属性" class="headerlink" title="自定义校验注解中的groups属性"></a>自定义校验注解中的groups属性</h2><p>前一篇文章讲过如何使用自定义校验注解，来执行我们自己的校验逻辑，比如下面这个校验注解。</p>
+<p><img src="12.png" alt="12"></p>
+<p>可以看到其中有一个groups属性，这个groups属性其实就跟我们上面使用的groups属性作用完全一致，NotNull、NotEmpty、NotBlank这些注解也统统都包含了groups属性，所以，如果我们想要对一个自定义校验注解进行分组校验，那么标注在校验处时使用groups属性即可，比如下面这个例子。</p>
+<p><img src="13.png" alt="13"></p>
+<h1 id="自定义异常处理"><a href="#自定义异常处理" class="headerlink" title="自定义异常处理"></a>自定义异常处理</h1><p>虽然我们可以指定一个字段校验不通过时所输出的message，但实际上，默认的异常处理相当粗糙，放一张图感受一下。</p>
+<p><img src="7.png" alt="7"></p>
+<p>我们其实并不需要过于完整的报错信息，只是想看到哪个字段违反了哪个校验规则，所以这个信息只能自己处理了。</p>
+<h2 id="两种校验异常"><a href="#两种校验异常" class="headerlink" title="两种校验异常"></a>两种校验异常</h2><p>此外，之前一篇文章曾经提过SpringValidation相关的两个异常，MethodArgumentNotValidException和ConstraintViolationException，前者是在Controller层校验失败时抛出的异常，并且报的是http 400的Bad Request，后者则是在非Controller层校验失败时抛出的异常，报的是http 500的Internal Server Error，这个两个异常其实有必要进行统一处理。</p>
+<p>那么需求就明确了，我们希望返回给前端的是简单的校验结果，即字段名和message的组合，同时又希望统一处理两种异常，返回http 400 BadRequest错误。</p>
+<h2 id="自定义校验结果返回数据"><a href="#自定义校验结果返回数据" class="headerlink" title="自定义校验结果返回数据"></a>自定义校验结果返回数据</h2><p>按照需求，我们可以写一个建议的自定义校验结果类，ValidationResult里包含一个ValidationError列表，列表中的每个元素都包含一个字段和其校验失败的message，最终我们将会把这个类作为json数据返回给前端。</p>
+<p><img src="8.png" alt="8"></p>
+<h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>定义一个类并用ControllerAdive标注，如此一来，里面的异常处理方法就会对所有的Controller生效；用ExceptionHandler来标注异常处理的方法，指定要处理哪种异常；ResponseStatus用来指定返回给前端的是哪种http响应码，ResponseBody用来将返回值转换为json数据响应给前端，一般来说，只要你的项目中引入了spring-boot-starter-web，就会包含jackson的包，使用ResponseBody就能自动将Controller返回值转换为json格式。</p>
+<p><img src="9.png" alt="9"></p>
+<p>注意还需要处理MethodArgumentNotValidException。</p>
+<p><img src="10.png" alt="10"></p>
+<p>这次再违反一次数据校验规则，来看看返回的结果，格式清爽了不少，而且清一色的都是返回http 400 BadRequest。</p>
+<p><img src="11.png" alt="11"></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringValidation</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>数据校验</tag>
+        <tag>HibernateValidator</tag>
+        <tag>SpringValidation</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringValidation使用指南--Controller与Service入参校验</title>
     <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
     <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
@@ -60,144 +323,73 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringValidation使用指南--手动与分组校验以及自定义异常处理</title>
-    <url>/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/</url>
-    <content><![CDATA[<p>上一篇文章主要讲了如何利用SpringValidation提供的便利，来进行多种场景下的自动数据校验，虽然功能很强，但有时候我们想要自己触发校验机制，将主动权掌握在自己手中，而不是将校验时机完全交给Spring，那么可以不使用方法入参校验。</p>
-<h1 id="手动触发校验"><a href="#手动触发校验" class="headerlink" title="手动触发校验"></a>手动触发校验</h1><p>手动触发校验，或者说编程式数据校验，依赖于javax.Validator这个类来进行。</p>
-<p><img src="1.png" alt="1"></p>
-<p>如果你引入了spring-boot-starter-validation这个起步依赖，那么Spring会为你自动预配置一个Validator的bean，你只需要注入到你想要的地方用就可以了。</p>
-<p>上图中，使用Validator的validate方法可以校验User类，User类定义的结构如下，有两个JSR-303的校验注解和一个自定义校验注解。</p>
-<p><img src="2.png" alt="2"></p>
-<p>可以看到，方法的返回值是一个Set&lt;ConstraintViolation&lt;User&gt;&gt;，即校验出的所有不规范的字段，我们可以自由处理这些信息，比如可以像下面这样。</p>
+    <title>一些个人老项目的汇总</title>
+    <url>/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<p>最近我往我的Github仓库上传了几个项目，都是之前学Java时做的小项目，虽然代码质量不高，但算是我学习Java路上几个不同阶段的标志吧，传到Github的目的是为了做一个历史代码的保存，毕竟Github相对于自己的硬盘来说还是相对稳定的。</p>
+<h1 id="基于Swing的局域网聊天软件"><a href="#基于Swing的局域网聊天软件" class="headerlink" title="基于Swing的局域网聊天软件"></a>基于Swing的局域网聊天软件</h1><p>算是我做的第一个Java项目吧（如果那玩意能称为项目的话），实际上可以当作一个小Demo，当时学了Java的io、socket以后，迫切想要实践一下，那时候还不会做前端，所以用了我当时唯一会的客户端技术–Swing，就放两张图片感受一下。</p>
+<h2 id="打开软件要求输入聊天昵称"><a href="#打开软件要求输入聊天昵称" class="headerlink" title="打开软件要求输入聊天昵称"></a>打开软件要求输入聊天昵称</h2><p><img src="1.png" alt="1"></p>
+<h2 id="聊天界面"><a href="#聊天界面" class="headerlink" title="聊天界面"></a>聊天界面</h2><p><img src="2.png" alt="2"></p>
+<p>就这么简单，两张图就完全概括了这软件全部的功能。</p>
+<ol>
+<li>右边这一列空白我称之为上下线通报，当局域网内有一台主机运行了这个jar包，会发一个广播消息，其他的客户端列表上会显示上线的用户。</li>
+<li>中间三个按钮，发送消息也可以用CTRL+回车代替；清屏就是把消息列表清掉；发送文件这玩意我觉得反而是这demo的主要功能…</li>
+<li>发送文件时，局域网内至少要有两个在线的用户，其中一个人选择发送文件。</li>
+</ol>
 <p><img src="3.png" alt="3"></p>
-<p>还有其他更多的ConstraintViolation的用法，这里不展开说。实际上最常见的做法就是像第一张图里那样，用Set构造一个ConstraintViolationException抛出。</p>
-<h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>假设我们的User类有一个Id属性，它对应的是User表的主键。用过JPA或者Hibernate的朋友应该知道，插入数据时，我们一般指定自己需要的属性，但不主动指定Id这个字段，因为我们想要让JPA/Hibernate自己生成主键；而更新数据时，一般是先从数据库里查出一条记录，在Entity对象上set过属性后，再save进数据库，这个过程中，id由于之前被插进去，所以不是null。</p>
-<p>假设现在我想要在插入的方法上进行校验，要求User的id为null，而在更新的方法上进行校验时，id不能为null，要实现这个需求，使用分组校验正合适。</p>
-<h2 id="定义分组标志"><a href="#定义分组标志" class="headerlink" title="定义分组标志"></a>定义分组标志</h2><p>首先定义两个空接口OnUpdate和OnInsert，它们不用有任何方法，实际上我们只是拿它们作为一个分组标识。</p>
-<p><img src="4.png" alt="image-20210317232603803"></p>
-<p>User类定义如下，可以看到对于id属性，指定了NotNull和Null，而且指定了groups属性，如此一来，两个校验注解就不会同时生效，只有当OnUpdate的时候，NotNull会生效，只有当OnInsert的时候，Null会生效。</p>
+<p>由于我这边没有其他人在用，所以显示了个空白列表，操作也相当简单，当时还做了个进度条…那时候连MVC都没有学，我这套代码里的MVC是我自己脑补出来的…不过跟真正的MVC其实也是一个道理吧。</p>
+<h1 id="基于Servlet的个人网盘"><a href="#基于Servlet的个人网盘" class="headerlink" title="基于Servlet的个人网盘"></a>基于Servlet的个人网盘</h1><p>学了JSP+Servlet那一套以后，突然想到做这个东西练手，界面就不放出来了，简直惨不忍睹…那时候还是初学网页这一套技术，连js都不会，让我写个html+css简直要我命，所以我就去网上到处找相关的页面，比如要做注册功能，就去网上找注册页面的模板，要做网盘主页，就去找开源的网盘系统，扒出里面的页面源码；总之到最后究竟缝合了多少个页面我自己都记不清了，现在也没法考究了。</p>
+<p>主要功能的话就是注册-&gt;上传文件-&gt;下载文件，上传和下载用的是apache-commons那一套，专门做了个上传进度条，依稀记得用的是ajax，而且这ajax还是网上抄的…</p>
+<p>总之最后做出来的东西就是可以用，但没必要用…</p>
+<h1 id="图书馆选座系统"><a href="#图书馆选座系统" class="headerlink" title="图书馆选座系统"></a>图书馆选座系统</h1><p>这算是我学完SSM后做的第一个练手小项目，算是第一次实践了前后端分离吧，前端页面也是缝合怪，但样式相比个人网盘来说好了不少，放一张图感受一下。</p>
+<p><img src="4.png" alt="4"></p>
+<p>总共两个模块，上图这个模块就是普通用户的选座模块，其实功能极其简单…</p>
 <p><img src="5.png" alt="5"></p>
-<h2 id="指定方法所使用的分组"><a href="#指定方法所使用的分组" class="headerlink" title="指定方法所使用的分组"></a>指定方法所使用的分组</h2><p>那么如何决定何时启用OnUpdate和OnInsert呢？也许你已经注意到了，Spring提供的Vlidated注解是可以用在方法上的，但实际上Validated用在方法上必须配合分组的接口，比如下面这个例子。</p>
+<p>第二个模块就是管理模块，可以对各种数据进行管理，其实其他功能都是扯淡，也就楼层管理和选座是主要功能，然而也不是我自己做的…</p>
+<p>其实这个选座模块的原理是这样的，有一个Floor表和一个Seat表，Floor表保存了这个楼层的座位的排数和列数，Seat表则保存一个座位的状态，一个座位有四个重要的属性：楼层号、排号、列号、选座状态，也就是说Floor对Seat表是一对多。</p>
+<p>初始化选座页面的时候，列出所有可用楼层，点击查看后，根据楼层的排数、列数去初始化一个座位矩阵，然后根据每个座位的选座状态决定是否要显示、显示成什么样，总共就这几种状态：不可用、可选、已预约、已使用，不同状态图标都是不一样的。</p>
+<p>可以在管理系统中添加新的楼层，初始化一个排数、列数，点击一下对应座位的图标，就可以把它禁用掉，以此达到自定义座位布局的效果。</p>
 <p><img src="6.png" alt="6"></p>
-<p>假设我们在Service层使用校验，在Service类上先加上Validated注解，如此一来，MyService中的所有方法都具有了数据校验的能力；其次在方法上指定Validated注解，我们希望对于updateUser方法指定的是OnUpdate的情景，对insertUser方法指定的是OnInsert的情景，在方法的User入参上使用Valid注解，只有这样，才会在方法调用时进行校验。</p>
-<h2 id="自定义校验注解中的groups属性"><a href="#自定义校验注解中的groups属性" class="headerlink" title="自定义校验注解中的groups属性"></a>自定义校验注解中的groups属性</h2><p>前一篇文章讲过如何使用自定义校验注解，来执行我们自己的校验逻辑，比如下面这个校验注解。</p>
-<p><img src="12.png" alt="12"></p>
-<p>可以看到其中有一个groups属性，这个groups属性其实就跟我们上面使用的groups属性作用完全一致，NotNull、NotEmpty、NotBlank这些注解也统统都包含了groups属性，所以，如果我们想要对一个自定义校验注解进行分组校验，那么标注在校验处时使用groups属性即可，比如下面这个例子。</p>
-<p><img src="13.png" alt="13"></p>
-<h1 id="自定义异常处理"><a href="#自定义异常处理" class="headerlink" title="自定义异常处理"></a>自定义异常处理</h1><p>虽然我们可以指定一个字段校验不通过时所输出的message，但实际上，默认的异常处理相当粗糙，放一张图感受一下。</p>
-<p><img src="7.png" alt="7"></p>
-<p>我们其实并不需要过于完整的报错信息，只是想看到哪个字段违反了哪个校验规则，所以这个信息只能自己处理了。</p>
-<h2 id="两种校验异常"><a href="#两种校验异常" class="headerlink" title="两种校验异常"></a>两种校验异常</h2><p>此外，之前一篇文章曾经提过SpringValidation相关的两个异常，MethodArgumentNotValidException和ConstraintViolationException，前者是在Controller层校验失败时抛出的异常，并且报的是http 400的Bad Request，后者则是在非Controller层校验失败时抛出的异常，报的是http 500的Internal Server Error，这个两个异常其实有必要进行统一处理。</p>
-<p>那么需求就明确了，我们希望返回给前端的是简单的校验结果，即字段名和message的组合，同时又希望统一处理两种异常，返回http 400 BadRequest错误。</p>
-<h2 id="自定义校验结果返回数据"><a href="#自定义校验结果返回数据" class="headerlink" title="自定义校验结果返回数据"></a>自定义校验结果返回数据</h2><p>按照需求，我们可以写一个建议的自定义校验结果类，ValidationResult里包含一个ValidationError列表，列表中的每个元素都包含一个字段和其校验失败的message，最终我们将会把这个类作为json数据返回给前端。</p>
-<p><img src="8.png" alt="8"></p>
-<h2 id="全局异常处理"><a href="#全局异常处理" class="headerlink" title="全局异常处理"></a>全局异常处理</h2><p>定义一个类并用ControllerAdive标注，如此一来，里面的异常处理方法就会对所有的Controller生效；用ExceptionHandler来标注异常处理的方法，指定要处理哪种异常；ResponseStatus用来指定返回给前端的是哪种http响应码，ResponseBody用来将返回值转换为json数据响应给前端，一般来说，只要你的项目中引入了spring-boot-starter-web，就会包含jackson的包，使用ResponseBody就能自动将Controller返回值转换为json格式。</p>
-<p><img src="9.png" alt="9"></p>
-<p>注意还需要处理MethodArgumentNotValidException。</p>
-<p><img src="10.png" alt="10"></p>
-<p>这次再违反一次数据校验规则，来看看返回的结果，格式清爽了不少，而且清一色的都是返回http 400 BadRequest。</p>
-<p><img src="11.png" alt="11"></p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
+<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这几个项目当初写完其实就产生了重构的想法，然而最初写的时候根本都没用过版本管理，现在代码比较杂，尤其是那个Swing项目，代码已经乱到我看都不想看…与其重构，还不如重写来的方便。</p>
+<p>这几个项目传到Github上的目的就是留一个怀念，以后想看看曾经写的项目，还可以下过来在本地玩玩。</p>
 ]]></content>
       <categories>
-        <category>Spring</category>
-        <category>SpringValidation</category>
+        <category>随笔</category>
       </categories>
       <tags>
-        <tag>Spring</tag>
-        <tag>数据校验</tag>
-        <tag>HibernateValidator</tag>
-        <tag>SpringValidation</tag>
+        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
-    <title>SpringWebFlow初学记录</title>
-    <url>/2021/03/01/SpringWebFlow%E5%88%9D%E5%AD%A6%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<p>占位符</p>
+    <title>使用两种遍历结果构造二叉树</title>
+    <url>/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<p>最近刷Leetcode时，遇到了一道题，给你一个二叉树的后序遍历和中序遍历的输入序列，如何把这棵树的结构构造出来？</p>
+<p>下面贴出这道题的原地址<a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后续遍历序列构造二叉树</a>。</p>
+<h1 id="后序遍历和中序遍历的特点"><a href="#后序遍历和中序遍历的特点" class="headerlink" title="后序遍历和中序遍历的特点"></a>后序遍历和中序遍历的特点</h1><p>不管是先序、中序、后序，它们的不同点在于访问根节点的时机，先序先访问根节点、后序最后访问根节点。</p>
+<p>来看看原题给的样例。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">中序遍历 inorder = [<span class="number">9</span>,<span class="number">3</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">7</span>]</span><br><span class="line">后序遍历 postorder = [<span class="number">9</span>,<span class="number">15</span>,<span class="number">7</span>,<span class="number">20</span>,<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">  <span class="number">3</span></span><br><span class="line"> / \</span><br><span class="line"><span class="number">9</span>  <span class="number">20</span></span><br><span class="line">  /  \</span><br><span class="line"> <span class="number">15</span>   <span class="number">7</span></span><br></pre></td></tr></table></figure>
+
+<p>来观察一下，可以发现中序遍历的一个特征：在中序遍历的序列中，根节点左边是左子树，根节点右边是右子树。中序遍历序列从前往后看的规律是：左子树-&gt;根节点-&gt;右子树。</p>
+<p>也可以发现后序遍历的一个特征：左子树的叶子节点最先找到，右子树的叶子节点次之，根节点最后找到。比如后序遍历最后一个元素为3，再看看后序遍历倒数第二个元素20，它是根节点3的右子树，20再往前的元素7则是20的右子树，那么后序遍历的规律很明朗了，从遍历序列后往前看，根节点-&gt;右子树-&gt;左子树。</p>
+<p>这个遍历的性质很重要，如此一来就可以通过分治算法来将遍历结果转换为二叉树。</p>
+<h1 id="分而治之"><a href="#分而治之" class="headerlink" title="分而治之"></a>分而治之</h1><p>根据上面二叉树的性质，可以先通过后序遍历的最后一个元素找到根节点3，然后去中序遍历中找到根节点3，找到以后就可以将3左边的元素判定为左子树，3右边的元素判定为右子树。</p>
+<p><img src="1.png" alt="1"></p>
+<p>然后先递归地对右子树进行处理（因为我们看后序遍历是从后面往前看的），再递归地对左子树进行处理，得到地就是完整地二叉树。</p>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] inorder,postorder;</span><br><span class="line">	<span class="keyword">int</span> postIndex;<span class="comment">//记录后序遍历当前位置</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在中序遍历中l和r下标之间寻找tar这个元素</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findIndexForNum</span><span class="params">(<span class="keyword">int</span> tar,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=l;i&lt;=r;i++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(inorder[i]==tar) &#123;</span><br><span class="line">				<span class="keyword">return</span> i;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//建树的递归函数,l和r是当前子树在中序遍历中的范围</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">build</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(l&gt;r) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> midVal=postorder[postIndex--];<span class="comment">//从后序遍历中拿一个根节点</span></span><br><span class="line">		TreeNode root=<span class="keyword">new</span> TreeNode(midVal);</span><br><span class="line">		<span class="keyword">int</span> midIndex=findIndexForNum(midVal,l,r);</span><br><span class="line">		root.right=build(midIndex+<span class="number">1</span>,r);<span class="comment">//先建右子树</span></span><br><span class="line">		root.left=build(l,midIndex-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">return</span> root;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span>[] inorder, <span class="keyword">int</span>[] postorder)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.inorder=inorder;</span><br><span class="line">		<span class="keyword">this</span>.postorder=postorder;</span><br><span class="line">		postIndex=postorder.length-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> build(<span class="number">0</span>,postIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="用中序和先序遍历构造二叉树"><a href="#用中序和先序遍历构造二叉树" class="headerlink" title="用中序和先序遍历构造二叉树"></a>用中序和先序遍历构造二叉树</h1><p>其实道理也是一样的，只不过变成了从前往后遍历先序序列，具体做法仍然是分治+递归建树。</p>
 ]]></content>
       <categories>
-        <category>Spring</category>
-        <category>SpringWebFlow</category>
+        <category>算法</category>
+        <category>二叉树</category>
       </categories>
       <tags>
-        <tag>Spring</tag>
-        <tag>SpringWebFlow</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo博客的定制化</title>
-    <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
-    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
-<h1 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h1><p>相信你已经发现了，hexo有两份配置文件同时生效，一是<strong>hexo全局配置文件</strong>即_config.yml，二是<strong>主题配置文件</strong>，比如我用的是next主题，那么它就是themes/next/_config.yml，定制化主要依靠这两个文件来进行，尤其是主题配置文件，大多数hexo主题其实已经高度集成了许多功能，比如next主题就集成了valine评论插件，可以直接通过主题配置文件打开。</p>
-<h1 id="按需阅读"><a href="#按需阅读" class="headerlink" title="按需阅读"></a>按需阅读</h1><p>接下来就说一下，目前我的博客是怎么配置的，你可以根据自己的需求自行食用。</p>
-<hr>
-<h1 id="修改语言和时区"><a href="#修改语言和时区" class="headerlink" title="修改语言和时区"></a>修改语言和时区</h1><p>在全局配置文件中，language配置项，简体中文是zh-Hans；时区是timezone，中国地区可以修改为Asia/Shanghai</p>
-<h1 id="去除页脚Powered和Theme"><a href="#去除页脚Powered和Theme" class="headerlink" title="去除页脚Powered和Theme"></a>去除页脚Powered和Theme</h1><p>一般在主题配置文件中，找到footer配置项，其中包含powered配置项，修改为false，theme.enabled修改为false，theme.version修改为false。<br><img src="footer.png" alt="footer"></p>
-<h1 id="修改页面布局"><a href="#修改页面布局" class="headerlink" title="修改页面布局"></a>修改页面布局</h1><p>以next主题为例，一共有四种布局，Muse（默认）、Mist、Pisces（我在用的）、Gemini。<br>修改主题配置文件的scheme项，修改为你想要的布局，比如修改为Pisces，即scheme: Pisces</p>
-<h1 id="添加菜单选项"><a href="#添加菜单选项" class="headerlink" title="添加菜单选项"></a>添加菜单选项</h1><p>next主题默认只有home和archive两个选项，如何添加<strong>作者</strong>、<strong>标签</strong>、<strong>分类</strong>这样的页面呢。<br><img src="menu.png" alt="menu"><br>如上图所示，修改menu项，将tags、about、categories前面的<strong>井号</strong>去掉。<br>如此一来，博客菜单栏会展示出这些按钮，但你点击这些按钮时，会发现超链接是无效的，大概率会出现这样的一串玩意。<br><img src="url-error.png" alt="url-error"><br>实际上是因为menu项里url配置不对导致的，你可以仔细看看上面的menu配置项，是不是发现所有路径中间都有一对||符号，实际上，符号左边是菜单项的url，右边是菜单项的图标，next主题的菜单用的是<a href="http://www.fontawesome.com.cn/faicons/">font-awesome</a>图标，你可以参考font-awesome的图标名称随意更改，这里不展开说。这一对||符号左边右边都有一个空格，把这两个空格去掉，即可使菜单url恢复正常。<br>修改完url后再打开发现菜单url还是打不开，这是因为hexo默认就是不包含这些页面的，你需要自己生成。<br>执行下面的代码。<br><code>hexo new page &quot;about&quot;</code><br><code>hexo new page &quot;categories&quot;</code><br><code>hexo new page &quot;tags&quot;</code><br>随后修改source/about/index.md即可，它是完全遵守markdown语法的，categories和tags则不需要修改。</p>
-<h1 id="作者头像"><a href="#作者头像" class="headerlink" title="作者头像"></a>作者头像</h1><p>将你想要设置的头像图片放到source/uploads（自建目录）里，重命名为avatar.png。<br>修改主题配置文件中avatar项，比如这样avatar: /uploads/avatar.png。<br><em>注：如果你项用URI的形式也是可以的，不一定非要用本地图片。</em></p>
-<h1 id="开启评论和阅读量功能"><a href="#开启评论和阅读量功能" class="headerlink" title="开启评论和阅读量功能"></a>开启评论和阅读量功能</h1><p>在开启这两个功能之前，需要你注册一个LeanCloud的账号（免费注册，不需要充值），这里注册步骤不展开说了，详细说说LeanCloud需要做些什么。<br>首先创建应用，这里应用名称和应用描述随便选一下就可以了，方案选开发版即可，不收费。<br><img src="create-app.png" alt="create-app"><br>随后进入应用管理界面，选择<strong>存储</strong>-&gt;<strong>结构化数据</strong>，其中以下划线开头的这些Class是默认自带的，不用管他们。<br><img src="create-var.png" alt="create-var"><br>我们创建一下两个Class，一个叫Comment一个叫Counter，注意访问权限需要选择<strong>无限制</strong>。<br><img src="comment.png" alt="comment"><br>此时，你可以去应用的设置界面找一下两个关键的东西，即AppId和AppKey，后续会需要这两个字符串。<br><img src="app.png" alt="app"><br>编辑主题配置文件，找到leancloud_visitors项，enabled改为true，app_id和app_key修改为自己的就可以了，这是阅读量统计。<br><img src="leancloud-visitors.png" alt="leancloud-visitors"><br>找到valine项，这是评论功能，enabled改为true，appid和appkey改成自己的，placeholder是评论未输入时的默认占位符，guest_info是评论者需要输入的信息，默认nick、mail、link代表昵称、邮箱地址、个人站点，可以按照你自己的需要删减。<br><img src="valine.png" alt="valine"></p>
-<hr>
-<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>以上内容都只是hexo和next配置的一小部分，我只是单纯把一些比较直观的地方捡出来说了，其他配置项你也可以自行探索，可以参考hexo官方文档也可以参考next官方文档，我都在参考文章那部分列出来了。到此为止，hexo博客系列的文章就告一段落了，如果今后我有发现有什么有趣的东西，也许会再更新，大家对这几篇文章有什么建议都可以在评论区告诉我。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://github.com/iissnan/hexo-theme-next/wiki">github.com/iissnan/hexo-theme-next/wiki</a><br><a href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方起步指南</a><br><a href="https://blog.csdn.net/fullbug/article/details/103844424">解决Hexo博客导航栏链接URL乱码问题</a><br><a href="https://notes.doublemine.me/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">为NexT主题添加文章阅读量统计功能</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo博客更换主题</title>
-    <url>/2021/02/11/hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
-<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
-<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
-<p><img src="hexo-default.png"></p>
-<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
-<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
-<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
-<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
-<p><img src="download-next.png" alt="download-next"></p>
-<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
-<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
-<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
-<p><img src="switch-theme.png" alt="switch-theme"></p>
-<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
-<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
-<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
-<p><img src="error.png" alt="error"></p>
-<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
-<p>在hexo项目根目录使用下列指令进行安装。</p>
-<p><code>npm install hexo-renderer-swig --save</code></p>
-<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
-<p><img src="next-theme.png" alt="next-theme"></p>
-<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
-<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo如何发布博客</title>
-    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
-<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
-<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
-<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
+        <tag>算法</tag>
+        <tag>二叉树</tag>
+        <tag>二叉树遍历</tag>
+        <tag>递归</tag>
+        <tag>分治</tag>
       </tags>
   </entry>
   <entry>
@@ -274,76 +466,6 @@
       </tags>
   </entry>
   <entry>
-    <title>一些个人老项目的汇总</title>
-    <url>/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/</url>
-    <content><![CDATA[<p>最近我往我的Github仓库上传了几个项目，都是之前学Java时做的小项目，虽然代码质量不高，但算是我学习Java路上几个不同阶段的标志吧，传到Github的目的是为了做一个历史代码的保存，毕竟Github相对于自己的硬盘来说还是相对稳定的。</p>
-<h1 id="基于Swing的局域网聊天软件"><a href="#基于Swing的局域网聊天软件" class="headerlink" title="基于Swing的局域网聊天软件"></a>基于Swing的局域网聊天软件</h1><p>算是我做的第一个Java项目吧（如果那玩意能称为项目的话），实际上可以当作一个小Demo，当时学了Java的io、socket以后，迫切想要实践一下，那时候还不会做前端，所以用了我当时唯一会的客户端技术–Swing，就放两张图片感受一下。</p>
-<h2 id="打开软件要求输入聊天昵称"><a href="#打开软件要求输入聊天昵称" class="headerlink" title="打开软件要求输入聊天昵称"></a>打开软件要求输入聊天昵称</h2><p><img src="1.png" alt="1"></p>
-<h2 id="聊天界面"><a href="#聊天界面" class="headerlink" title="聊天界面"></a>聊天界面</h2><p><img src="2.png" alt="2"></p>
-<p>就这么简单，两张图就完全概括了这软件全部的功能。</p>
-<ol>
-<li>右边这一列空白我称之为上下线通报，当局域网内有一台主机运行了这个jar包，会发一个广播消息，其他的客户端列表上会显示上线的用户。</li>
-<li>中间三个按钮，发送消息也可以用CTRL+回车代替；清屏就是把消息列表清掉；发送文件这玩意我觉得反而是这demo的主要功能…</li>
-<li>发送文件时，局域网内至少要有两个在线的用户，其中一个人选择发送文件。</li>
-</ol>
-<p><img src="3.png" alt="3"></p>
-<p>由于我这边没有其他人在用，所以显示了个空白列表，操作也相当简单，当时还做了个进度条…那时候连MVC都没有学，我这套代码里的MVC是我自己脑补出来的…不过跟真正的MVC其实也是一个道理吧。</p>
-<h1 id="基于Servlet的个人网盘"><a href="#基于Servlet的个人网盘" class="headerlink" title="基于Servlet的个人网盘"></a>基于Servlet的个人网盘</h1><p>学了JSP+Servlet那一套以后，突然想到做这个东西练手，界面就不放出来了，简直惨不忍睹…那时候还是初学网页这一套技术，连js都不会，让我写个html+css简直要我命，所以我就去网上到处找相关的页面，比如要做注册功能，就去网上找注册页面的模板，要做网盘主页，就去找开源的网盘系统，扒出里面的页面源码；总之到最后究竟缝合了多少个页面我自己都记不清了，现在也没法考究了。</p>
-<p>主要功能的话就是注册-&gt;上传文件-&gt;下载文件，上传和下载用的是apache-commons那一套，专门做了个上传进度条，依稀记得用的是ajax，而且这ajax还是网上抄的…</p>
-<p>总之最后做出来的东西就是可以用，但没必要用…</p>
-<h1 id="图书馆选座系统"><a href="#图书馆选座系统" class="headerlink" title="图书馆选座系统"></a>图书馆选座系统</h1><p>这算是我学完SSM后做的第一个练手小项目，算是第一次实践了前后端分离吧，前端页面也是缝合怪，但样式相比个人网盘来说好了不少，放一张图感受一下。</p>
-<p><img src="4.png" alt="4"></p>
-<p>总共两个模块，上图这个模块就是普通用户的选座模块，其实功能极其简单…</p>
-<p><img src="5.png" alt="5"></p>
-<p>第二个模块就是管理模块，可以对各种数据进行管理，其实其他功能都是扯淡，也就楼层管理和选座是主要功能，然而也不是我自己做的…</p>
-<p>其实这个选座模块的原理是这样的，有一个Floor表和一个Seat表，Floor表保存了这个楼层的座位的排数和列数，Seat表则保存一个座位的状态，一个座位有四个重要的属性：楼层号、排号、列号、选座状态，也就是说Floor对Seat表是一对多。</p>
-<p>初始化选座页面的时候，列出所有可用楼层，点击查看后，根据楼层的排数、列数去初始化一个座位矩阵，然后根据每个座位的选座状态决定是否要显示、显示成什么样，总共就这几种状态：不可用、可选、已预约、已使用，不同状态图标都是不一样的。</p>
-<p>可以在管理系统中添加新的楼层，初始化一个排数、列数，点击一下对应座位的图标，就可以把它禁用掉，以此达到自定义座位布局的效果。</p>
-<p><img src="6.png" alt="6"></p>
-<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这几个项目当初写完其实就产生了重构的想法，然而最初写的时候根本都没用过版本管理，现在代码比较杂，尤其是那个Swing项目，代码已经乱到我看都不想看…与其重构，还不如重写来的方便。</p>
-<p>这几个项目传到Github上的目的就是留一个怀念，以后想看看曾经写的项目，还可以下过来在本地玩玩。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>使用两种遍历结果构造二叉树</title>
-    <url>/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
-    <content><![CDATA[<p>最近刷Leetcode时，遇到了一道题，给你一个二叉树的后序遍历和中序遍历的输入序列，如何把这棵树的结构构造出来？</p>
-<p>下面贴出这道题的原地址<a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后续遍历序列构造二叉树</a>。</p>
-<h1 id="后序遍历和中序遍历的特点"><a href="#后序遍历和中序遍历的特点" class="headerlink" title="后序遍历和中序遍历的特点"></a>后序遍历和中序遍历的特点</h1><p>不管是先序、中序、后序，它们的不同点在于访问根节点的时机，先序先访问根节点、后序最后访问根节点。</p>
-<p>来看看原题给的样例。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">中序遍历 inorder = [<span class="number">9</span>,<span class="number">3</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">7</span>]</span><br><span class="line">后序遍历 postorder = [<span class="number">9</span>,<span class="number">15</span>,<span class="number">7</span>,<span class="number">20</span>,<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">  <span class="number">3</span></span><br><span class="line"> / \</span><br><span class="line"><span class="number">9</span>  <span class="number">20</span></span><br><span class="line">  /  \</span><br><span class="line"> <span class="number">15</span>   <span class="number">7</span></span><br></pre></td></tr></table></figure>
-
-<p>来观察一下，可以发现中序遍历的一个特征：在中序遍历的序列中，根节点左边是左子树，根节点右边是右子树。中序遍历序列从前往后看的规律是：左子树-&gt;根节点-&gt;右子树。</p>
-<p>也可以发现后序遍历的一个特征：左子树的叶子节点最先找到，右子树的叶子节点次之，根节点最后找到。比如后序遍历最后一个元素为3，再看看后序遍历倒数第二个元素20，它是根节点3的右子树，20再往前的元素7则是20的右子树，那么后序遍历的规律很明朗了，从遍历序列后往前看，根节点-&gt;右子树-&gt;左子树。</p>
-<p>这个遍历的性质很重要，如此一来就可以通过分治算法来将遍历结果转换为二叉树。</p>
-<h1 id="分而治之"><a href="#分而治之" class="headerlink" title="分而治之"></a>分而治之</h1><p>根据上面二叉树的性质，可以先通过后序遍历的最后一个元素找到根节点3，然后去中序遍历中找到根节点3，找到以后就可以将3左边的元素判定为左子树，3右边的元素判定为右子树。</p>
-<p><img src="1.png" alt="1"></p>
-<p>然后先递归地对右子树进行处理（因为我们看后序遍历是从后面往前看的），再递归地对左子树进行处理，得到地就是完整地二叉树。</p>
-<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] inorder,postorder;</span><br><span class="line">	<span class="keyword">int</span> postIndex;<span class="comment">//记录后序遍历当前位置</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在中序遍历中l和r下标之间寻找tar这个元素</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findIndexForNum</span><span class="params">(<span class="keyword">int</span> tar,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=l;i&lt;=r;i++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(inorder[i]==tar) &#123;</span><br><span class="line">				<span class="keyword">return</span> i;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//建树的递归函数,l和r是当前子树在中序遍历中的范围</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">build</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(l&gt;r) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> midVal=postorder[postIndex--];<span class="comment">//从后序遍历中拿一个根节点</span></span><br><span class="line">		TreeNode root=<span class="keyword">new</span> TreeNode(midVal);</span><br><span class="line">		<span class="keyword">int</span> midIndex=findIndexForNum(midVal,l,r);</span><br><span class="line">		root.right=build(midIndex+<span class="number">1</span>,r);<span class="comment">//先建右子树</span></span><br><span class="line">		root.left=build(l,midIndex-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">return</span> root;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span>[] inorder, <span class="keyword">int</span>[] postorder)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.inorder=inorder;</span><br><span class="line">		<span class="keyword">this</span>.postorder=postorder;</span><br><span class="line">		postIndex=postorder.length-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> build(<span class="number">0</span>,postIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="用中序和先序遍历构造二叉树"><a href="#用中序和先序遍历构造二叉树" class="headerlink" title="用中序和先序遍历构造二叉树"></a>用中序和先序遍历构造二叉树</h1><p>其实道理也是一样的，只不过变成了从前往后遍历先序序列，具体做法仍然是分治+递归建树。</p>
-]]></content>
-      <categories>
-        <category>算法</category>
-        <category>二叉树</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-        <tag>二叉树</tag>
-        <tag>二叉树遍历</tag>
-        <tag>递归</tag>
-        <tag>分治</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何让hexo个人博客被搜索引擎收录</title>
     <url>/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/</url>
     <content><![CDATA[<p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的。</p>
@@ -405,6 +527,22 @@
 <p>然后在谷歌的search console中添加站点地图即可，成功添加后，谷歌应该会在几天之内读取你的sitemap，从sitemap读取成功到收录成功，效率之高是百度没法比的…我自己的站点，谷歌只用了一天就完成收录，真的很快。</p>
 <h2 id="手动提交"><a href="#手动提交" class="headerlink" title="手动提交"></a>手动提交</h2><p>从名字就可以看出，手动提交是个比较繁琐的过程，需要你自己手动将站点里的页面url提交到搜索引擎里，我实际上没用过这种提交方式，不过操作应该是将你的页面url一个一个的复制粘贴给搜索引擎，让它逐个收录。</p>
 <h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://blog.csdn.net/liutao43/article/details/106324954/">hexo设置主动推送</a><br><a href="https://zhuanlan.zhihu.com/p/111773896">如何让百度收录 GitHub Pages 个人博客</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo如何发布博客</title>
+    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
+<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
+<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
+<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
 ]]></content>
       <categories>
         <category>Hexo博客系列</category>
