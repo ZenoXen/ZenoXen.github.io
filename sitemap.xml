@@ -123,20 +123,6 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/tags/SpringWebFlow/</loc>
-    <lastmod>2021-04-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.zenoxen.cn/tags/hexo/</loc>
-    <lastmod>2021-04-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.zenoxen.cn/tags/%E6%95%B0%E6%8D%AE%E6%A0%A1%E9%AA%8C/</loc>
     <lastmod>2021-04-14</lastmod>
     <changefreq>daily</changefreq>
@@ -152,6 +138,13 @@
   
   <url>
     <loc>https://blog.zenoxen.cn/tags/SpringValidation/</loc>
+    <lastmod>2021-04-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.zenoxen.cn/tags/hexo/</loc>
     <lastmod>2021-04-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -200,6 +193,13 @@
   </url>
   
   <url>
+    <loc>https://blog.zenoxen.cn/tags/SpringWebFlow/</loc>
+    <lastmod>2021-04-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.zenoxen.cn/tags/%E7%BC%93%E5%AD%98/</loc>
     <lastmod>2021-04-14</lastmod>
     <changefreq>daily</changefreq>
@@ -237,13 +237,6 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/Spring/SpringWebFlow/</loc>
-    <lastmod>2021-04-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.zenoxen.cn/categories/%E9%9A%8F%E7%AC%94/</loc>
     <lastmod>2021-04-14</lastmod>
     <changefreq>daily</changefreq>
@@ -252,6 +245,13 @@
   
   <url>
     <loc>https://blog.zenoxen.cn/categories/%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2021-04-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.zenoxen.cn/categories/Spring/SpringWebFlow/</loc>
     <lastmod>2021-04-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
