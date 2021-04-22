@@ -27,13 +27,13 @@
   </script>
 <meta name="description" content="目前大部分互联网信息产品都会对一些用户隐私信息进行脱敏处理，就比如本文所涉及的手机号，看完本文，你可以自己用Java写一个简单的手机号脱敏处理的功能">
 <meta property="og:type" content="article">
-<meta property="og:title" content="手机号脱敏处理">
-<meta property="og:url" content="https://blog.zenoxen.cn/2021/04/20/%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/index.html">
+<meta property="og:title" content="Spring实现手机号脱敏处理">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/index.html">
 <meta property="og:site_name" content="ZenoX的个人博客">
 <meta property="og:description" content="目前大部分互联网信息产品都会对一些用户隐私信息进行脱敏处理，就比如本文所涉及的手机号，看完本文，你可以自己用Java写一个简单的手机号脱敏处理的功能">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-20T09:55:43.000Z">
-<meta property="article:modified_time" content="2021-04-20T10:16:00.133Z">
+<meta property="article:modified_time" content="2021-04-22T06:18:15.779Z">
 <meta property="article:author" content="ZenoX">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="Java">
@@ -42,7 +42,7 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://blog.zenoxen.cn/2021/04/20/%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">
 
 
 <script class="page-configurations">
@@ -54,7 +54,7 @@
     lang   : 'zh-CN'
   };
 </script>
-<title>手机号脱敏处理 | ZenoX的个人博客</title>
+<title>Spring实现手机号脱敏处理 | ZenoX的个人博客</title>
   
 
 
@@ -193,7 +193,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E8%84%B1%E6%95%8F"><span class="nav-number">2.</span> <span class="nav-text">正则表达式实现数据脱敏</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89ResponseBody%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">自定义ResponseBody数据转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E8%84%B1%E6%95%8F"><span class="nav-number">2.</span> <span class="nav-text">正则表达式实现数据脱敏</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E5%9B%BD%E6%89%8B%E6%9C%BA%E5%8F%B7%E7%A0%81%E7%9A%84%E7%BB%93%E6%9E%84%E7%89%B9%E5%BE%81"><span class="nav-number">2.1.</span> <span class="nav-text">中国手机号码的结构特征</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89ResponseBody%E6%95%B0%E6%8D%AE%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.</span> <span class="nav-text">自定义ResponseBody数据转换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89JsonSerializer"><span class="nav-number">3.1.</span> <span class="nav-text">自定义JsonSerializer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8JsonSerializer"><span class="nav-number">3.2.</span> <span class="nav-text">应用JsonSerializer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -271,7 +271,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/04/20/%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.png">
@@ -284,7 +284,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          手机号脱敏处理
+          Spring实现手机号脱敏处理
         </h1>
 
         <div class="post-meta-container">
@@ -294,10 +294,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2021-04-20 17:55:43 / 修改时间：18:16:00" itemprop="dateCreated datePublished" datetime="2021-04-20T17:55:43+08:00">2021-04-20</time>
+      <time title="创建时间：2021-04-20 17:55:43" itemprop="dateCreated datePublished" datetime="2021-04-20T17:55:43+08:00">2021-04-20</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-04-22 14:18:15" itemprop="dateModified" datetime="2021-04-22T14:18:15+08:00">2021-04-22</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -309,7 +315,7 @@
     </span>
 
   
-    <span id="/2021/04/20/%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/" class="post-meta-item leancloud_visitors" data-flag-title="手机号脱敏处理" title="阅读次数">
+    <span id="/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/" class="post-meta-item leancloud_visitors" data-flag-title="Spring实现手机号脱敏处理" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -323,14 +329,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>199</span>
+      <span>2.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -344,7 +350,27 @@
     <div class="post-body" itemprop="articleBody">
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先介绍一下我这边的开发场景，数据库中存的是完整的手机号，即没有加密过的字符串，但需求希望将数据返回前端时进行脱敏处理，将手机号中间4位替换为*号。</p>
 <p>这里还有一点值得一提，返回的ResponseBody中，可能存在一些手机号是夹杂在一个字符串中间的，需要在保留字符串原来内容的前提下，对这些手机号进行脱敏处理。</p>
-<h1 id="正则表达式实现数据脱敏"><a href="#正则表达式实现数据脱敏" class="headerlink" title="正则表达式实现数据脱敏"></a>正则表达式实现数据脱敏</h1><h1 id="自定义ResponseBody数据转换"><a href="#自定义ResponseBody数据转换" class="headerlink" title="自定义ResponseBody数据转换"></a>自定义ResponseBody数据转换</h1><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://www.pianshen.com/article/7263153515/">手机号校验与脱敏处理</a></p>
+<h1 id="正则表达式实现数据脱敏"><a href="#正则表达式实现数据脱敏" class="headerlink" title="正则表达式实现数据脱敏"></a>正则表达式实现数据脱敏</h1><p>实现这个功能的思路是，使用正则表达式替换一个字符串中的所有符合手机号码特征的子串，Java的String类本身就提供了replaceAll方法，我们可以用该方法实现这个功能。</p>
+<p>首先来看看匹配手机号码的正则和手机模糊化的正则。</p>
+<h2 id="中国手机号码的结构特征"><a href="#中国手机号码的结构特征" class="headerlink" title="中国手机号码的结构特征"></a>中国手机号码的结构特征</h2><p>一般中国的手机号码是11位，前三位是根据运营商而定的，4到7位为地区编码，8到11位是随机分配给用户的号码，一般加密是给中间四位地区码加密。</p>
+<p>同时前三位手机号，第一位就是1，第二位和第三位各个运营商各有不同，基本规律我写在下面的代码中，即3可以组合0-9，4组合5或7，5组合0-3或5-9……</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>而将中间四位替换为星号的话，需要在正则表达式中使用圆括号划分出两个区域，即第二和第三位与最后四位之间的位置。</p>
+<h1 id="自定义ResponseBody数据转换"><a href="#自定义ResponseBody数据转换" class="headerlink" title="自定义ResponseBody数据转换"></a>自定义ResponseBody数据转换</h1><p>一般来说，在我们的系统中并不是所有地方都必须得将手机号进行脱敏，有些地方可能还是需要将手机号暴露给用户的，对于不同的接口或者说对于不同的ResponseBody，可以使用Jackson的序列化器来指定如何将JSON序列化给前端。</p>
+<h2 id="自定义JsonSerializer"><a href="#自定义JsonSerializer" class="headerlink" title="自定义JsonSerializer"></a>自定义JsonSerializer</h2><p>自定义一个DesensitizeSerializer，继承JsonSerializer&lt;String&gt;，即它是用于字符串的序列化，在方法中直接调用String的replaceAll方法，将所有符合PHONE_REGEX的字串使用PHONE_BLUR_REGEX替换为加密过的字符串。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DesensitizeSerializer</span> <span class="keyword">extends</span> <span class="title">JsonSerializer</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(String s, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        jsonGenerator.writeString(<span class="keyword">this</span>.encryptPhoneNumber(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">encryptPhoneNumber</span><span class="params">(String phoneNumber)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Objects.nonNull(phoneNumber)) &#123;</span><br><span class="line">            <span class="keyword">return</span> phoneNumber.replaceAll(PHONE_REGEX, PHONE_BLUR_REGEX);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用JsonSerializer"><a href="#应用JsonSerializer" class="headerlink" title="应用JsonSerializer"></a>应用JsonSerializer</h2><p>一般我们使用ResponseBody注解将一个Pojo类或者JPA的interface-based projection返回给前端，虽然我们的确可以在SQL层面做预处理，但那样就容易受需求变更的影响了，而如果是在返回给前端的最后一步之前，也就是将ResponseBody序列化为Json的这一步做处理，那么就很容易面临需求的变更了。</p>
+<p>假设现在有个UserAccount类作为ResponseBody返回给前端，其中的mobile字段需要加密，我们可以像下面这样应用之前写好的JsonSerializer。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserAccount</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonSerialize(using = DesensitizeSerializer.class)</span></span><br><span class="line">    <span class="keyword">private</span> String mobile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@JsonSerialize注解可以用在getter方法上或者是类字段上，使用using属性可以为这个字段指定一个JsonSerializer。</p>
+<p>写一个测试接口，来看看结果。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;mobile&quot;</span>:<span class="string">&quot;135****3843&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果手机号是混杂在一个很长的字符串里的，也不必担心，String的replaceAll方法可以将整个字符串中所有的手机号加密。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://www.pianshen.com/article/7263153515/">手机号校验与脱敏处理</a></p>
 
     </div>
 
