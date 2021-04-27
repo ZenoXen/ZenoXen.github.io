@@ -65,14 +65,14 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/index.html</loc>
+    <loc>https://blog.zenoxen.cn/tags/index.html</loc>
     
     <lastmod>2021-03-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/tags/index.html</loc>
+    <loc>https://blog.zenoxen.cn/categories/index.html</loc>
     
     <lastmod>2021-03-14</lastmod>
     
@@ -186,13 +186,6 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/tags/hexo/</loc>
-    <lastmod>2021-04-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.zenoxen.cn/tags/Java/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
@@ -208,6 +201,13 @@
   
   <url>
     <loc>https://blog.zenoxen.cn/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</loc>
+    <lastmod>2021-04-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.zenoxen.cn/tags/hexo/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -256,6 +256,13 @@
   </url>
   
   <url>
+    <loc>https://blog.zenoxen.cn/tags/SpringWebFlow/</loc>
+    <lastmod>2021-04-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.zenoxen.cn/tags/%E7%BC%93%E5%AD%98/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
@@ -264,13 +271,6 @@
   
   <url>
     <loc>https://blog.zenoxen.cn/tags/redis/</loc>
-    <lastmod>2021-04-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.zenoxen.cn/tags/SpringWebFlow/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -293,7 +293,7 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/</loc>
+    <loc>https://blog.zenoxen.cn/categories/Java/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -307,7 +307,7 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/Java/</loc>
+    <loc>https://blog.zenoxen.cn/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -335,6 +335,13 @@
   </url>
   
   <url>
+    <loc>https://blog.zenoxen.cn/categories/Spring/SpringWebFlow/</loc>
+    <lastmod>2021-04-27</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.zenoxen.cn/categories/Spring/Cache/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
@@ -343,13 +350,6 @@
   
   <url>
     <loc>https://blog.zenoxen.cn/categories/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/</loc>
-    <lastmod>2021-04-27</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.zenoxen.cn/categories/Spring/SpringWebFlow/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
