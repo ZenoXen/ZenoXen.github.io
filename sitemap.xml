@@ -65,14 +65,14 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/tags/index.html</loc>
+    <loc>https://blog.zenoxen.cn/about/index.html</loc>
     
     <lastmod>2021-03-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/about/index.html</loc>
+    <loc>https://blog.zenoxen.cn/tags/index.html</loc>
     
     <lastmod>2021-03-14</lastmod>
     
@@ -335,14 +335,14 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/Spring/SpringWebFlow/</loc>
+    <loc>https://blog.zenoxen.cn/categories/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/</loc>
+    <loc>https://blog.zenoxen.cn/categories/Spring/SpringWebFlow/</loc>
     <lastmod>2021-04-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

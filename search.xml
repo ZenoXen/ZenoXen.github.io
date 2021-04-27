@@ -459,6 +459,20 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
+    <title>我的第一篇文章</title>
+    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
+    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
+<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
+<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何让hexo个人博客被搜索引擎收录</title>
     <url>/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/</url>
     <content><![CDATA[<p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的。</p>
@@ -526,20 +540,6 @@ if(random_num(0, 9)&gt;6)
       </categories>
       <tags>
         <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>我的第一篇文章</title>
-    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
-    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
-<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
-<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
