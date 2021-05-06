@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-xwv74DmZs8">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Pisces","version":"8.2.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="最近为hexo安装了最新的next主题，并整合了一下Gitalk">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo-next主题整合Gitalk评论系统">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="ZenoX的个人博客">
+<meta property="og:description" content="最近为hexo安装了最新的next主题，并整合了一下Gitalk">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/1.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/2.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/3.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/4.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/5.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/6.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/7.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/8.png">
+<meta property="article:published_time" content="2021-05-06T06:07:07.000Z">
+<meta property="article:modified_time" content="2021-05-06T09:23:59.688Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/1.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>hexo-next主题整合Gitalk评论系统 | ZenoX的个人博客</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">ZenoX的个人博客</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">一个Java后端的笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%85%E8%AF%BB%E9%A1%BB%E7%9F%A5"><span class="nav-number">1.</span> <span class="nav-text">阅读须知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Gitalk"><span class="nav-number">2.</span> <span class="nav-text">安装Gitalk</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAgithub-oauth-app"><span class="nav-number">3.</span> <span class="nav-text">创建github oauth app</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9hexo%E4%B8%8Enext%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">修改hexo与next配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgitalk"><span class="nav-number">4.1.</span> <span class="nav-text">配置gitalk</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD"><span class="nav-number">4.2.</span> <span class="nav-text">打开评论功能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84proxy"><span class="nav-number">5.</span> <span class="nav-text">搭建自己的proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%90%AFnginx%E7%9A%84ssl%E6%94%AF%E6%8C%81"><span class="nav-number">5.1.</span> <span class="nav-text">开启nginx的ssl支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8openssl%E7%94%9F%E6%88%90ssl%E8%AF%81%E4%B9%A6"><span class="nav-number">5.2.</span> <span class="nav-text">使用openssl生成ssl证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEnginx%E6%B7%BB%E5%8A%A0%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-number">5.3.</span> <span class="nav-text">配置nginx添加反向代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">5.4.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2proxy%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">5.5.</span> <span class="nav-text">替换proxy配置项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">先学会爱自己，再爱别人</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+      <meta itemprop="description" content="先学会爱自己，再爱别人">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX的个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hexo-next主题整合Gitalk评论系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-06 14:07:07 / 修改时间：17:23:59" itemprop="dateCreated datePublished" datetime="2021-05-06T14:07:07+08:00">2021-05-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">Hexo博客系列</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/" class="post-meta-item leancloud_visitors" data-flag-title="hexo-next主题整合Gitalk评论系统" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+      </div>
+      <div class="post-meta">
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">最近为hexo安装了最新的next主题，并整合了一下Gitalk</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="阅读须知"><a href="#阅读须知" class="headerlink" title="阅读须知"></a>阅读须知</h1><p>由于Gitalk的配置中存在一个proxy属性，并且默认配置中的proxy已经过时无法用了，必须要我们自己手动搭建一个反向代理服务，所以需要在你继续往下阅读之前，需要有一台可支配的nginx服务器。</p>
+<h1 id="安装Gitalk"><a href="#安装Gitalk" class="headerlink" title="安装Gitalk"></a>安装Gitalk</h1><p>虽然next主题内已经包含了gitalk的相关配置，但默认是不启用的，即使我们去启用，也会报错。需要先给hexo项目安装gitalk的依赖。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save gitalk</span><br></pre></td></tr></table></figure>
+
+<h1 id="创建github-oauth-app"><a href="#创建github-oauth-app" class="headerlink" title="创建github oauth app"></a>创建github oauth app</h1><p>登录github-&gt;settings-&gt;developer settings-&gt;new oauth app</p>
+<p><img src="1.png" alt="1"></p>
+<p>此处需要你注册一个新的oauth application。</p>
+<p><img src="2.png" alt="2"></p>
+<p>这里几个字段含义如下</p>
+<ul>
+<li>Application name: oauth app的名称，随意取</li>
+<li>Homepage URL: 这个填你的博客首页，如果有域名的话，填你的博客域名，或者用你的github.io地址也可以</li>
+<li>Application description: app的描述，随便填</li>
+<li>Authorization callback URL: 同Homepage URL，汝过有域名，填写域名，若没有，填github.io也可以</li>
+</ul>
+<p>创建成功后，直接就会进入这个oauth app的概览页面，如下所示，这里我们需要取两个非常重要的信息，<strong>Client ID</strong>和<strong>Client secrets</strong></p>
+<p><img src="3.png" alt="3"></p>
+<p>Client secrets默认是不显示的，点击Generate a new client secret后，它才会出现，记得将这一串信息记录下来，否则下次它就不显示了。</p>
+<p><img src="4.png" alt="4"></p>
+<h1 id="修改hexo与next配置"><a href="#修改hexo与next配置" class="headerlink" title="修改hexo与next配置"></a>修改hexo与next配置</h1><p>最新的hexo以及next主题都已经支持自动整合gitalk评论组件，我们需要做的只是一些必要的配置。</p>
+<h2 id="配置gitalk"><a href="#配置gitalk" class="headerlink" title="配置gitalk"></a>配置gitalk</h2><p>进入next主题配置文件，找到gitalk相关配置项。</p>
+<p><img src="5.png" alt="5"></p>
+<p>这边几个字段含义如下。</p>
+<ul>
+<li>enabled: 是否启用，填true即可</li>
+<li>github_id: 你的github名</li>
+<li>repo: github仓库名，实际上随便建一个public的仓库就好（必须得是public不能是private），也可以像我一样直接用github.io仓库</li>
+<li>client_id: 填写你刚注册的oauth app的clientId</li>
+<li>client_secret: 填写你刚注册的oauth app的clientSecret</li>
+<li>admin_user: 填写你自己的github名即可</li>
+<li>distraction_free_mode: 是否开启无干扰模式，即你在输入评论文字时，页面的其他部分是否可用</li>
+<li>proxy: 代理地址，后面会单独讲</li>
+<li>language: 填写中文即可，即zh-CN</li>
+</ul>
+<h2 id="打开评论功能"><a href="#打开评论功能" class="headerlink" title="打开评论功能"></a>打开评论功能</h2><p>光配置gitalk还不够，需要将当前启用的评论系统切换为gitalk才可以，因为hexo支持多款评论插件，需要我们自己进行选择。</p>
+<p>在next主题配置文件中找到comment配置项。</p>
+<p><img src="6.png" alt="6"></p>
+<p>主要将active填些gitalk即可。</p>
+<h1 id="搭建自己的proxy"><a href="#搭建自己的proxy" class="headerlink" title="搭建自己的proxy"></a>搭建自己的proxy</h1><p>按照上述配置，如果你启动的话，会发现通过gitalk登录github时出现network error或者403错误。</p>
+<p>这是因为gitalk的默认配置proxy已经无法使用了，默认配置中的https://cors-anywhere.herokuapp.com是heroku平台的一个demo网站，目前已经不可用了，所以我们必须自己搭建一个反向代理服务，去替换这里的proxy配置。</p>
+<p>这边主要有几个步骤。</p>
+<ol>
+<li>开启nginx的ssl支持</li>
+<li>使用openssl生成ssl证书</li>
+<li>配置nginx，添加反向代理</li>
+</ol>
+<h2 id="开启nginx的ssl支持"><a href="#开启nginx的ssl支持" class="headerlink" title="开启nginx的ssl支持"></a>开启nginx的ssl支持</h2><p>由于gitalk在调用oauth app时会使用proxy地址去登录，而你的博客如果是https前缀的，那么proxy地址也需要是https前缀的。</p>
+<p>一般情况下，安装nginx时是不会自带ssl模块的，也就是说nginx默认不支持ssl，需要在安装时指定ssl模块。你可以通过下列命令来查看已安装的nginx是否带ssl模块，注意-V大写。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./nginx -V</span><br></pre></td></tr></table></figure>
+
+<p>如果你已经安装了nginx但没有ssl模块，可以参考下面步骤来添加一个ssl模块。</p>
+<p>进入nginx解压包目录，指定一个–with-http_ssl_module如下所示。随后使用make命令编译，但不要使用make install命令，因为这样做会导致现有的nginx配置被完全覆盖。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module</span><br><span class="line"></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<p>make执行完后，你应该能在nginx解压包目录内看到编译后的可执行nginx文件。</p>
+<p><img src="7.png" alt="7"></p>
+<p>用它覆盖你现有nginx的安装目录下，比如我的安装目录是/usr/local/nginx/sbin。</p>
+<p>此时再使用./nginx -V查看，应该可以发现已经附带了ssl模块。</p>
+<h2 id="使用openssl生成ssl证书"><a href="#使用openssl生成ssl证书" class="headerlink" title="使用openssl生成ssl证书"></a>使用openssl生成ssl证书</h2><p>要给nginx启用https前缀，需要先拥有我们自己的ssl证书，openssl是可以免费生成的，或者你也可以用阿里云、腾讯云的免费ssl证书。</p>
+<p>建议新建一个目录用于存放生成的各种密钥、证书。</p>
+<p>在继续往下阅读之前，你需要先确保自己系统上安装了openssl这个工具。</p>
+<p>首先使用下面的命令生成CA私钥。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out local.key 2048</span><br></pre></td></tr></table></figure>
+
+<p>使用下面的命令生成CA证书请求csr文件，在这个过程中，会让你输入一些诸如国家、省份、城市、部门之类的信息，但最重要的是密码，把它记下来。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -new -key local.key -out local.csr</span><br></pre></td></tr></table></figure>
+
+<p>使用下列命令生成CA根证书。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -req -in local.csr -extensions v3_ca -signkey local.key -out local.crt</span><br></pre></td></tr></table></figure>
+
+<p>使用下列命令生成server私钥。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out my_server.key 2048</span><br></pre></td></tr></table></figure>
+
+<p>分别使用下列命令生成server证书请求和server证书。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl req -new -key my_server.key -out my_server.csr</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl x509 -days 365 -req -in my_server.csr -extensions v3_req -CAkey local.key -CA local.crt -CAcreateserial -out my_server.crt</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置nginx添加反向代理"><a href="#配置nginx添加反向代理" class="headerlink" title="配置nginx添加反向代理"></a>配置nginx添加反向代理</h2><p>修改你的nginx安装目录下的，conf/nginx.conf，在server块添加下面的配置。</p>
+<p>注意ssl_certificate和ssl_certificate_key是你刚生成出来的的证书和私钥。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">listen       443 ssl;</span><br><span class="line">server_name  localhost;</span><br><span class="line">ssl_certificate      /root/zenox/local.crt;</span><br><span class="line">ssl_certificate_key  /root/zenox/local.key;</span><br><span class="line"></span><br><span class="line">ssl_session_cache    shared:SSL:1m;</span><br><span class="line">ssl_session_timeout  5m;</span><br><span class="line"></span><br><span class="line">ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">ssl_prefer_server_ciphers on;</span><br></pre></td></tr></table></figure>
+
+<p>添加一个location块，如下所示，有两个地方是需要修改的，即add_header Access-Control-Allow-Origin这边，填写你自己的域名或者github.io地址；proxy_pass则填写https://github.com</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">location &#x3D; &#x2F;login&#x2F;oauth&#x2F;access_token &#123;</span><br><span class="line">                add_header Access-Control-Allow-Origin &#39;https:&#x2F;&#x2F;blog.zenoxen.cn&#39;;</span><br><span class="line">                add_header Access-Control-Allow-Methods &#39;GET, POST, OPTIONS&#39;;</span><br><span class="line">                add_header Access-Control-Allow-Headers &#39;DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization&#39;;</span><br><span class="line">                if ($request_method &#x3D; &#39;OPTIONS&#39;) &#123;</span><br><span class="line">                        return 204;</span><br><span class="line">                &#125;</span><br><span class="line">                proxy_pass https:&#x2F;&#x2F;github.com;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>接下来测试是否能使用https访问到你的nginx，在nginx地址前面加上https前缀来测试，如果能看到nginx欢迎页那么就可以进行下一步了。</p>
+<h2 id="替换proxy配置项"><a href="#替换proxy配置项" class="headerlink" title="替换proxy配置项"></a>替换proxy配置项</h2><p>回到next主题配置文件里，修改那个proxy配置项，如下所示。</p>
+<p><img src="8.png" alt="8"></p>
+<p>如此一来，你的博客应该就可以使用gitalk了。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://cuiqingcai.com/30010.html">Gitalk 评论登录 403 问题解决</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.qiansw.com/solve-the-problem-of-using-gitalk-authorization-403.html">解决使用 Gitalk 登录授权报 403 的问题</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/qiyueqi/p/11551238.html">基于nginx结合openssl实现https</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"><i class="fa fa-tag"></i> hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/04/%E5%8D%83%E5%B2%9B%E6%B9%96%E7%9A%84%E9%A6%96%E6%AC%A1%E6%8E%A5%E8%A7%A6/" rel="prev" title="千岛湖的首次接触">
+                  <i class="fa fa-chevron-left"></i> 千岛湖的首次接触
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) === '-MdYXbMMI' ? `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com` : server_url;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '7bf3519a0e20c81be39b',
+      clientSecret: 'f94572895311d9744848de625e3356f156447811',
+      repo        : 'zenoxen.github.io',
+      owner       : 'ZenoXen',
+      admin       : ['ZenoXen'],
+      id          : '40bb0fe382b3fdcf8a8bda7bd2835301',
+      proxy       : 'https://47.97.206.64/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
