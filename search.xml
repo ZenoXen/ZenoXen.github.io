@@ -240,109 +240,6 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
-    <title>hexo-next主题整合Gitalk评论系统</title>
-    <url>/2021/05/06/hexo-next%E4%B8%BB%E9%A2%98%E6%95%B4%E5%90%88gitalk%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/</url>
-    <content><![CDATA[<h1 id="阅读须知"><a href="#阅读须知" class="headerlink" title="阅读须知"></a>阅读须知</h1><p>由于Gitalk的配置中存在一个proxy属性，并且默认配置中的proxy已经过时无法用了，必须要我们自己手动搭建一个反向代理服务，所以需要在你继续往下阅读之前，需要有一台可支配的nginx服务器。</p>
-<h1 id="安装Gitalk"><a href="#安装Gitalk" class="headerlink" title="安装Gitalk"></a>安装Gitalk</h1><p>虽然next主题内已经包含了gitalk的相关配置，但默认是不启用的，即使我们去启用，也会报错。需要先给hexo项目安装gitalk的依赖。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install --save gitalk</span><br></pre></td></tr></table></figure>
-
-<h1 id="创建github-oauth-app"><a href="#创建github-oauth-app" class="headerlink" title="创建github oauth app"></a>创建github oauth app</h1><p>登录github-&gt;settings-&gt;developer settings-&gt;new oauth app</p>
-<p><img src="1.png" alt="1"></p>
-<p>此处需要你注册一个新的oauth application。</p>
-<p><img src="2.png" alt="2"></p>
-<p>这里几个字段含义如下</p>
-<ul>
-<li>Application name: oauth app的名称，随意取</li>
-<li>Homepage URL: 这个填你的博客首页，如果有域名的话，填你的博客域名，或者用你的github.io地址也可以</li>
-<li>Application description: app的描述，随便填</li>
-<li>Authorization callback URL: 同Homepage URL，汝过有域名，填写域名，若没有，填github.io也可以</li>
-</ul>
-<p>创建成功后，直接就会进入这个oauth app的概览页面，如下所示，这里我们需要取两个非常重要的信息，<strong>Client ID</strong>和<strong>Client secrets</strong></p>
-<p><img src="3.png" alt="3"></p>
-<p>Client secrets默认是不显示的，点击Generate a new client secret后，它才会出现，记得将这一串信息记录下来，否则下次它就不显示了。</p>
-<p><img src="4.png" alt="4"></p>
-<h1 id="修改hexo与next配置"><a href="#修改hexo与next配置" class="headerlink" title="修改hexo与next配置"></a>修改hexo与next配置</h1><p>最新的hexo以及next主题都已经支持自动整合gitalk评论组件，我们需要做的只是一些必要的配置。</p>
-<h2 id="配置gitalk"><a href="#配置gitalk" class="headerlink" title="配置gitalk"></a>配置gitalk</h2><p>进入next主题配置文件，找到gitalk相关配置项。</p>
-<p><img src="5.png" alt="5"></p>
-<p>这边几个字段含义如下。</p>
-<ul>
-<li>enabled: 是否启用，填true即可</li>
-<li>github_id: 你的github名</li>
-<li>repo: github仓库名，实际上随便建一个public的仓库就好（必须得是public不能是private），也可以像我一样直接用github.io仓库</li>
-<li>client_id: 填写你刚注册的oauth app的clientId</li>
-<li>client_secret: 填写你刚注册的oauth app的clientSecret</li>
-<li>admin_user: 填写你自己的github名即可</li>
-<li>distraction_free_mode: 是否开启无干扰模式，即你在输入评论文字时，页面的其他部分是否可用</li>
-<li>proxy: 代理地址，后面会单独讲</li>
-<li>language: 填写中文即可，即zh-CN</li>
-</ul>
-<h2 id="打开评论功能"><a href="#打开评论功能" class="headerlink" title="打开评论功能"></a>打开评论功能</h2><p>光配置gitalk还不够，需要将当前启用的评论系统切换为gitalk才可以，因为hexo支持多款评论插件，需要我们自己进行选择。</p>
-<p>在next主题配置文件中找到comment配置项。</p>
-<p><img src="6.png" alt="6"></p>
-<p>主要将active填些gitalk即可。</p>
-<h1 id="搭建自己的proxy"><a href="#搭建自己的proxy" class="headerlink" title="搭建自己的proxy"></a>搭建自己的proxy</h1><p>按照上述配置，如果你启动的话，会发现通过gitalk登录github时出现network error或者403错误。</p>
-<p>这是因为gitalk的默认配置proxy已经无法使用了，默认配置中的https://cors-anywhere.herokuapp.com是heroku平台的一个demo网站，目前已经不可用了，所以我们必须自己搭建一个反向代理服务，去替换这里的proxy配置。</p>
-<p>这边主要有几个步骤。</p>
-<ol>
-<li>开启nginx的ssl支持</li>
-<li>使用openssl生成ssl证书</li>
-<li>配置nginx，添加反向代理</li>
-</ol>
-<h2 id="开启nginx的ssl支持"><a href="#开启nginx的ssl支持" class="headerlink" title="开启nginx的ssl支持"></a>开启nginx的ssl支持</h2><p>由于gitalk在调用oauth app时会使用proxy地址去登录，而你的博客如果是https前缀的，那么proxy地址也需要是https前缀的。</p>
-<p>一般情况下，安装nginx时是不会自带ssl模块的，也就是说nginx默认不支持ssl，需要在安装时指定ssl模块。你可以通过下列命令来查看已安装的nginx是否带ssl模块，注意-V大写。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./nginx -V</span><br></pre></td></tr></table></figure>
-
-<p>如果你已经安装了nginx但没有ssl模块，可以参考下面步骤来添加一个ssl模块。</p>
-<p>进入nginx解压包目录，指定一个–with-http_ssl_module如下所示。随后使用make命令编译，但不要使用make install命令，因为这样做会导致现有的nginx配置被完全覆盖。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module</span><br><span class="line"></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
-
-<p>make执行完后，你应该能在nginx解压包目录内看到编译后的可执行nginx文件。</p>
-<p><img src="7.png" alt="7"></p>
-<p>用它覆盖你现有nginx的安装目录下，比如我的安装目录是/usr/local/nginx/sbin。</p>
-<p>此时再使用./nginx -V查看，应该可以发现已经附带了ssl模块。</p>
-<h2 id="使用openssl生成ssl证书"><a href="#使用openssl生成ssl证书" class="headerlink" title="使用openssl生成ssl证书"></a>使用openssl生成ssl证书</h2><p>要给nginx启用https前缀，需要先拥有我们自己的ssl证书，openssl是可以免费生成的，或者你也可以用阿里云、腾讯云的免费ssl证书。</p>
-<p>建议新建一个目录用于存放生成的各种密钥、证书。</p>
-<p>在继续往下阅读之前，你需要先确保自己系统上安装了openssl这个工具。</p>
-<p>首先使用下面的命令生成CA私钥。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl genrsa -out local.key 2048</span><br></pre></td></tr></table></figure>
-
-<p>使用下面的命令生成CA证书请求csr文件，在这个过程中，会让你输入一些诸如国家、省份、城市、部门之类的信息，但最重要的是密码，把它记下来。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl req -new -key local.key -out local.csr</span><br></pre></td></tr></table></figure>
-
-<p>使用下列命令生成CA根证书。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl x509 -req -in local.csr -extensions v3_ca -signkey local.key -out local.crt</span><br></pre></td></tr></table></figure>
-
-<p>使用下列命令生成server私钥。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl genrsa -out my_server.key 2048</span><br></pre></td></tr></table></figure>
-
-<p>分别使用下列命令生成server证书请求和server证书。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl req -new -key my_server.key -out my_server.csr</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl x509 -days 365 -req -in my_server.csr -extensions v3_req -CAkey local.key -CA local.crt -CAcreateserial -out my_server.crt</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置nginx添加反向代理"><a href="#配置nginx添加反向代理" class="headerlink" title="配置nginx添加反向代理"></a>配置nginx添加反向代理</h2><p>修改你的nginx安装目录下的，conf/nginx.conf，在server块添加下面的配置。</p>
-<p>注意ssl_certificate和ssl_certificate_key是你刚生成出来的的证书和私钥。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">listen       443 ssl;</span><br><span class="line">server_name  localhost;</span><br><span class="line">ssl_certificate      /root/zenox/local.crt;</span><br><span class="line">ssl_certificate_key  /root/zenox/local.key;</span><br><span class="line"></span><br><span class="line">ssl_session_cache    shared:SSL:1m;</span><br><span class="line">ssl_session_timeout  5m;</span><br><span class="line"></span><br><span class="line">ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">ssl_prefer_server_ciphers on;</span><br></pre></td></tr></table></figure>
-
-<p>添加一个location块，如下所示，有两个地方是需要修改的，即add_header Access-Control-Allow-Origin这边，填写你自己的域名或者github.io地址；proxy_pass则填写https://github.com</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location &#x3D; &#x2F;login&#x2F;oauth&#x2F;access_token &#123;</span><br><span class="line">                add_header Access-Control-Allow-Origin &#39;https:&#x2F;&#x2F;blog.zenoxen.cn&#39;;</span><br><span class="line">                add_header Access-Control-Allow-Methods &#39;GET, POST, OPTIONS&#39;;</span><br><span class="line">                add_header Access-Control-Allow-Headers &#39;DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization&#39;;</span><br><span class="line">                if ($request_method &#x3D; &#39;OPTIONS&#39;) &#123;</span><br><span class="line">                        return 204;</span><br><span class="line">                &#125;</span><br><span class="line">                proxy_pass https:&#x2F;&#x2F;github.com;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>接下来测试是否能使用https访问到你的nginx，在nginx地址前面加上https前缀来测试，如果能看到nginx欢迎页那么就可以进行下一步了。</p>
-<h2 id="替换proxy配置项"><a href="#替换proxy配置项" class="headerlink" title="替换proxy配置项"></a>替换proxy配置项</h2><p>回到next主题配置文件里，修改那个proxy配置项，如下所示。</p>
-<p><img src="8.png" alt="8"></p>
-<p>如此一来，你的博客应该就可以使用gitalk了。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://cuiqingcai.com/30010.html">Gitalk 评论登录 403 问题解决</a></p>
-<p><a href="https://www.qiansw.com/solve-the-problem-of-using-gitalk-authorization-403.html">解决使用 Gitalk 登录授权报 403 的问题</a></p>
-<p><a href="https://www.cnblogs.com/qiyueqi/p/11551238.html">基于nginx结合openssl实现https</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>hexo博客更换主题</title>
     <url>/2021/02/11/hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
@@ -529,39 +426,6 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
-    <title>使用两种遍历结果构造二叉树</title>
-    <url>/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
-    <content><![CDATA[<p>最近刷Leetcode时，遇到了一道题，给你一个二叉树的后序遍历和中序遍历的输入序列，如何把这棵树的结构构造出来？</p>
-<p>下面贴出这道题的原地址<a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后续遍历序列构造二叉树</a>。</p>
-<h1 id="后序遍历和中序遍历的特点"><a href="#后序遍历和中序遍历的特点" class="headerlink" title="后序遍历和中序遍历的特点"></a>后序遍历和中序遍历的特点</h1><p>不管是先序、中序、后序，它们的不同点在于访问根节点的时机，先序先访问根节点、后序最后访问根节点。</p>
-<p>来看看原题给的样例。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">中序遍历 inorder = [<span class="number">9</span>,<span class="number">3</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">7</span>]</span><br><span class="line">后序遍历 postorder = [<span class="number">9</span>,<span class="number">15</span>,<span class="number">7</span>,<span class="number">20</span>,<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">  <span class="number">3</span></span><br><span class="line"> / \</span><br><span class="line"><span class="number">9</span>  <span class="number">20</span></span><br><span class="line">  /  \</span><br><span class="line"> <span class="number">15</span>   <span class="number">7</span></span><br></pre></td></tr></table></figure>
-
-<p>来观察一下，可以发现中序遍历的一个特征：在中序遍历的序列中，根节点左边是左子树，根节点右边是右子树。中序遍历序列从前往后看的规律是：左子树-&gt;根节点-&gt;右子树。</p>
-<p>也可以发现后序遍历的一个特征：左子树的叶子节点最先找到，右子树的叶子节点次之，根节点最后找到。比如后序遍历最后一个元素为3，再看看后序遍历倒数第二个元素20，它是根节点3的右子树，20再往前的元素7则是20的右子树，那么后序遍历的规律很明朗了，从遍历序列后往前看，根节点-&gt;右子树-&gt;左子树。</p>
-<p>这个遍历的性质很重要，如此一来就可以通过分治算法来将遍历结果转换为二叉树。</p>
-<h1 id="分而治之"><a href="#分而治之" class="headerlink" title="分而治之"></a>分而治之</h1><p>根据上面二叉树的性质，可以先通过后序遍历的最后一个元素找到根节点3，然后去中序遍历中找到根节点3，找到以后就可以将3左边的元素判定为左子树，3右边的元素判定为右子树。</p>
-<p><img src="1.png" alt="1"></p>
-<p>然后先递归地对右子树进行处理（因为我们看后序遍历是从后面往前看的），再递归地对左子树进行处理，得到地就是完整地二叉树。</p>
-<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] inorder,postorder;</span><br><span class="line">	<span class="keyword">int</span> postIndex;<span class="comment">//记录后序遍历当前位置</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在中序遍历中l和r下标之间寻找tar这个元素</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findIndexForNum</span><span class="params">(<span class="keyword">int</span> tar,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=l;i&lt;=r;i++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(inorder[i]==tar) &#123;</span><br><span class="line">				<span class="keyword">return</span> i;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//建树的递归函数,l和r是当前子树在中序遍历中的范围</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">build</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(l&gt;r) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> midVal=postorder[postIndex--];<span class="comment">//从后序遍历中拿一个根节点</span></span><br><span class="line">		TreeNode root=<span class="keyword">new</span> TreeNode(midVal);</span><br><span class="line">		<span class="keyword">int</span> midIndex=findIndexForNum(midVal,l,r);</span><br><span class="line">		root.right=build(midIndex+<span class="number">1</span>,r);<span class="comment">//先建右子树</span></span><br><span class="line">		root.left=build(l,midIndex-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">return</span> root;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span>[] inorder, <span class="keyword">int</span>[] postorder)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.inorder=inorder;</span><br><span class="line">		<span class="keyword">this</span>.postorder=postorder;</span><br><span class="line">		postIndex=postorder.length-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> build(<span class="number">0</span>,postIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="用中序和先序遍历构造二叉树"><a href="#用中序和先序遍历构造二叉树" class="headerlink" title="用中序和先序遍历构造二叉树"></a>用中序和先序遍历构造二叉树</h1><p>其实道理也是一样的，只不过变成了从前往后遍历先序序列，具体做法仍然是分治+递归建树。</p>
-]]></content>
-      <categories>
-        <category>算法</category>
-        <category>二叉树</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-        <tag>二叉树</tag>
-        <tag>二叉树遍历</tag>
-        <tag>递归</tag>
-        <tag>分治</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>千岛湖的首次接触</title>
     <url>/2021/05/04/%E5%8D%83%E5%B2%9B%E6%B9%96%E7%9A%84%E9%A6%96%E6%AC%A1%E6%8E%A5%E8%A7%A6/</url>
     <content><![CDATA[<h1 id="旅游概览"><a href="#旅游概览" class="headerlink" title="旅游概览"></a>旅游概览</h1><ul>
@@ -650,6 +514,39 @@ if(random_num(0, 9)&gt;6)
       <tags>
         <tag>随笔</tag>
         <tag>游记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用两种遍历结果构造二叉树</title>
+    <url>/2021/03/26/%E4%BD%BF%E7%94%A8%E4%B8%A4%E7%A7%8D%E9%81%8D%E5%8E%86%E7%BB%93%E6%9E%9C%E6%9E%84%E9%80%A0%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<p>最近刷Leetcode时，遇到了一道题，给你一个二叉树的后序遍历和中序遍历的输入序列，如何把这棵树的结构构造出来？</p>
+<p>下面贴出这道题的原地址<a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后续遍历序列构造二叉树</a>。</p>
+<h1 id="后序遍历和中序遍历的特点"><a href="#后序遍历和中序遍历的特点" class="headerlink" title="后序遍历和中序遍历的特点"></a>后序遍历和中序遍历的特点</h1><p>不管是先序、中序、后序，它们的不同点在于访问根节点的时机，先序先访问根节点、后序最后访问根节点。</p>
+<p>来看看原题给的样例。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">中序遍历 inorder = [<span class="number">9</span>,<span class="number">3</span>,<span class="number">15</span>,<span class="number">20</span>,<span class="number">7</span>]</span><br><span class="line">后序遍历 postorder = [<span class="number">9</span>,<span class="number">15</span>,<span class="number">7</span>,<span class="number">20</span>,<span class="number">3</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">  <span class="number">3</span></span><br><span class="line"> / \</span><br><span class="line"><span class="number">9</span>  <span class="number">20</span></span><br><span class="line">  /  \</span><br><span class="line"> <span class="number">15</span>   <span class="number">7</span></span><br></pre></td></tr></table></figure>
+
+<p>来观察一下，可以发现中序遍历的一个特征：在中序遍历的序列中，根节点左边是左子树，根节点右边是右子树。中序遍历序列从前往后看的规律是：左子树-&gt;根节点-&gt;右子树。</p>
+<p>也可以发现后序遍历的一个特征：左子树的叶子节点最先找到，右子树的叶子节点次之，根节点最后找到。比如后序遍历最后一个元素为3，再看看后序遍历倒数第二个元素20，它是根节点3的右子树，20再往前的元素7则是20的右子树，那么后序遍历的规律很明朗了，从遍历序列后往前看，根节点-&gt;右子树-&gt;左子树。</p>
+<p>这个遍历的性质很重要，如此一来就可以通过分治算法来将遍历结果转换为二叉树。</p>
+<h1 id="分而治之"><a href="#分而治之" class="headerlink" title="分而治之"></a>分而治之</h1><p>根据上面二叉树的性质，可以先通过后序遍历的最后一个元素找到根节点3，然后去中序遍历中找到根节点3，找到以后就可以将3左边的元素判定为左子树，3右边的元素判定为右子树。</p>
+<p><img src="1.png" alt="1"></p>
+<p>然后先递归地对右子树进行处理（因为我们看后序遍历是从后面往前看的），再递归地对左子树进行处理，得到地就是完整地二叉树。</p>
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] inorder,postorder;</span><br><span class="line">	<span class="keyword">int</span> postIndex;<span class="comment">//记录后序遍历当前位置</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//在中序遍历中l和r下标之间寻找tar这个元素</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findIndexForNum</span><span class="params">(<span class="keyword">int</span> tar,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=l;i&lt;=r;i++) &#123;</span><br><span class="line">			<span class="keyword">if</span>(inorder[i]==tar) &#123;</span><br><span class="line">				<span class="keyword">return</span> i;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//建树的递归函数,l和r是当前子树在中序遍历中的范围</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">build</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(l&gt;r) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> midVal=postorder[postIndex--];<span class="comment">//从后序遍历中拿一个根节点</span></span><br><span class="line">		TreeNode root=<span class="keyword">new</span> TreeNode(midVal);</span><br><span class="line">		<span class="keyword">int</span> midIndex=findIndexForNum(midVal,l,r);</span><br><span class="line">		root.right=build(midIndex+<span class="number">1</span>,r);<span class="comment">//先建右子树</span></span><br><span class="line">		root.left=build(l,midIndex-<span class="number">1</span>);</span><br><span class="line">		<span class="keyword">return</span> root;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="function"><span class="keyword">public</span> TreeNode <span class="title">buildTree</span><span class="params">(<span class="keyword">int</span>[] inorder, <span class="keyword">int</span>[] postorder)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.inorder=inorder;</span><br><span class="line">		<span class="keyword">this</span>.postorder=postorder;</span><br><span class="line">		postIndex=postorder.length-<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> build(<span class="number">0</span>,postIndex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="用中序和先序遍历构造二叉树"><a href="#用中序和先序遍历构造二叉树" class="headerlink" title="用中序和先序遍历构造二叉树"></a>用中序和先序遍历构造二叉树</h1><p>其实道理也是一样的，只不过变成了从前往后遍历先序序列，具体做法仍然是分治+递归建树。</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+        <category>二叉树</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>二叉树</tag>
+        <tag>二叉树遍历</tag>
+        <tag>递归</tag>
+        <tag>分治</tag>
       </tags>
   </entry>
   <entry>
