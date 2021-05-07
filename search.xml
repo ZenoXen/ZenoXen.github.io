@@ -1,65 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>SpringValidation使用指南--Controller与Service入参校验</title>
-    <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
-    <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
-<h1 id="JSR-303、Hibernate-Validator与Spring-Validation之间的关系"><a href="#JSR-303、Hibernate-Validator与Spring-Validation之间的关系" class="headerlink" title="JSR-303、Hibernate Validator与Spring Validation之间的关系"></a>JSR-303、Hibernate Validator与Spring Validation之间的关系</h1><p>做SpingBoot程序时，我们经常需要进行方法参数校验，相信很多人都用过@Valid注解以及@NotNull、@NotEmpty、@Min、@Max这样的注解，这些注解实际上是Java标准JSR-303定义的，而且JDK本身不提供这些参数校验的实现。</p>
-<p>Hibernate为JSR-303提供了一套实现，并在原先的基础上又扩展了一些功能，即Hibernate Validator，它可以单独引入使用，比如这样。</p>
-<p><img src="1.png" alt="1"></p>
-<p>Spring的不少模块都集成了Hibernate Validator，所以现在的主流的开发环境一般都是通过Spring或者Spring Boot的起步依赖将其引入的,比如spring-boot-starter-validation，其内部就包含了Hibernate Validator。在Hibernate的基础上，Spring Validation又提供了一系列AOP支持，使各种自定义的Validator以及校验注解能更方便的整合进我们的Spring程序中。</p>
-<p><img src="2.png" alt="2"></p>
-<p>如此，JSR-303、HIbernate Validator以及Spring Validation之间的关系就明朗了。</p>
-<p>JSR-303 &lt;– Hibernate Validator实现 &lt;–Spring Validation二次封装</p>
-<h1 id="Spring-Validation的功能"><a href="#Spring-Validation的功能" class="headerlink" title="Spring Validation的功能"></a>Spring Validation的功能</h1><h2 id="Request-Body校验"><a href="#Request-Body校验" class="headerlink" title="Request Body校验"></a>Request Body校验</h2><p>大部人最先接触到的一般是Spring MVC的Controller层入参校验，比如下面这个例子。</p>
-<p><img src="3.png" alt="3"></p>
-<p>RequestBody绑定了一个DTO（Data Transfer Object）对象，里面的一些字段需要进行校验。</p>
-<p><img src="4.png" alt="4"></p>
-<p>在Controller方法的入参前面加上一个@Valid注解，Spring Validation就会自动校验DTO中的数据，若一个或多个字段没通过校验，那么就会抛出MethodArgumentNotValidException。</p>
-<p>这里的Valid注解是JSR-303定义的，可以替换为@Validated注解，它是SpringValidation提供的，虽然两者功能不同，但在这个场景下，它们作用是一样的。</p>
-<p>稍微复杂有点的情况是，如果DTO中又包含了另一个需要校验的复杂对象，比如下面这个例子。</p>
-<p><img src="7.png" alt="7"></p>
-<p>假设NameBo里也有一些需要校验的字段，那么应该在NameBo字段上再加一个@Valid注解，当Spring检测到这个NameBo字段时，会递归进行校验，可以看看@Valid注解的源码。</p>
-<p><img src="8.png" alt="8"></p>
-<p>源码的注释已经说明了，这种校验行为会递归进行。</p>
-<h2 id="方法入参校验"><a href="#方法入参校验" class="headerlink" title="方法入参校验"></a>方法入参校验</h2><p>有时候我们希望不只是在Controller层进行校验，而是在各种各样的地方应用校验，比如Service层，也希望能对平铺开来的参数进行校验，而不单纯的是对DTO进行校验，比如下面这样。</p>
-<p><img src="5.png" alt="5"></p>
-<p>但与Controller层的情况稍微不同了，在非Controller类中想要让Spring自动校验，需要在类定义加上一个@Validated注解。</p>
-<p><img src="6.png" alt="6"></p>
-<p>如此一来，MyService类中的所有方法，一旦入参上加了校验注解，都会被SpringValidation处理，如果有参数没通过校验，抛出的是ConstraintViolationException，与前面提到的MethodArgumentNotValidException不同，ConstraintViolationException是JSR-303提供的，而它是Spring提供的。</p>
-<p>如果想要对Controller内的入参（不是RequestBody）进行校验，也需要在Controller类上加@Validated注解，比如下面这个例子，是对PathVariable和RequestParam进行校验。</p>
-<p><img src="9.png" alt="9"></p>
-<p>如果想要在Service层对DTO内的字段进行校验，在Service类上已经使用了@Validated注解的前提下，只需要在DTO入参的前面加上@Valid注解即可。</p>
-<p><img src="10.png" alt="10"></p>
-<h1 id="自定义校验规则"><a href="#自定义校验规则" class="headerlink" title="自定义校验规则"></a>自定义校验规则</h1><h2 id="定义Validator"><a href="#定义Validator" class="headerlink" title="定义Validator"></a>定义Validator</h2><p>相信你已经发现了，JSR-303这一套校验规范实际上是围绕注解展开的，比如@NotNull、@NotEmpty这些，针对这些JSR-303已有的注解，SpringValidation或者HibernateValidator实现了一部分，但如果现在有一个自定义的DTO类，需要同时检查多个字段，比如下面这个类。</p>
-<p><img src="11.png" alt="11"></p>
-<p>按照User类的定义，对其进行校验时需要同时检查username和password，单检查一个username或者单检查一个password都是没有意义的，此时预设的注解就无法满足我们的需求了，我们自己手动写一套校验规则。</p>
-<p>首先写自定义类型的校验器，实现ConstraintValidator接口，第一个泛型是我们自定义的校验注解，后面会讲到，第二个泛型是我们要校验的类型，这里我们要同时检查username和password，所以直接检查整个User对象。</p>
-<p><img src="12.png" alt="12"></p>
-<p>一般来说重写isValid方法即可，校验时调用的是这个方法,如果isValid返回true，则说明校验通过，程序正常运行，若返回false，则校验不通过，触发ConstraintViolationException。</p>
-<h2 id="自定义校验注解"><a href="#自定义校验注解" class="headerlink" title="自定义校验注解"></a>自定义校验注解</h2><p>有了Validator还不够，因为此时Spring的校验代理还不知道应该对User执行UserValidator的校验方法，为了让Spring去自动校验User，我们要写一个自定义注解标注在User类上，就像给一个产品打上标签，指明它该使用哪种机器处理。</p>
-<p><img src="13.png" alt="13"></p>
-<p>由于要校验的是整个User类，所以@Target指定的是TYPE，@Constraint(validatedBy=UserValidator.class)则代表这个注解所标注的类应该被UserVlidator校验。</p>
-<p>message方法有一个默认返回值，这里指定未通过校验时的message；groups方法是用于分组校验的，分组是什么概念？你可以理解为类似于Spring Profile的一种东西，指明了哪个分组下应该检查User，哪些分组下不应该检查User，具体的会在后续文章中说明，这里不展开。</p>
-<p><img src="14.png" alt="14"></p>
-<p>最后将UserValid注解标注在User类上，如上图所示，在Controller层或者Service层使用Valid注解做DTO校验的标注。</p>
-<p><img src="15.png" alt="15"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了SpringValidation与JSR-303、HibernateValidator的关系，并简单的对其使用进行了说明，但SpringValidation的功能实际上还不止如此，比如手动调用Validator、分组校验等等，后续文章会补全这些内容。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/205151764">Spring Validation最佳实践与实现原理</a></p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-        <category>SpringValidation</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>数据校验</tag>
-        <tag>HibernateValidator</tag>
-        <tag>SpringValidation</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CS-BTE如何控制英雄的产生</title>
     <url>/2021/04/15/CS-BTE%E5%A6%82%E4%BD%95%E6%8E%A7%E5%88%B6%E8%8B%B1%E9%9B%84%E7%9A%84%E4%BA%A7%E7%94%9F/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>如果你是个CSOL的上古玩家（12年及以前），一定知道当时很热门的生化模式3，也许你也跟我一样，希望自己变身人类英雄的概率增加，或者干脆每把都希望自己变英雄。当时已经有不少一些高仿CSOL的单机版了，比如CSO-NST，我也有玩过，不过当时啥也不懂，也不懂编程知识或者CS插件管理之类的（虽然现在还是没了解过CS插件这一套代码）。前几天搞到了一份CS-BTE大概15年左右的版本，还是老生化模式的数据，就琢磨着怎么让自己每盘都变成英雄，花了两个小时研究插件源码，终于搞定了，接下来把自己的经验说一下。</p>
@@ -149,6 +90,65 @@ if(random_num(0, 9)&gt;6)
         <tag>个人爱好</tag>
         <tag>CS-BTE</tag>
         <tag>CSOL单机版</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringValidation使用指南--Controller与Service入参校验</title>
+    <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
+<h1 id="JSR-303、Hibernate-Validator与Spring-Validation之间的关系"><a href="#JSR-303、Hibernate-Validator与Spring-Validation之间的关系" class="headerlink" title="JSR-303、Hibernate Validator与Spring Validation之间的关系"></a>JSR-303、Hibernate Validator与Spring Validation之间的关系</h1><p>做SpingBoot程序时，我们经常需要进行方法参数校验，相信很多人都用过@Valid注解以及@NotNull、@NotEmpty、@Min、@Max这样的注解，这些注解实际上是Java标准JSR-303定义的，而且JDK本身不提供这些参数校验的实现。</p>
+<p>Hibernate为JSR-303提供了一套实现，并在原先的基础上又扩展了一些功能，即Hibernate Validator，它可以单独引入使用，比如这样。</p>
+<p><img src="1.png" alt="1"></p>
+<p>Spring的不少模块都集成了Hibernate Validator，所以现在的主流的开发环境一般都是通过Spring或者Spring Boot的起步依赖将其引入的,比如spring-boot-starter-validation，其内部就包含了Hibernate Validator。在Hibernate的基础上，Spring Validation又提供了一系列AOP支持，使各种自定义的Validator以及校验注解能更方便的整合进我们的Spring程序中。</p>
+<p><img src="2.png" alt="2"></p>
+<p>如此，JSR-303、HIbernate Validator以及Spring Validation之间的关系就明朗了。</p>
+<p>JSR-303 &lt;– Hibernate Validator实现 &lt;–Spring Validation二次封装</p>
+<h1 id="Spring-Validation的功能"><a href="#Spring-Validation的功能" class="headerlink" title="Spring Validation的功能"></a>Spring Validation的功能</h1><h2 id="Request-Body校验"><a href="#Request-Body校验" class="headerlink" title="Request Body校验"></a>Request Body校验</h2><p>大部人最先接触到的一般是Spring MVC的Controller层入参校验，比如下面这个例子。</p>
+<p><img src="3.png" alt="3"></p>
+<p>RequestBody绑定了一个DTO（Data Transfer Object）对象，里面的一些字段需要进行校验。</p>
+<p><img src="4.png" alt="4"></p>
+<p>在Controller方法的入参前面加上一个@Valid注解，Spring Validation就会自动校验DTO中的数据，若一个或多个字段没通过校验，那么就会抛出MethodArgumentNotValidException。</p>
+<p>这里的Valid注解是JSR-303定义的，可以替换为@Validated注解，它是SpringValidation提供的，虽然两者功能不同，但在这个场景下，它们作用是一样的。</p>
+<p>稍微复杂有点的情况是，如果DTO中又包含了另一个需要校验的复杂对象，比如下面这个例子。</p>
+<p><img src="7.png" alt="7"></p>
+<p>假设NameBo里也有一些需要校验的字段，那么应该在NameBo字段上再加一个@Valid注解，当Spring检测到这个NameBo字段时，会递归进行校验，可以看看@Valid注解的源码。</p>
+<p><img src="8.png" alt="8"></p>
+<p>源码的注释已经说明了，这种校验行为会递归进行。</p>
+<h2 id="方法入参校验"><a href="#方法入参校验" class="headerlink" title="方法入参校验"></a>方法入参校验</h2><p>有时候我们希望不只是在Controller层进行校验，而是在各种各样的地方应用校验，比如Service层，也希望能对平铺开来的参数进行校验，而不单纯的是对DTO进行校验，比如下面这样。</p>
+<p><img src="5.png" alt="5"></p>
+<p>但与Controller层的情况稍微不同了，在非Controller类中想要让Spring自动校验，需要在类定义加上一个@Validated注解。</p>
+<p><img src="6.png" alt="6"></p>
+<p>如此一来，MyService类中的所有方法，一旦入参上加了校验注解，都会被SpringValidation处理，如果有参数没通过校验，抛出的是ConstraintViolationException，与前面提到的MethodArgumentNotValidException不同，ConstraintViolationException是JSR-303提供的，而它是Spring提供的。</p>
+<p>如果想要对Controller内的入参（不是RequestBody）进行校验，也需要在Controller类上加@Validated注解，比如下面这个例子，是对PathVariable和RequestParam进行校验。</p>
+<p><img src="9.png" alt="9"></p>
+<p>如果想要在Service层对DTO内的字段进行校验，在Service类上已经使用了@Validated注解的前提下，只需要在DTO入参的前面加上@Valid注解即可。</p>
+<p><img src="10.png" alt="10"></p>
+<h1 id="自定义校验规则"><a href="#自定义校验规则" class="headerlink" title="自定义校验规则"></a>自定义校验规则</h1><h2 id="定义Validator"><a href="#定义Validator" class="headerlink" title="定义Validator"></a>定义Validator</h2><p>相信你已经发现了，JSR-303这一套校验规范实际上是围绕注解展开的，比如@NotNull、@NotEmpty这些，针对这些JSR-303已有的注解，SpringValidation或者HibernateValidator实现了一部分，但如果现在有一个自定义的DTO类，需要同时检查多个字段，比如下面这个类。</p>
+<p><img src="11.png" alt="11"></p>
+<p>按照User类的定义，对其进行校验时需要同时检查username和password，单检查一个username或者单检查一个password都是没有意义的，此时预设的注解就无法满足我们的需求了，我们自己手动写一套校验规则。</p>
+<p>首先写自定义类型的校验器，实现ConstraintValidator接口，第一个泛型是我们自定义的校验注解，后面会讲到，第二个泛型是我们要校验的类型，这里我们要同时检查username和password，所以直接检查整个User对象。</p>
+<p><img src="12.png" alt="12"></p>
+<p>一般来说重写isValid方法即可，校验时调用的是这个方法,如果isValid返回true，则说明校验通过，程序正常运行，若返回false，则校验不通过，触发ConstraintViolationException。</p>
+<h2 id="自定义校验注解"><a href="#自定义校验注解" class="headerlink" title="自定义校验注解"></a>自定义校验注解</h2><p>有了Validator还不够，因为此时Spring的校验代理还不知道应该对User执行UserValidator的校验方法，为了让Spring去自动校验User，我们要写一个自定义注解标注在User类上，就像给一个产品打上标签，指明它该使用哪种机器处理。</p>
+<p><img src="13.png" alt="13"></p>
+<p>由于要校验的是整个User类，所以@Target指定的是TYPE，@Constraint(validatedBy=UserValidator.class)则代表这个注解所标注的类应该被UserVlidator校验。</p>
+<p>message方法有一个默认返回值，这里指定未通过校验时的message；groups方法是用于分组校验的，分组是什么概念？你可以理解为类似于Spring Profile的一种东西，指明了哪个分组下应该检查User，哪些分组下不应该检查User，具体的会在后续文章中说明，这里不展开。</p>
+<p><img src="14.png" alt="14"></p>
+<p>最后将UserValid注解标注在User类上，如上图所示，在Controller层或者Service层使用Valid注解做DTO校验的标注。</p>
+<p><img src="15.png" alt="15"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了SpringValidation与JSR-303、HibernateValidator的关系，并简单的对其使用进行了说明，但SpringValidation的功能实际上还不止如此，比如手动调用Validator、分组校验等等，后续文章会补全这些内容。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/205151764">Spring Validation最佳实践与实现原理</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringValidation</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>数据校验</tag>
+        <tag>HibernateValidator</tag>
+        <tag>SpringValidation</tag>
       </tags>
   </entry>
   <entry>
@@ -653,20 +653,6 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
-    <title>我的第一篇文章</title>
-    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
-    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
-<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
-<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何让hexo个人博客被搜索引擎收录</title>
     <url>/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/</url>
     <content><![CDATA[<p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的。</p>
@@ -734,6 +720,20 @@ if(random_num(0, 9)&gt;6)
       </categories>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇文章</title>
+    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
+    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
+<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
+<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
       </tags>
   </entry>
   <entry>
