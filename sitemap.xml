@@ -2,13 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://blog.zenoxen.cn/2021/06/21/%E6%B5%8B%E8%AF%95%E6%96%B0%E6%96%87%E7%AB%A0/</loc>
-    
-    <lastmod>2021-06-21</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://blog.zenoxen.cn/2021/05/04/%E5%8D%83%E5%B2%9B%E6%B9%96%E7%9A%84%E9%A6%96%E6%AC%A1%E6%8E%A5%E8%A7%A6/</loc>
     
     <lastmod>2021-05-06</lastmod>
@@ -79,14 +72,14 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/tags/index.html</loc>
+    <loc>https://blog.zenoxen.cn/categories/index.html</loc>
     
     <lastmod>2021-03-14</lastmod>
     
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/index.html</loc>
+    <loc>https://blog.zenoxen.cn/tags/index.html</loc>
     
     <lastmod>2021-03-14</lastmod>
     
@@ -356,14 +349,14 @@
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/%E6%B8%B8%E8%AE%B0/</loc>
+    <loc>https://blog.zenoxen.cn/categories/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/</loc>
     <lastmod>2021-06-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://blog.zenoxen.cn/categories/%E7%AE%97%E6%B3%95/%E4%BA%8C%E5%8F%89%E6%A0%91/</loc>
+    <loc>https://blog.zenoxen.cn/categories/%E6%B8%B8%E8%AE%B0/</loc>
     <lastmod>2021-06-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
