@@ -634,6 +634,11 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
+    <title>测试新文章</title>
+    <url>/2021/06/21/%E6%B5%8B%E8%AF%95%E6%96%B0%E6%96%87%E7%AB%A0/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>SpringWebFlow入门及案例</title>
     <url>/2021/03/01/SpringWebFlow%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>一般我们在构建基于模板的Web应用时，会使用SpringMVC，模板技术可能会选择jsp、thymeleaf、freemarker等，如果Model、View、Controller各层次之间的交互和跳转比较简单的话，自然是再好不过的了，但如果比较复杂的话，那么一般的MVC模式就显得吃力不讨好了。</p>
