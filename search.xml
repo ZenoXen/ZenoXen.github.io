@@ -93,6 +93,79 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
+    <title>Spring实现手机号脱敏处理</title>
+    <url>/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先介绍一下我这边的开发场景，数据库中存的是完整的手机号，即没有加密过的字符串，但需求希望将数据返回前端时进行脱敏处理，将手机号中间4位替换为*号。</p>
+<p>这里还有一点值得一提，返回的ResponseBody中，可能存在一些手机号是夹杂在一个字符串中间的，需要在保留字符串原来内容的前提下，对这些手机号进行脱敏处理。</p>
+<h1 id="正则表达式实现数据脱敏"><a href="#正则表达式实现数据脱敏" class="headerlink" title="正则表达式实现数据脱敏"></a>正则表达式实现数据脱敏</h1><p>实现这个功能的思路是，使用正则表达式替换一个字符串中的所有符合手机号码特征的子串，Java的String类本身就提供了replaceAll方法，我们可以用该方法实现这个功能。</p>
+<p>首先来看看匹配手机号码的正则和手机模糊化的正则。</p>
+<h2 id="中国手机号码的结构特征"><a href="#中国手机号码的结构特征" class="headerlink" title="中国手机号码的结构特征"></a>中国手机号码的结构特征</h2><p>一般中国的手机号码是11位，前三位是根据运营商而定的，4到7位为地区编码，8到11位是随机分配给用户的号码，一般加密是给中间四位地区码加密。</p>
+<p>同时前三位手机号，第一位就是1，第二位和第三位各个运营商各有不同，基本规律我写在下面的代码中，即3可以组合0-9，4组合5或7，5组合0-3或5-9……</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>而将中间四位替换为星号的话，需要在正则表达式中使用圆括号划分出两个区域，即第二和第三位与最后四位之间的位置。</p>
+<h1 id="自定义ResponseBody数据转换"><a href="#自定义ResponseBody数据转换" class="headerlink" title="自定义ResponseBody数据转换"></a>自定义ResponseBody数据转换</h1><p>一般来说，在我们的系统中并不是所有地方都必须得将手机号进行脱敏，有些地方可能还是需要将手机号暴露给用户的，对于不同的接口或者说对于不同的ResponseBody，可以使用Jackson的序列化器来指定如何将JSON序列化给前端。</p>
+<h2 id="自定义JsonSerializer"><a href="#自定义JsonSerializer" class="headerlink" title="自定义JsonSerializer"></a>自定义JsonSerializer</h2><p>自定义一个DesensitizeSerializer，继承JsonSerializer&lt;String&gt;，即它是用于字符串的序列化，在方法中直接调用String的replaceAll方法，将所有符合PHONE_REGEX的字串使用PHONE_BLUR_REGEX替换为加密过的字符串。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DesensitizeSerializer</span> <span class="keyword">extends</span> <span class="title">JsonSerializer</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(String s, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        jsonGenerator.writeString(<span class="keyword">this</span>.encryptPhoneNumber(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">encryptPhoneNumber</span><span class="params">(String phoneNumber)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Objects.nonNull(phoneNumber)) &#123;</span><br><span class="line">            <span class="keyword">return</span> phoneNumber.replaceAll(PHONE_REGEX, PHONE_BLUR_REGEX);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用JsonSerializer"><a href="#应用JsonSerializer" class="headerlink" title="应用JsonSerializer"></a>应用JsonSerializer</h2><p>一般我们使用ResponseBody注解将一个Pojo类或者JPA的interface-based projection返回给前端，虽然我们的确可以在SQL层面做预处理，但那样就容易受需求变更的影响了，而如果是在返回给前端的最后一步之前，也就是将ResponseBody序列化为Json的这一步做处理，那么就很容易面临需求的变更了。</p>
+<p>假设现在有个UserAccount类作为ResponseBody返回给前端，其中的mobile字段需要加密，我们可以像下面这样应用之前写好的JsonSerializer。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserAccount</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonSerialize(using = DesensitizeSerializer.class)</span></span><br><span class="line">    <span class="keyword">private</span> String mobile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@JsonSerialize注解可以用在getter方法上或者是类字段上，使用using属性可以为这个字段指定一个JsonSerializer。</p>
+<p>写一个测试接口，来看看结果。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;mobile&quot;</span>:<span class="string">&quot;135****3843&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果手机号是混杂在一个很长的字符串里的，也不必担心，String的replaceAll方法可以将整个字符串中所有的手机号加密。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.pianshen.com/article/7263153515/">手机号校验与脱敏处理</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Spring</tag>
+        <tag>信息脱敏</tag>
+        <tag>正则表达式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo博客更换主题</title>
+    <url>/2021/02/11/hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
+<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
+<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
+<p><img src="hexo-default.png"></p>
+<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
+<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
+<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
+<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
+<p><img src="download-next.png" alt="download-next"></p>
+<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
+<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
+<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
+<p><img src="switch-theme.png" alt="switch-theme"></p>
+<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
+<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
+<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
+<p><img src="error.png" alt="error"></p>
+<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
+<p>在hexo项目根目录使用下列指令进行安装。</p>
+<p><code>npm install hexo-renderer-swig --save</code></p>
+<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
+<p><img src="next-theme.png" alt="next-theme"></p>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
+<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringValidation使用指南--Controller与Service入参校验</title>
     <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
     <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
@@ -200,95 +273,6 @@ if(random_num(0, 9)&gt;6)
         <tag>数据校验</tag>
         <tag>HibernateValidator</tag>
         <tag>SpringValidation</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Spring实现手机号脱敏处理</title>
-    <url>/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先介绍一下我这边的开发场景，数据库中存的是完整的手机号，即没有加密过的字符串，但需求希望将数据返回前端时进行脱敏处理，将手机号中间4位替换为*号。</p>
-<p>这里还有一点值得一提，返回的ResponseBody中，可能存在一些手机号是夹杂在一个字符串中间的，需要在保留字符串原来内容的前提下，对这些手机号进行脱敏处理。</p>
-<h1 id="正则表达式实现数据脱敏"><a href="#正则表达式实现数据脱敏" class="headerlink" title="正则表达式实现数据脱敏"></a>正则表达式实现数据脱敏</h1><p>实现这个功能的思路是，使用正则表达式替换一个字符串中的所有符合手机号码特征的子串，Java的String类本身就提供了replaceAll方法，我们可以用该方法实现这个功能。</p>
-<p>首先来看看匹配手机号码的正则和手机模糊化的正则。</p>
-<h2 id="中国手机号码的结构特征"><a href="#中国手机号码的结构特征" class="headerlink" title="中国手机号码的结构特征"></a>中国手机号码的结构特征</h2><p>一般中国的手机号码是11位，前三位是根据运营商而定的，4到7位为地区编码，8到11位是随机分配给用户的号码，一般加密是给中间四位地区码加密。</p>
-<p>同时前三位手机号，第一位就是1，第二位和第三位各个运营商各有不同，基本规律我写在下面的代码中，即3可以组合0-9，4组合5或7，5组合0-3或5-9……</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>而将中间四位替换为星号的话，需要在正则表达式中使用圆括号划分出两个区域，即第二和第三位与最后四位之间的位置。</p>
-<h1 id="自定义ResponseBody数据转换"><a href="#自定义ResponseBody数据转换" class="headerlink" title="自定义ResponseBody数据转换"></a>自定义ResponseBody数据转换</h1><p>一般来说，在我们的系统中并不是所有地方都必须得将手机号进行脱敏，有些地方可能还是需要将手机号暴露给用户的，对于不同的接口或者说对于不同的ResponseBody，可以使用Jackson的序列化器来指定如何将JSON序列化给前端。</p>
-<h2 id="自定义JsonSerializer"><a href="#自定义JsonSerializer" class="headerlink" title="自定义JsonSerializer"></a>自定义JsonSerializer</h2><p>自定义一个DesensitizeSerializer，继承JsonSerializer&lt;String&gt;，即它是用于字符串的序列化，在方法中直接调用String的replaceAll方法，将所有符合PHONE_REGEX的字串使用PHONE_BLUR_REGEX替换为加密过的字符串。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DesensitizeSerializer</span> <span class="keyword">extends</span> <span class="title">JsonSerializer</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(String s, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        jsonGenerator.writeString(<span class="keyword">this</span>.encryptPhoneNumber(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">encryptPhoneNumber</span><span class="params">(String phoneNumber)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Objects.nonNull(phoneNumber)) &#123;</span><br><span class="line">            <span class="keyword">return</span> phoneNumber.replaceAll(PHONE_REGEX, PHONE_BLUR_REGEX);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="应用JsonSerializer"><a href="#应用JsonSerializer" class="headerlink" title="应用JsonSerializer"></a>应用JsonSerializer</h2><p>一般我们使用ResponseBody注解将一个Pojo类或者JPA的interface-based projection返回给前端，虽然我们的确可以在SQL层面做预处理，但那样就容易受需求变更的影响了，而如果是在返回给前端的最后一步之前，也就是将ResponseBody序列化为Json的这一步做处理，那么就很容易面临需求的变更了。</p>
-<p>假设现在有个UserAccount类作为ResponseBody返回给前端，其中的mobile字段需要加密，我们可以像下面这样应用之前写好的JsonSerializer。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserAccount</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonSerialize(using = DesensitizeSerializer.class)</span></span><br><span class="line">    <span class="keyword">private</span> String mobile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>@JsonSerialize注解可以用在getter方法上或者是类字段上，使用using属性可以为这个字段指定一个JsonSerializer。</p>
-<p>写一个测试接口，来看看结果。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;mobile&quot;</span>:<span class="string">&quot;135****3843&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果手机号是混杂在一个很长的字符串里的，也不必担心，String的replaceAll方法可以将整个字符串中所有的手机号加密。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.pianshen.com/article/7263153515/">手机号校验与脱敏处理</a></p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>Java</tag>
-        <tag>信息脱敏</tag>
-        <tag>正则表达式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo博客更换主题</title>
-    <url>/2021/02/11/hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在继续往下读这篇文章之前，你应该确保自己已经可以在本地预览Hexo的效果了，如果还不行的话，可以读一下我之前写的文章。</p>
-<p>本文将在上一篇文章的基础上，为Hexo更换一个主题，就以Next主题为例子，同时也会讲讲安装Next主题时可能遇到的一些问题。</p>
-<h1 id="选一个自己喜欢的主题"><a href="#选一个自己喜欢的主题" class="headerlink" title="选一个自己喜欢的主题"></a>选一个自己喜欢的主题</h1><p>安装完Hexo并第一次跑起来后，你应该会看到这样的界面。</p>
-<p><img src="hexo-default.png"></p>
-<p>这时Hexo的默认主题Landscape，实际上Hexo社区非常热闹，目前有很多的主题可供选择了，你可以去Hexo官网逛逛，传送门<a href="https://hexo.io/themes/">Hexo官方主题推介</a>。</p>
-<p>这里我就以Next主题为例吧，毕竟我自己的博客也是用Next主题的。下面给出Next主题的Github仓库，你可以看看作者的说明，传送门<a href="https://github.com/iissnan/hexo-theme-next">Next主题仓库</a>。</p>
-<h1 id="下载安装主题"><a href="#下载安装主题" class="headerlink" title="下载安装主题"></a>下载安装主题</h1><p>在之前使用hexo init命令生成项目后，你应该会发现其中有个目录名称叫themes，没错，这个目录就是用来保存当前这个项目可用的所有的hexo主题，每个主题一个单独的目录，比如下载了next主题，那么它就保存在themes/next中。</p>
-<p>使用<code>git clone</code>将next主题下载到你的themes/next目录中，比如当前在项目根目录下，可以用下面的指令来下载主题。</p>
-<p><img src="download-next.png" alt="download-next"></p>
-<p><code>git clone git@github.com:iissnan/hexo-theme-next.git themes/next</code></p>
-<p>随后切换目录到next目录下，安装js依赖，即npm install。</p>
-<h1 id="切换主题"><a href="#切换主题" class="headerlink" title="切换主题"></a>切换主题</h1><p>安装完主题后，并没有直接生效，需要在hexo项目根目录下的_config.yml，即全局配置文件中进行切换。</p>
-<p><img src="switch-theme.png" alt="switch-theme"></p>
-<p>在其中找到theme项，将landscape修改为next，保存退出。</p>
-<p>此时你就可以在本地预览next主题的效果了，切换回hexo项目根目录，使用hexo generate和hexo server就可以本地运行，可以简写为hexo g &amp;&amp; hexo s。</p>
-<p>启动后，访问localhost:4000，好像不对啊，怎么显示这一串玩意。</p>
-<p><img src="error.png" alt="error"></p>
-<h1 id="解决错误"><a href="#解决错误" class="headerlink" title="解决错误"></a>解决错误</h1><p>实际上面的报错是因为hexo在5.0之后把一个渲染插件swig给删除了，需要我们自己手动安装。</p>
-<p>在hexo项目根目录使用下列指令进行安装。</p>
-<p><code>npm install hexo-renderer-swig --save</code></p>
-<p>再次hexo g &amp;&amp; hexo s，就可以看到效果了。</p>
-<p><img src="next-theme.png" alt="next-theme"></p>
-<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，hexo主题切换就完成了，但你可能还觉得不够好，因为页面默认是英文的，好像点击其中的超链接还会失效，这些都是因为没有进行详细的配置，下次来讲讲next主题的配置和hexo本身的配置，让你对博客页面进行个性定制。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://theme-next.js.org/docs/getting-started/">Next主题起步指南</a></p>
-<p><a href="https://blog.csdn.net/qq_41170983/article/details/109381893">hexo主题next访问报错</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo如何发布博客</title>
-    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
-<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
-<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
-<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
-]]></content>
-      <categories>
-        <category>Hexo博客系列</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -579,6 +563,22 @@ if(random_num(0, 9)&gt;6)
       </categories>
       <tags>
         <tag>随笔</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo如何发布博客</title>
+    <url>/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>搭建Hexo完成后，如何发表一篇文章呢，要知道Hexo生成的博客是不需要数据库与专门的服务器来使用的，所以实际上发表文章用的是静态文件，Hexo使用markdown来生成页面，所以这里建议你先了解一些简单的markdown语法，学习难度不高，而且实用、优雅，不管你是不是程序员都可以学习一下。</p>
+<h1 id="生成文章"><a href="#生成文章" class="headerlink" title="生成文章"></a>生成文章</h1><p>这里我们主要用到Hexo的指令<code>hexo new [layout] &lt;articleName&gt;</code>。<br>其中layout可选，默认值是post，其他两种取值是page和draft，articleName是文章名称，必填。这里假设我们不输入layout，也就是使用默认的post布局，执行以上命令后，在项目的source/_posts目录会产生一个md文件，这就是我们的文章主体，直接使用记事本或者md编辑器对其进行编辑即可。<br>接下来看看文章的md文件吧，打开刚生成source/_posts目录下的md文件，一般可以看到文件头上有这些东西。<br><img src="how_to_write.png" alt="how_to_write"><br>这些字段叫做front-matter，可以理解为文章的基本信息，比如title就是文章标题，date为发布日期，tags为文章标签，其他字段具体有什么作用可以参考<a href="https://hexo.io/zh-cn/docs/front-matter">hexo官方文档</a>。设置好这些front-matter后，就可以使用markdown语法来写自己的文章了，除了插入图片会稍微麻烦点。</p>
+<h1 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h1><p>我们虽然可以用cdn的形式让markdown去引用网上的图片，但效率会比较低，而默认情况下hexo的文章生成时是没法引用静态图片的。<br>为了插入图片，先在项目根目录下安装一个插件。<br><code>npm install hexo-asset-image --save</code><br>随后打开hexo主配置文件_config.yml,找到post_asset_folder项，将其改为true。<br><img src="configure.png" alt="configure"><br>改完后保存退出，下一次你使用hexo new来生成文章时，source/_posts目录里就会多一个目录，它的名字与你的文章一样。<br><img src="folder.png" alt="folder"><br>你可以在这个目录里存放当前文章的图片，在写文章时，只需要像下面这样进行引用就行了。<br><img src="insert_image.png" alt="insert_image"></p>
+<h1 id="hexo-clean命令"><a href="#hexo-clean命令" class="headerlink" title="hexo clean命令"></a>hexo clean命令</h1><p>你可能注意到，第一次执行了hexo g后，项目目录下多了一个public目录，这其实是hexo将md文件转换为html文件的结果，部署到Github Pages时，使用的也是public目录的内容。<br>如果你删除了一些以前的文章，重新执行hexo g &amp;&amp; hexo s，结果发现这些文章仍然还在，这是因为hexo每次generate都是追加元素的，并不是覆盖掉public目录。<br>所以如果你想每次部署服务时，都使用当前最新的source目录来生成public，那么应该使用下面这条命令。<br><code>hexo clean</code><br>它可以删除public目录，与其他的命令一起用的话，可以这样。<br><code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo server</code><br>其中hexo server可以替换成hexo deploy。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.jianshu.com/p/f72aaad7b852">HEXO插入图片（详细版）</a><br><a href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+]]></content>
+      <categories>
+        <category>Hexo博客系列</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
