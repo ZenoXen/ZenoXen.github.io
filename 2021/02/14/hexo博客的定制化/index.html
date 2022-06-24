@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-BQ7MD7iclp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="新建的博客布局和功能不符合你的预期？那就自己定制一下吧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo博客的定制化">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/index.html">
+<meta property="og:site_name" content="ZenoX博客">
+<meta property="og:description" content="新建的博客布局和功能不符合你的预期？那就自己定制一下吧">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/footer.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/menu.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/url-error.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/create-app.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/create-var.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/comment.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/app.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/leancloud-visitors.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/valine.png">
+<meta property="article:published_time" content="2021-02-14T01:57:35.000Z">
+<meta property="article:modified_time" content="2022-06-23T03:49:53.140Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/footer.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/","path":"2021/02/14/hexo博客的定制化/","title":"hexo博客的定制化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>hexo博客的定制化 | ZenoX博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ZenoX博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">前文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">两个配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%89%E9%9C%80%E9%98%85%E8%AF%BB"><span class="nav-number">3.</span> <span class="nav-text">按需阅读</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E8%AF%AD%E8%A8%80%E5%92%8C%E6%97%B6%E5%8C%BA"><span class="nav-number">4.</span> <span class="nav-text">修改语言和时区</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%BB%E9%99%A4%E9%A1%B5%E8%84%9APowered%E5%92%8CTheme"><span class="nav-number">5.</span> <span class="nav-text">去除页脚Powered和Theme</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80"><span class="nav-number">6.</span> <span class="nav-text">修改页面布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%8F%9C%E5%8D%95%E9%80%89%E9%A1%B9"><span class="nav-number">7.</span> <span class="nav-text">添加菜单选项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%9C%E8%80%85%E5%A4%B4%E5%83%8F"><span class="nav-number">8.</span> <span class="nav-text">作者头像</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E8%AF%84%E8%AE%BA%E5%92%8C%E9%98%85%E8%AF%BB%E9%87%8F%E5%8A%9F%E8%83%BD"><span class="nav-number">9.</span> <span class="nav-text">开启评论和阅读量功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E6%96%87"><span class="nav-number">10.</span> <span class="nav-text">后文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">11.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">百无聊赖的生活</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX博客">
+      <meta itemprop="description" content="百无聊赖的生活">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="hexo博客的定制化 | ZenoX博客">
+      <meta itemprop="description" content="新建的博客布局和功能不符合你的预期？那就自己定制一下吧">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hexo博客的定制化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-14 09:57:35" itemprop="dateCreated datePublished" datetime="2021-02-14T09:57:35+08:00">2021-02-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-23 11:49:53" itemprop="dateModified" datetime="2022-06-23T11:49:53+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">Hexo博客系列</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/" class="post-meta-item leancloud_visitors" data-flag-title="hexo博客的定制化" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">新建的博客布局和功能不符合你的预期？那就自己定制一下吧</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
+<h1 id="两个配置文件"><a href="#两个配置文件" class="headerlink" title="两个配置文件"></a>两个配置文件</h1><p>相信你已经发现了，hexo有两份配置文件同时生效，一是<strong>hexo全局配置文件</strong>即_config.yml，二是<strong>主题配置文件</strong>，比如我用的是next主题，那么它就是themes/next/_config.yml，定制化主要依靠这两个文件来进行，尤其是主题配置文件，大多数hexo主题其实已经高度集成了许多功能，比如next主题就集成了valine评论插件，可以直接通过主题配置文件打开。</p>
+<h1 id="按需阅读"><a href="#按需阅读" class="headerlink" title="按需阅读"></a>按需阅读</h1><p>接下来就说一下，目前我的博客是怎么配置的，你可以根据自己的需求自行食用。</p>
+<hr>
+<h1 id="修改语言和时区"><a href="#修改语言和时区" class="headerlink" title="修改语言和时区"></a>修改语言和时区</h1><p>在全局配置文件中，language配置项，简体中文是zh-Hans；时区是timezone，中国地区可以修改为Asia/Shanghai</p>
+<h1 id="去除页脚Powered和Theme"><a href="#去除页脚Powered和Theme" class="headerlink" title="去除页脚Powered和Theme"></a>去除页脚Powered和Theme</h1><p>一般在主题配置文件中，找到footer配置项，其中包含powered配置项，修改为false，theme.enabled修改为false，theme.version修改为false。<br><img src="footer.png" alt="footer"></p>
+<h1 id="修改页面布局"><a href="#修改页面布局" class="headerlink" title="修改页面布局"></a>修改页面布局</h1><p>以next主题为例，一共有四种布局，Muse（默认）、Mist、Pisces（我在用的）、Gemini。<br>修改主题配置文件的scheme项，修改为你想要的布局，比如修改为Pisces，即scheme: Pisces</p>
+<h1 id="添加菜单选项"><a href="#添加菜单选项" class="headerlink" title="添加菜单选项"></a>添加菜单选项</h1><p>next主题默认只有home和archive两个选项，如何添加<strong>作者</strong>、<strong>标签</strong>、<strong>分类</strong>这样的页面呢。<br><img src="menu.png" alt="menu"><br>如上图所示，修改menu项，将tags、about、categories前面的<strong>井号</strong>去掉。<br>如此一来，博客菜单栏会展示出这些按钮，但你点击这些按钮时，会发现超链接是无效的，大概率会出现这样的一串玩意。<br><img src="url-error.png" alt="url-error"><br>实际上是因为menu项里url配置不对导致的，你可以仔细看看上面的menu配置项，是不是发现所有路径中间都有一对||符号，实际上，符号左边是菜单项的url，右边是菜单项的图标，next主题的菜单用的是<a target="_blank" rel="noopener" href="http://www.fontawesome.com.cn/faicons/">font-awesome</a>图标，你可以参考font-awesome的图标名称随意更改，这里不展开说。这一对||符号左边右边都有一个空格，把这两个空格去掉，即可使菜单url恢复正常。<br>修改完url后再打开发现菜单url还是打不开，这是因为hexo默认就是不包含这些页面的，你需要自己生成。<br>执行下面的代码。<br><code>hexo new page &quot;about&quot;</code><br><code>hexo new page &quot;categories&quot;</code><br><code>hexo new page &quot;tags&quot;</code><br>随后修改source/about/index.md即可，它是完全遵守markdown语法的，categories和tags则不需要修改。</p>
+<h1 id="作者头像"><a href="#作者头像" class="headerlink" title="作者头像"></a>作者头像</h1><p>将你想要设置的头像图片放到source/uploads（自建目录）里，重命名为avatar.png。<br>修改主题配置文件中avatar项，比如这样avatar: /uploads/avatar.png。<br><em>注：如果你项用URI的形式也是可以的，不一定非要用本地图片。</em></p>
+<h1 id="开启评论和阅读量功能"><a href="#开启评论和阅读量功能" class="headerlink" title="开启评论和阅读量功能"></a>开启评论和阅读量功能</h1><p>在开启这两个功能之前，需要你注册一个LeanCloud的账号（免费注册，不需要充值），这里注册步骤不展开说了，详细说说LeanCloud需要做些什么。<br>首先创建应用，这里应用名称和应用描述随便选一下就可以了，方案选开发版即可，不收费。<br><img src="create-app.png" alt="create-app"><br>随后进入应用管理界面，选择<strong>存储</strong>-&gt;<strong>结构化数据</strong>，其中以下划线开头的这些Class是默认自带的，不用管他们。<br><img src="create-var.png" alt="create-var"><br>我们创建一下两个Class，一个叫Comment一个叫Counter，注意访问权限需要选择<strong>无限制</strong>。<br><img src="comment.png" alt="comment"><br>此时，你可以去应用的设置界面找一下两个关键的东西，即AppId和AppKey，后续会需要这两个字符串。<br><img src="app.png" alt="app"><br>编辑主题配置文件，找到leancloud_visitors项，enabled改为true，app_id和app_key修改为自己的就可以了，这是阅读量统计。<br><img src="leancloud-visitors.png" alt="leancloud-visitors"><br>找到valine项，这是评论功能，enabled改为true，appid和appkey改成自己的，placeholder是评论未输入时的默认占位符，guest_info是评论者需要输入的信息，默认nick、mail、link代表昵称、邮箱地址、个人站点，可以按照你自己的需要删减。<br><img src="valine.png" alt="valine"></p>
+<hr>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>以上内容都只是hexo和next配置的一小部分，我只是单纯把一些比较直观的地方捡出来说了，其他配置项你也可以自行探索，可以参考hexo官方文档也可以参考next官方文档，我都在参考文章那部分列出来了。到此为止，hexo博客系列的文章就告一段落了，如果今后我有发现有什么有趣的东西，也许会再更新，大家对这几篇文章有什么建议都可以在评论区告诉我。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next/wiki">github.com/iissnan/hexo-theme-next/wiki</a><br><a target="_blank" rel="noopener" href="http://theme-next.iissnan.com/getting-started.html">NexT主题官方起步指南</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/fullbug/article/details/103844424">解决Hexo博客导航栏链接URL乱码问题</a><br><a target="_blank" rel="noopener" href="https://notes.doublemine.me/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html#%E9%85%8D%E7%BD%AELeanCloud">为NexT主题添加文章阅读量统计功能</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"><i class="fa fa-tag"></i> hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/11/hexo%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2/" rel="prev" title="hexo如何发布博客">
+                  <i class="fa fa-chevron-left"></i> hexo如何发布博客
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/" rel="next" title="一些个人老项目的汇总">
+                  一些个人老项目的汇总 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2021020918号 </a>
+      <img src="/uploads/beian.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021020918" rel="noopener" target="_blank">浙ICP备2021020918号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ZenoXen/ZenoXen.github.io","issue_term":"title","theme":"github-light","cdn":"https://utteranc.es/client.js"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-BQ7MD7iclp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="如何让自己的hexo博客被搜索引擎收录，看看这篇文章">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何让hexo个人博客被搜索引擎收录">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/index.html">
+<meta property="og:site_name" content="ZenoX博客">
+<meta property="og:description" content="如何让自己的hexo博客被搜索引擎收录，看看这篇文章">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/1.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/2.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/3.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/4.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/5.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/6.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/7.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/8.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/9.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/10.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/11.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/14.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/15.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/16.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/17.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/18.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/19.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/20.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/21.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/12.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/22.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/23.png">
+<meta property="article:published_time" content="2021-03-10T13:05:55.000Z">
+<meta property="article:modified_time" content="2022-06-23T03:49:53.183Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/1.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/","path":"2021/03/10/如何让hexo个人博客被搜索引擎收录/","title":"如何让hexo个人博客被搜索引擎收录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>如何让hexo个人博客被搜索引擎收录 | ZenoX博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ZenoX博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Github-Pages%E7%9A%84%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">Github Pages的一个问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Vercel%E7%BD%91%E7%AB%99%E6%89%98%E7%AE%A1%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">使用Vercel网站托管服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vercel%E5%A6%82%E4%BD%95%E4%B8%8Egithub%E8%81%94%E5%8A%A8"><span class="nav-number">2.1.</span> <span class="nav-text">vercel如何与github联动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%87%AA%E5%B7%B1%E7%9A%84%E5%9F%9F%E5%90%8D"><span class="nav-number">2.2.</span> <span class="nav-text">使用自己的域名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">搜索引擎收录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#API%E6%8E%A8%E9%80%81"><span class="nav-number">3.1.</span> <span class="nav-text">API推送</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sitemap"><span class="nav-number">3.2.</span> <span class="nav-text">Sitemap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E6%8F%90%E4%BA%A4"><span class="nav-number">3.3.</span> <span class="nav-text">手动提交</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">百无聊赖的生活</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX博客">
+      <meta itemprop="description" content="百无聊赖的生活">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="如何让hexo个人博客被搜索引擎收录 | ZenoX博客">
+      <meta itemprop="description" content="如何让自己的hexo博客被搜索引擎收录，看看这篇文章">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何让hexo个人博客被搜索引擎收录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-10 21:05:55" itemprop="dateCreated datePublished" datetime="2021-03-10T21:05:55+08:00">2021-03-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-23 11:49:53" itemprop="dateModified" datetime="2022-06-23T11:49:53+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">Hexo博客系列</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/" class="post-meta-item leancloud_visitors" data-flag-title="如何让hexo个人博客被搜索引擎收录" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">如何让自己的hexo博客被搜索引擎收录，看看这篇文章</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的。</p>
+<h1 id="Github-Pages的一个问题"><a href="#Github-Pages的一个问题" class="headerlink" title="Github Pages的一个问题"></a>Github Pages的一个问题</h1><p>如果你直接尝试让百度去收录你的github pages的话，会发现一个问题，百度抓取不到github pages的地址，由于历史原因，github把百度的爬虫给禁用了，所以虽然github pages是真的好用，但还是得忍痛割爱，换个路子。</p>
+<h1 id="使用Vercel网站托管服务"><a href="#使用Vercel网站托管服务" class="headerlink" title="使用Vercel网站托管服务"></a>使用Vercel网站托管服务</h1><p>有很多网站提供静态网站托管服务，我试过Coding.net和vercel这两个，coding.net的托管服务是依托于腾讯云的，很早以前是免费的，但现在貌似有一定限制了，具体什么情况我有点记不清了；后来试了vercel，它也能提供免费的静态网站托管服务，而且操作起来比coding.net舒服，目前是免费的，这是它的官网<a target="_blank" rel="noopener" href="https://vercel.com/">vercel</a>。</p>
+<h2 id="vercel如何与github联动"><a href="#vercel如何与github联动" class="headerlink" title="vercel如何与github联动"></a>vercel如何与github联动</h2><p>进入vercel，可以使用github账号登录。<br><img src="1.png" alt="1"><br>coding.net与vercel都可以从github上导入repository，但vercel比coding.net好的一点在于第一次与github关联并授权以后，你以后往github上push的任何更改，都会同步到vercel上，而coding.net并不能这样（虽然可以通过hexo的deploy配置往coding.net自动部署）。<br>在vercel上选择New Project，然后如果你是用Github账号登录的话，这边会显示你的所有Github仓库，选择github pages的仓库即可。<br><img src="2.png" alt="2"><br>中间导入的几个步骤就不截图了，按默认设置一直点下一步即可。最后成功导入后应该可以看到congratulations，点击那个visit就可以查看托管在vercel上的网站了。<br><img src="3.png" alt="3"><br>这里有一点要注意的是，虽然内容与github pages上部署的那个网页一模一样，但vercel是一个独立的副本，只不过每次github pages那个仓库更新的时候，会同步更新到vercel这边而已。</p>
+<h2 id="使用自己的域名"><a href="#使用自己的域名" class="headerlink" title="使用自己的域名"></a>使用自己的域名</h2><p>在你的vercel项目这边找到settings项。<br><img src="4.png" alt="4"><br>点击Domains项，可以看到里面有一条默认的域名项，这是vercel提供给你免费使用的，如果你的项目名没改的话，一般就是github里那个仓库名为前缀，看起来怪怪的，你可以自己点击edit来修改域名记录，注意一下，vercel.app是固定的域名，不要改掉，你可以改的是这个vercel.app前面那一堆。<br><img src="5.png" alt="5"></p>
+<p>到这里为止，实际上你已经拥有了一个与Github Pages不同的独立域名，即vercel.app，但如果你既想通过Vercel来部署博客站点，又想脱离vercel.app这个域名的话，唯一的方法就是买一个自己的域名了。我自己是通过阿里云买的域名，一个cn域名，第一年优惠很大，买下域名10块钱不到，所以比较建议买一个，过期了以后续不续倒是无所谓，早买早享受。</p>
+<p>假设你已经买了一个自己的域名，那么仍然点击vercel这边的Domains项，输入你自己的域名，记住要带上主机记录，比如我的域名是zenoxen.cn，那么你在输入自己域名的时候，最好加一个主机记录，比如<a href="www.zenoxen.cn">www.zenoxen.cn</a>或者<a href="blog.zenoxen.cn">blog.zenoxen.cn</a>，主机记录具体是什么倒无所谓。</p>
+<p><img src="6.png" alt="6"></p>
+<p>这里假设我加的记录是<a href="www.zenoxen.cn">www.zenoxen.cn</a>，结果发现了一个Invalid Configuration的错误。</p>
+<p><img src="7.png" alt="7"></p>
+<p>这实际上是因为没有将zenoxen.cn这个域名的www主机记录指向vercel服务器而造成的，换句话说，就是现在还每法通过<a href="www.zenoxen.cn">www.zenoxen.cn</a>来访问部署在vercel服务器的这个博客应用。一个比较简单的解决办法是给zenoxen.cn这个域名设置一个CNAME记录，将其指向vercel的服务器域名。</p>
+<p><img src="8.png" alt="8"></p>
+<p>CNAME记录在你买域名的代理商那边就可以设置，比如我是在阿里云那边买的，那么我去阿里云那边找域名控制台。</p>
+<p><img src="9.png" alt="9"></p>
+<p>添加vercel提供的那条CNAME记录，指向<a href="www.zenoxen.cn">www.zenoxen.cn</a>。</p>
+<p><img src="10.png" alt="10"></p>
+<p>如此一来，那边自动就会检测到<a href="www.zenoxen.cn">www.zenoxen.cn</a>已经指向了vercel服务器，Invalid Configuration的报错也会消失了。</p>
+<h1 id="搜索引擎收录"><a href="#搜索引擎收录" class="headerlink" title="搜索引擎收录"></a>搜索引擎收录</h1><p>接下来的一步就是让搜索引擎收录你的博客，无论你是使用vercel的域名，还是使用自己的域名，理应都可以被搜索引擎收录了。</p>
+<p>实际上大部分搜索引擎收录流程都是类似的，我自己提交过Google和百度，方式都是大同小异的。</p>
+<p>主流的搜索引擎都有几种收录方式：API推送、提交Sitemap、手动提交，这里简单介绍一下。</p>
+<h2 id="API推送"><a href="#API推送" class="headerlink" title="API推送"></a>API推送</h2><p>API推送是在页面里嵌入这样一串js代码，调用这个api的作用是把当前这个页面提交给搜索引擎，所以在每个页面里都嵌入这样的代码，就可以实现全站的推送。</p>
+<p><img src="11.png" alt="11"></p>
+<p>这里就以百度为例，展示一下如何使用API来让百度收录我们的博客。</p>
+<p>首先进入<a target="_blank" rel="noopener" href="https://ziyuan.baidu.com/">百度站长平台</a>,选择菜单栏上的用户中心，站点管理，添加网站。</p>
+<p><img src="14.png" alt="14"></p>
+<p>随后选择协议头，并输入你的主机记录，比如我的域名是zenoxen.cn，主机记录是<a href="www.zenoxen.cn">www.zenoxen.cn</a>。</p>
+<p><img src="15.png" alt="15"></p>
+<p>第二步选择站点属性其实不重要，按你的博客性质勾选即可。</p>
+<p>第三步选择一个验证方式，这里验证的是你对域名与站点的所有权，我们选HTML标签验证，然后把百度提供给你的那一串html标签记下来，准确的来说，是记那一串content，即验证码。</p>
+<p><img src="16.png" alt="16"></p>
+<p>接下来就是将百度的验证码嵌入hexo页面中，如果你跟我一样用的是next主题，那么最新的next主题配置文件里应该包含了这样的配置信息，将baidu_site_verification修改为百度给你的验证码即可，无需将整个html标签嵌入到某个页面中，next主题会自动帮我们完成这个工作。</p>
+<p><img src="17.png" alt="17"></p>
+<p>这边添加完后，使用hexo clean&amp;&amp;hexo g&amp;&amp;hexo d，将页面重新部署到你的vercel中去，部署完成后，即可点击百度那边的完成验证。</p>
+<p><img src="18.png" alt="18"></p>
+<p>完成验证后，从菜单里选择普通收录，然后就是收录的环节了，点击API推送，记下百度给你的API地址。</p>
+<p>在hexo项目根目录安装hexo-baidu-url-submit，运行下列命令即可。</p>
+<p><code>npm install hexo-baidu-url-submit</code></p>
+<p>在hexo根目录的_config,yml文件中，加入这些配置，count是一次性提交的url数量，你可以根据自己页面数量来决定，但百度每天都有3000条url的提交上限，这个要注意一下，host是你在百度添加的主机记录，token是从百度给你API地址中取出来的即url中的token参数，path是生成的url文件路径，这个不用改名，baidu_urls.txt即可。</p>
+<p><img src="19.png" alt="19"></p>
+<p>最后在deploy中加入下列配置，这样你每次使用hexo d的时候，hexo-baidu-submit都会将生成的baidu_urls.txt提交给百度。</p>
+<p><img src="20.png" alt="20"></p>
+<p>执行部署一条龙命令，如果最后出现了下面这种信息，说明已经成功将页面提交给百度了。</p>
+<p><img src="21.png" alt="21"></p>
+<p>正常来说，第二天之内，在百度站长平台就可以发现你前一天成功提交的记录了，但要注意的是提交成功了不代表百度就会收录你的网页，从提交成功到收录成功，这个时间可能很长（据说几周到几个月都有），这也是我觉得百度不如谷歌的一点，百度收录效率真的没谷歌高…</p>
+<h2 id="Sitemap"><a href="#Sitemap" class="headerlink" title="Sitemap"></a>Sitemap</h2><p>Sitemap一般来说是一种xml文件，其中包含的是一个站点的结构，比如这是我博客的Sitemap。</p>
+<p><img src="12.png" alt="12"></p>
+<p>可以看到，Sitemap里包含了站点中所有的页面的url，Sitemap推送的原理是将你的Sitemap文件放在站点根目录下，然后让搜索引擎到你的站点取Sitemap，如此搜索引擎就可以根据Sitemap来了解你的站点结构了。</p>
+<p>我之前尝试过用baidu的sitemap提交，一开始几次百度都成功读取了我的sitemap，但后来不知道啥原因，百度那边显示无法读取我的sitemap了，所以后来百度我换了API提交。所幸的是，谷歌的sitemap一直没有出过问题。</p>
+<p>谷歌的提交是通过<a target="_blank" rel="noopener" href="https://search.google.com/search-console/about">search console</a>，添加站点和验证站点的操作其实跟百度差不多，都是使用HTML标签认证，这里就不深入介绍了。讲讲怎么让hexo自动生成sitemap，并提交给谷歌。</p>
+<p>首先在你的hexo项目根目录下安装hexo-generator-sitemap，使用下面命令即可。</p>
+<p><code>npm install hexo-generator-sitemap</code></p>
+<p>安装完这个插件后，在根目录下的_config.yml中加入以下配置。</p>
+<p><img src="22.png" alt="22"></p>
+<p>随后你就可以执行hexo clean&amp;&amp;hexo g了，正常的话，应该会在public目录下产生一个sitemap.xml，确认生成了以后，就hexo d，将项目部署到vercel上。</p>
+<p>此时，你去访问站点根目录的sitemap.xml应该就可以直接看到xml的内容，比如我的博客sitemap，可以通过<a href="https://blog.zenoxen.cn/sitemap.xml">https://blog.zenoxen.cn/sitemap.xml</a>来进行查看。</p>
+<p><img src="23.png" alt="23"></p>
+<p>然后在谷歌的search console中添加站点地图即可，成功添加后，谷歌应该会在几天之内读取你的sitemap，从sitemap读取成功到收录成功，效率之高是百度没法比的…我自己的站点，谷歌只用了一天就完成收录，真的很快。</p>
+<h2 id="手动提交"><a href="#手动提交" class="headerlink" title="手动提交"></a>手动提交</h2><p>从名字就可以看出，手动提交是个比较繁琐的过程，需要你自己手动将站点里的页面url提交到搜索引擎里，我实际上没用过这种提交方式，不过操作应该是将你的页面url一个一个的复制粘贴给搜索引擎，让它逐个收录。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/liutao43/article/details/106324954/">hexo设置主动推送</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/111773896">如何让百度收录 GitHub Pages 个人博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"><i class="fa fa-tag"></i> hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/" rel="prev" title="SpringValidation使用指南--Controller与Service入参校验">
+                  <i class="fa fa-chevron-left"></i> SpringValidation使用指南--Controller与Service入参校验
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/" rel="next" title="SpringValidation使用指南--手动与分组校验以及自定义异常处理">
+                  SpringValidation使用指南--手动与分组校验以及自定义异常处理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2021020918号 </a>
+      <img src="/uploads/beian.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021020918" rel="noopener" target="_blank">浙ICP备2021020918号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ZenoXen/ZenoXen.github.io","issue_term":"title","theme":"github-light","cdn":"https://utteranc.es/client.js"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

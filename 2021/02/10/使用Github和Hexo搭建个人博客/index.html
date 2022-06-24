@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-BQ7MD7iclp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="算是回馈互联网上各位大神的慷慨相助吧，打算写一整个Hexo系列，来写写自己对个人博客搭建的经验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Github和Hexo搭建个人博客">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="ZenoX博客">
+<meta property="og:description" content="算是回馈互联网上各位大神的慷慨相助吧，打算写一整个Hexo系列，来写写自己对个人博客搭建的经验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/hexo-default.png">
+<meta property="article:published_time" content="2021-02-10T11:46:10.000Z">
+<meta property="article:modified_time" content="2022-06-23T03:49:53.155Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/hexo-default.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.zenoxen.cn/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/","path":"2021/02/10/使用Github和Hexo搭建个人博客/","title":"使用Github和Hexo搭建个人博客"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用Github和Hexo搭建个人博客 | ZenoX博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ZenoX博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">搭建思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Github-Pages"><span class="nav-number">3.</span> <span class="nav-text">Github Pages</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo"><span class="nav-number">4.</span> <span class="nav-text">Hexo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BA%E6%AD%A5%E9%AA%A4"><span class="nav-number">5.</span> <span class="nav-text">搭建步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Node-js"><span class="nav-number">5.1.</span> <span class="nav-text">安装Node.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Hexo"><span class="nav-number">5.2.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E6%88%90Hexo%E9%A1%B9%E7%9B%AE"><span class="nav-number">5.3.</span> <span class="nav-text">生成Hexo项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%95%E8%BF%90%E8%A1%8C"><span class="nav-number">5.4.</span> <span class="nav-text">试运行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAGithub-Page%E7%9A%84%E4%BB%93%E5%BA%93"><span class="nav-number">5.5.</span> <span class="nav-text">创建Github Page的仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AE%E4%B8%80%E4%B8%8BHexo"><span class="nav-number">5.6.</span> <span class="nav-text">简单配置一下Hexo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0Github-Page%E4%B8%8A"><span class="nav-number">5.7.</span> <span class="nav-text">部署到Github Page上</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E6%96%87"><span class="nav-number">6.</span> <span class="nav-text">后文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">百无聊赖的生活</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX博客">
+      <meta itemprop="description" content="百无聊赖的生活">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用Github和Hexo搭建个人博客 | ZenoX博客">
+      <meta itemprop="description" content="算是回馈互联网上各位大神的慷慨相助吧，打算写一整个Hexo系列，来写写自己对个人博客搭建的经验">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Github和Hexo搭建个人博客
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-02-10 19:46:10" itemprop="dateCreated datePublished" datetime="2021-02-10T19:46:10+08:00">2021-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-23 11:49:53" itemprop="dateModified" datetime="2022-06-23T11:49:53+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E5%88%97/" itemprop="url" rel="index"><span itemprop="name">Hexo博客系列</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/02/10/%E4%BD%BF%E7%94%A8Github%E5%92%8CHexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="post-meta-item leancloud_visitors" data-flag-title="使用Github和Hexo搭建个人博客" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">算是回馈互联网上各位大神的慷慨相助吧，打算写一整个Hexo系列，来写写自己对个人博客搭建的经验</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ol>
+<li>安装Git</li>
+<li>安装Node.js</li>
+<li>注册一个Github账号</li>
+</ol>
+<hr>
+<h1 id="搭建思路"><a href="#搭建思路" class="headerlink" title="搭建思路"></a>搭建思路</h1><p>本文介绍的个人博客属于静态页面，不需要自己管理数据库或者服务器。部署服务是Github的一个福利Github Pages提供的，博客页面使用基于Node.js的一个框架Hexo生成。在继续往下阅读之前，你需要先知道Git和Github怎么用，这里不详细展开这些内容。</p>
+<h1 id="Github-Pages"><a href="#Github-Pages" class="headerlink" title="Github Pages"></a>Github Pages</h1><p>Github提供的一个服务，创建一个指定名称的Github仓库，向其中上传html代码，Github会自动为用户部署这些内容，非常方便。但Github Pages都是一些静态页面，即不连接数据库，所有的页面内容都是静态的html、js（包括博客文章也是）。每个Github用户可以拥有一个以用户名为前缀的Github Page，也可以拥有无限个以项目为单位的Github Page。</p>
+<p>本文后续搭建的博客使用的是用户名为前缀的Github Page。</p>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><p>Hexo是一个基于Node.js的博客页面生成框架，用户只需要通过yml格式的配置文件进行配置，就可以对博客页面进行个性化的定制，由于作者是台湾人，所以这个框架对中文的支持很好，官方的中文文档也很详细，易于上手。</p>
+<p>Hexo有多款主题，如果想要让博客焕然一新，只需要从Github上找一个自己喜欢的主题并安装到自己的项目目录里，少量配置后即可切换主题。</p>
+<p>此外Hexo的扩展性也非常好，如果想要对自己的博客功能进行扩展（比如加一个评论功能），可以下载相应的插件并集成到项目中。</p>
+<h1 id="搭建步骤"><a href="#搭建步骤" class="headerlink" title="搭建步骤"></a>搭建步骤</h1><p>首先让我们能够在本地把项目跑起来看看效果吧。</p>
+<h2 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h2><p>从<a target="_blank" rel="noopener" href="https://nodejs.org/zh-cn/">Node中文官网</a>下载即可，安装过程就不详细介绍了，这里主要讲一讲怎么让Node.js使用国内的淘宝镜像，因为我们后续的许多操作都需要通过Node.js来下载相应的js依赖，而默认的镜像是国外的，下载实在太慢。</p>
+<p>在cmd中使用下列命令。</p>
+<p><code>npm config set registry https://registry.npm.taobao.org</code></p>
+<p>完成后我们的npm命令就会从淘宝镜像下载js依赖。</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p><code>npm install -g hexo-cli</code></p>
+<p>安装完hexo-cli后，我们就可以使用hexo的专用命令很方便的生成博客页面了。</p>
+<h2 id="生成Hexo项目"><a href="#生成Hexo项目" class="headerlink" title="生成Hexo项目"></a>生成Hexo项目</h2><p><code>hexo init &lt;folder&gt;</code></p>
+<p>其中folder是目录名称，如果不填的话，则所有项目文件默认生成到当前目录。</p>
+<p>随后进入生成的项目根目录，使用以下指令安装js依赖。</p>
+<p><code>npm install</code></p>
+<p>生成后可以查看目录，几个比较重要的文件合目录如下：</p>
+<ol>
+<li>_config.yml，hexo的全局配置文件</li>
+<li>source目录，用于存放静态页面内容，比如html、js、图片之类的</li>
+<li>themes，用于存放hexo主题，下载过来的新主题可以放到这个目录下</li>
+</ol>
+<h2 id="试运行"><a href="#试运行" class="headerlink" title="试运行"></a>试运行</h2><p>此时即使不进行其他配置，Hexo博客也可以运行了，连续使用两条命令。</p>
+<p><code>hexo generate</code>（可缩写为hexo g）</p>
+<p><code>hexo server</code>（可缩写为hexo s）</p>
+<p>此时去访问localhost:4000应该就能看到Hexo的默认页面效果，一般来说是下面这样的。</p>
+<p><img src="hexo-default.png" alt="hexo-default"></p>
+<h2 id="创建Github-Page的仓库"><a href="#创建Github-Page的仓库" class="headerlink" title="创建Github Page的仓库"></a>创建Github Page的仓库</h2><p>登录自己的Github账号，创建一个仓库，命名规则如下。</p>
+<p><code>&lt;username&gt;.github.io</code></p>
+<p>这里的username是你的github账户名，创建成功后，你可以试着往里面存一个Index.html，随后访问&lt;username&gt;.github.io，应该就会显示你放进去的index.html渲染内容。</p>
+<h2 id="简单配置一下Hexo"><a href="#简单配置一下Hexo" class="headerlink" title="简单配置一下Hexo"></a>简单配置一下Hexo</h2><p>现在博客里只有一篇默认的文章“Hello World”，同时页面的标题、作者等信息都是预设的，可以通过_config.yml进行一些简单的配置，并将网站部署到Github Page上。</p>
+<p>用记事本打开项目根目录下的_config.yml，找到Site配置项。</p>
+<p><code># Site</code></p>
+<p><code>title: Hexo（即html的title标签）</code></p>
+<p><code>subtitle: &#39;&#39;（副标题）</code></p>
+<p><code>description: &#39;&#39;（页面的简介，可在搜索引擎上显示出来）</code></p>
+<p><code>keywords:（关键字词）</code></p>
+<p><code>author: John Doe（作者名）</code></p>
+<p><code>language: en（语言，中文是zh-Hans）</code></p>
+<p><code>timezone: &#39;&#39;（时区，中国地区是Asia/Shanghai）</code></p>
+<p>默认配置应该像上面这样，自己修改掉需要的条目即可。</p>
+<p>然后找到Deployment配置项。</p>
+<p><code>deploy:  </code></p>
+<p>​    <code>type: git  </code></p>
+<p>​    <code>   repo: &lt;repository url&gt; </code></p>
+<p>​    <code>branch: [branch]</code></p>
+<p>type填git，repo填你的Github项目SSH地址或者Https地址，branch是分支名（一般master就行）。</p>
+<p>完成以上配置后，就可以保存退出了。</p>
+<h2 id="部署到Github-Page上"><a href="#部署到Github-Page上" class="headerlink" title="部署到Github Page上"></a>部署到Github Page上</h2><p>在项目根目录下使用下列命令安装hexo的部署插件。</p>
+<p><code>npm install hexo-deployer-git --save</code></p>
+<p>使用hexo clean &amp;&amp; hexo deploy即可将现有的Hexo项目部署到Github Page上，访问你的github.io即可查看，注意部署上去一般是需要一到两分钟的，在此之前你访问页面可能看不到效果。</p>
+<h1 id="后文"><a href="#后文" class="headerlink" title="后文"></a>后文</h1><p>到这里位置，Github Page+Hexo的博客搭建指南就结束了，但重头戏还没开始呢，怎么发文章？碰到报错了怎么办？怎么进一步对Hexo配置？怎么更换Hexo主题？上面这些问题就留着后面说吧，应该会很快更新的。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://pages.github.com/">Github Pages官方指南</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33720429">npm使用淘宝镜像</a></p>
+<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">hexo官方文档</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"><i class="fa fa-tag"></i> hexo</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" rel="prev" title="我的第一篇文章">
+                  <i class="fa fa-chevron-left"></i> 我的第一篇文章
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/11/Hexo%E5%8D%9A%E5%AE%A2%E6%9B%B4%E6%8D%A2%E4%B8%BB%E9%A2%98/" rel="next" title="hexo博客更换主题">
+                  hexo博客更换主题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2021020918号 </a>
+      <img src="/uploads/beian.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021020918" rel="noopener" target="_blank">浙ICP备2021020918号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ZenoXen/ZenoXen.github.io","issue_term":"title","theme":"github-light","cdn":"https://utteranc.es/client.js"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

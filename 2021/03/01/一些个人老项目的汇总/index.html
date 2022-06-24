@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-BQ7MD7iclp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="总结一下自己之前写的几个小项目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些个人老项目的汇总">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="ZenoX博客">
+<meta property="og:description" content="总结一下自己之前写的几个小项目">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/1.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/2.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/3.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/4.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/5.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/6.png">
+<meta property="article:published_time" content="2021-03-01T12:13:50.000Z">
+<meta property="article:modified_time" content="2022-06-23T03:49:53.148Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="随笔">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/1.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/","path":"2021/03/01/一些个人老项目的汇总/","title":"一些个人老项目的汇总"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>一些个人老项目的汇总 | ZenoX博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ZenoX博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ESwing%E7%9A%84%E5%B1%80%E5%9F%9F%E7%BD%91%E8%81%8A%E5%A4%A9%E8%BD%AF%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">基于Swing的局域网聊天软件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E8%BD%AF%E4%BB%B6%E8%A6%81%E6%B1%82%E8%BE%93%E5%85%A5%E8%81%8A%E5%A4%A9%E6%98%B5%E7%A7%B0"><span class="nav-number">1.1.</span> <span class="nav-text">打开软件要求输入聊天昵称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%8A%E5%A4%A9%E7%95%8C%E9%9D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">聊天界面</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EServlet%E7%9A%84%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%9B%98"><span class="nav-number">2.</span> <span class="nav-text">基于Servlet的个人网盘</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E4%B9%A6%E9%A6%86%E9%80%89%E5%BA%A7%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.</span> <span class="nav-text">图书馆选座系统</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E8%AF%9D"><span class="nav-number">4.</span> <span class="nav-text">后话</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">百无聊赖的生活</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX博客">
+      <meta itemprop="description" content="百无聊赖的生活">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="一些个人老项目的汇总 | ZenoX博客">
+      <meta itemprop="description" content="总结一下自己之前写的几个小项目">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一些个人老项目的汇总
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-03-01 20:13:50" itemprop="dateCreated datePublished" datetime="2021-03-01T20:13:50+08:00">2021-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-23 11:49:53" itemprop="dateModified" datetime="2022-06-23T11:49:53+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/03/01/%E4%B8%80%E4%BA%9B%E4%B8%AA%E4%BA%BA%E8%80%81%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B1%87%E6%80%BB/" class="post-meta-item leancloud_visitors" data-flag-title="一些个人老项目的汇总" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">总结一下自己之前写的几个小项目</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>最近我往我的Github仓库上传了几个项目，都是之前学Java时做的小项目，虽然代码质量不高，但算是我学习Java路上几个不同阶段的标志吧，传到Github的目的是为了做一个历史代码的保存，毕竟Github相对于自己的硬盘来说还是相对稳定的。</p>
+<h1 id="基于Swing的局域网聊天软件"><a href="#基于Swing的局域网聊天软件" class="headerlink" title="基于Swing的局域网聊天软件"></a>基于Swing的局域网聊天软件</h1><p>算是我做的第一个Java项目吧（如果那玩意能称为项目的话），实际上可以当作一个小Demo，当时学了Java的io、socket以后，迫切想要实践一下，那时候还不会做前端，所以用了我当时唯一会的客户端技术–Swing，就放两张图片感受一下。</p>
+<h2 id="打开软件要求输入聊天昵称"><a href="#打开软件要求输入聊天昵称" class="headerlink" title="打开软件要求输入聊天昵称"></a>打开软件要求输入聊天昵称</h2><p><img src="1.png" alt="1"></p>
+<h2 id="聊天界面"><a href="#聊天界面" class="headerlink" title="聊天界面"></a>聊天界面</h2><p><img src="2.png" alt="2"></p>
+<p>就这么简单，两张图就完全概括了这软件全部的功能。</p>
+<ol>
+<li>右边这一列空白我称之为上下线通报，当局域网内有一台主机运行了这个jar包，会发一个广播消息，其他的客户端列表上会显示上线的用户。</li>
+<li>中间三个按钮，发送消息也可以用CTRL+回车代替；清屏就是把消息列表清掉；发送文件这玩意我觉得反而是这demo的主要功能…</li>
+<li>发送文件时，局域网内至少要有两个在线的用户，其中一个人选择发送文件。</li>
+</ol>
+<p><img src="3.png" alt="3"></p>
+<p>由于我这边没有其他人在用，所以显示了个空白列表，操作也相当简单，当时还做了个进度条…那时候连MVC都没有学，我这套代码里的MVC是我自己脑补出来的…不过跟真正的MVC其实也是一个道理吧。</p>
+<h1 id="基于Servlet的个人网盘"><a href="#基于Servlet的个人网盘" class="headerlink" title="基于Servlet的个人网盘"></a>基于Servlet的个人网盘</h1><p>学了JSP+Servlet那一套以后，突然想到做这个东西练手，界面就不放出来了，简直惨不忍睹…那时候还是初学网页这一套技术，连js都不会，让我写个html+css简直要我命，所以我就去网上到处找相关的页面，比如要做注册功能，就去网上找注册页面的模板，要做网盘主页，就去找开源的网盘系统，扒出里面的页面源码；总之到最后究竟缝合了多少个页面我自己都记不清了，现在也没法考究了。</p>
+<p>主要功能的话就是注册-&gt;上传文件-&gt;下载文件，上传和下载用的是apache-commons那一套，专门做了个上传进度条，依稀记得用的是ajax，而且这ajax还是网上抄的…</p>
+<p>总之最后做出来的东西就是可以用，但没必要用…</p>
+<h1 id="图书馆选座系统"><a href="#图书馆选座系统" class="headerlink" title="图书馆选座系统"></a>图书馆选座系统</h1><p>这算是我学完SSM后做的第一个练手小项目，算是第一次实践了前后端分离吧，前端页面也是缝合怪，但样式相比个人网盘来说好了不少，放一张图感受一下。</p>
+<p><img src="4.png" alt="4"></p>
+<p>总共两个模块，上图这个模块就是普通用户的选座模块，其实功能极其简单…</p>
+<p><img src="5.png" alt="5"></p>
+<p>第二个模块就是管理模块，可以对各种数据进行管理，其实其他功能都是扯淡，也就楼层管理和选座是主要功能，然而也不是我自己做的…</p>
+<p>其实这个选座模块的原理是这样的，有一个Floor表和一个Seat表，Floor表保存了这个楼层的座位的排数和列数，Seat表则保存一个座位的状态，一个座位有四个重要的属性：楼层号、排号、列号、选座状态，也就是说Floor对Seat表是一对多。</p>
+<p>初始化选座页面的时候，列出所有可用楼层，点击查看后，根据楼层的排数、列数去初始化一个座位矩阵，然后根据每个座位的选座状态决定是否要显示、显示成什么样，总共就这几种状态：不可用、可选、已预约、已使用，不同状态图标都是不一样的。</p>
+<p>可以在管理系统中添加新的楼层，初始化一个排数、列数，点击一下对应座位的图标，就可以把它禁用掉，以此达到自定义座位布局的效果。</p>
+<p><img src="6.png" alt="6"></p>
+<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>这几个项目当初写完其实就产生了重构的想法，然而最初写的时候根本都没用过版本管理，现在代码比较杂，尤其是那个Swing项目，代码已经乱到我看都不想看…与其重构，还不如重写来的方便。</p>
+<p>这几个项目传到Github上的目的就是留一个怀念，以后想看看曾经写的项目，还可以下过来在本地玩玩。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag"><i class="fa fa-tag"></i> 随笔</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/" rel="prev" title="hexo博客的定制化">
+                  <i class="fa fa-chevron-left"></i> hexo博客的定制化
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/03/01/Spring%E4%B8%8ERedis%E6%95%B4%E5%90%88/" rel="next" title="Spring与Redis整合">
+                  Spring与Redis整合 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2021020918号 </a>
+      <img src="/uploads/beian.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021020918" rel="noopener" target="_blank">浙ICP备2021020918号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ZenoXen/ZenoXen.github.io","issue_term":"title","theme":"github-light","cdn":"https://utteranc.es/client.js"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

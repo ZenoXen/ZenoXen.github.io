@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-BQ7MD7iclp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在微服务架构中，可能有多个相关的表分布在不同的数据库中，但一般来说关联查询语法是不能跨数据库使用的。本文将介绍如何使用PostgreSQL的fdw插件进行跨库查询">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL使用fdw实现跨库查询">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="ZenoX博客">
+<meta property="og:description" content="在微服务架构中，可能有多个相关的表分布在不同的数据库中，但一般来说关联查询语法是不能跨数据库使用的。本文将介绍如何使用PostgreSQL的fdw插件进行跨库查询">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829201850361.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829203228698.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829203414644.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829211510547.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829213646559.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829213920015.png">
+<meta property="article:published_time" content="2021-08-29T13:43:01.000Z">
+<meta property="article:modified_time" content="2022-06-23T03:49:53.103Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="跨库查询">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/image-20210829201850361.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/","path":"2021/08/29/PostgreSQL使用fdw实现跨库查询/","title":"PostgreSQL使用fdw实现跨库查询"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>PostgreSQL使用fdw实现跨库查询 | ZenoX博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ZenoX博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">实验准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fdw%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">fdw安装与使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">3.1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAextension"><span class="nav-number">3.2.</span> <span class="nav-text">创建extension</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.3.</span> <span class="nav-text">创建外部数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E6%98%A0%E5%B0%84"><span class="nav-number">3.4.</span> <span class="nav-text">创建用户映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%BD%93%E5%89%8D%E6%95%B0%E6%8D%AE%E5%BA%93%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAschema"><span class="nav-number">3.5.</span> <span class="nav-text">在当前数据库创建一个schema</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84schema%E4%BF%A1%E6%81%AF"><span class="nav-number">3.6.</span> <span class="nav-text">导入外部数据库的schema信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%B9%B6%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE"><span class="nav-number">3.7.</span> <span class="nav-text">查看并使用外部数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">百无聊赖的生活</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX博客">
+      <meta itemprop="description" content="百无聊赖的生活">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="PostgreSQL使用fdw实现跨库查询 | ZenoX博客">
+      <meta itemprop="description" content="在微服务架构中，可能有多个相关的表分布在不同的数据库中，但一般来说关联查询语法是不能跨数据库使用的。本文将介绍如何使用PostgreSQL的fdw插件进行跨库查询">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          PostgreSQL使用fdw实现跨库查询
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-29 21:43:01" itemprop="dateCreated datePublished" datetime="2021-08-29T21:43:01+08:00">2021-08-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-23 11:49:53" itemprop="dateModified" datetime="2022-06-23T11:49:53+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/" class="post-meta-item leancloud_visitors" data-flag-title="PostgreSQL使用fdw实现跨库查询" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">在微服务架构中，可能有多个相关的表分布在不同的数据库中，但一般来说关联查询语法是不能跨数据库使用的。本文将介绍如何使用PostgreSQL的fdw插件进行跨库查询</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>PostgreSQL如果想要进行跨库查询，需要使用一个叫做fdw的插件，使用pgsql的命令即可创建，简单实用。</p>
+<h1 id="实验准备"><a href="#实验准备" class="headerlink" title="实验准备"></a>实验准备</h1><p>除了插件本身如何安装、配置，我们当然还需要准备跨库的数据，比如这个例子中，假设有这样的表结构，user是用户的基本信息，包括主键id、名字以及身份证号；user_ticket_info表是用户持有的票据信息，id的含义与user表的id是一致的，ticket_type为票据类型，remaining_number为票的余量。</p>
+<p><img src="image-20210829201850361.png" alt="image-20210829201850361"></p>
+<p>为了方便，我们要可以每张票插入几条数据，方便之后join查询。</p>
+<p><img src="image-20210829203228698.png" alt="image-20210829203228698"></p>
+<p><img src="image-20210829203414644.png" alt="image-20210829203414644"></p>
+<p>假设user在数据库demo_db1中，而user_ticket_info在demo_db2中，我们无法直接使用join语法去关联查询，那么接下来就需要介绍fdw的使用了。</p>
+<h1 id="fdw安装与使用"><a href="#fdw安装与使用" class="headerlink" title="fdw安装与使用"></a>fdw安装与使用</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>fdw全程是foreign-data wrapper，PostgreSQL官方提供了一个插件名为postgres_fdw，专门用于访问其他pgsql数据库的数据，这里的其他是相对于当前数据库的，也就是说也可以访问其他主机上的数据库。相比较于传统的pgsql插件dblink，postgres_fdw使我们可以通过标准的sql来使用其他库的数据，可以说相当实用。</p>
+<h2 id="创建extension"><a href="#创建extension" class="headerlink" title="创建extension"></a>创建extension</h2><p>首先使用下列命令在demo_db1数据库中创建fdw模块。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> extension postgres_fdw</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建外部数据库"><a href="#创建外部数据库" class="headerlink" title="创建外部数据库"></a>创建外部数据库</h2><p>当前我们使用的是demo_db1这个数据库，我们想使用的表在demo_db2这个数据库中，虽然他们都是在localhost这台主机上，但要使用fdw来进行操作，就得先在demo_db1这边创建一个foreign_server，代表一个外部pgsql服务器。</p>
+<p>使用以下命令来创建一个foreign_server。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> SERVER server_name [ TYPE <span class="string">&#x27;server_type&#x27;</span> ] [ VERSION <span class="string">&#x27;server_version&#x27;</span> ]</span><br><span class="line">    <span class="keyword">FOREIGN</span> DATA WRAPPER fdw_name</span><br><span class="line">    [ OPTIONS ( option <span class="string">&#x27;value&#x27;</span> [, ... ] ) ]</span><br></pre></td></tr></table></figure>
+
+<p>这里解释以下每个参数的作用。</p>
+<ol>
+<li>server_name是你添加的外部服务器名称，具体取什么名并不重要，只是作为当前数据库中使用的一个别名。</li>
+<li>server_type，server的类型，可不填。</li>
+<li>server_version，server的版本，可不填。</li>
+<li>fdw_name，fdw的名称，我们这里使用的是postgres_fdw，那么填postgres_fdw即可，不需要填其他的。</li>
+<li>option，选项，一般用来填外部数据库的host地址、数据库名称、端口号。</li>
+</ol>
+<p>根据上述命令，我们根据需要写出自己的语句。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> server demo_db2 <span class="keyword">foreign</span> data wrapper postgres_fdw options (host <span class="string">&#x27;localhost&#x27;</span>, dbname <span class="string">&#x27;demo_db2&#x27;</span>, port <span class="string">&#x27;5432&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>此时可以用图形工具来看下demo_db1的数据库信息，应该能发现它多了个foreign data wrapper，其内部还包含了个外部数据库demo_db2（我这里使用的是intellij idea自带的数据库管理工具，如果你不用它，也可以尝试一下pgadmin，专门用于PostgreSQL数据库的图形化工具，个人觉得挺好用）。</p>
+<p><img src="image-20210829211510547.png" alt="image-20210829211510547"></p>
+<h2 id="创建用户映射"><a href="#创建用户映射" class="headerlink" title="创建用户映射"></a>创建用户映射</h2><p>这里的用户映射指的是在demo_db1这边添加的配置，一般是用户名和密码，专门用于连接外部数据库，我们可以创建多个外部数据库，也可以创建多个用户映射专门用于访问每个数据库，它的命令如下。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CREATE USER MAPPING FOR &#123; user_name | USER | CURRENT_USER | PUBLIC &#125;</span><br><span class="line">    SERVER server_name</span><br><span class="line">    [ OPTIONS ( option <span class="string">&#x27;value&#x27;</span> [ , ... ] ) ]</span><br></pre></td></tr></table></figure>
+
+<p>照样来介绍下各个参数的作用。</p>
+<ol>
+<li>user_name，当前数据库上存在的一个用户，用于映射到外部数据库的某个用户。也可以使用USER或者CURRENT_USER来指代当前操作的用户；而如果你使用的是PUBLIC，则相当于创建一个公共映射，如果你没有创建其他的用户映射，那么默认就会使用它。</li>
+<li>server_name，输入一个外部数据库名称即可，比如我们刚才创建的那个demo_db2。</li>
+<li>options，一般用于指定外部数据库的用户名和密码。</li>
+</ol>
+<p>转换为我们当前这个案例的场景，写出以下sql。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> mapping <span class="keyword">for</span> <span class="built_in">CURRENT_USER</span> server demo_db2 options (<span class="keyword">user</span> <span class="string">&#x27;postgres&#x27;</span>, password <span class="string">&#x27;123456&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这里你也可以将CURRENT_USER改成特定的用户，但options是必须填的，填的是demo_db2的用户，即外部数据库的用户。</p>
+<h2 id="在当前数据库创建一个schema"><a href="#在当前数据库创建一个schema" class="headerlink" title="在当前数据库创建一个schema"></a>在当前数据库创建一个schema</h2><p>为什么要创建一个schema？说白了，实际上就是将外部数据库的schema定义信息（即各个表的定义，不包括数据）全部导入到当前数据库里，schema相当于是个“容器”，有了这个schema，我们就能像操作当前库的数据一样，操纵外部数据库。</p>
+<p>这里就随意创建一个temp_schema了，你也可以根据自己的需要来决定如何定义这个schema。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> schema temp_schema;</span><br></pre></td></tr></table></figure>
+
+<h2 id="导入外部数据库的schema信息"><a href="#导入外部数据库的schema信息" class="headerlink" title="导入外部数据库的schema信息"></a>导入外部数据库的schema信息</h2><p>此时我们只需要将demo_db2中用来存储数据的那个schema一股脑导入到temp_schema上就可以了。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IMPORT <span class="keyword">FOREIGN</span> SCHEMA remote_schema</span><br><span class="line">    [ &#123; LIMIT TO | EXCEPT &#125; ( table_name [, ...] ) ]</span><br><span class="line">    <span class="keyword">FROM</span> SERVER server_name</span><br><span class="line">    <span class="keyword">INTO</span> local_schema</span><br><span class="line">    [ OPTIONS ( option <span class="string">&#x27;value&#x27;</span> [, ... ] ) ]</span><br></pre></td></tr></table></figure>
+
+<p>按惯例介绍以下各个参数的作用。</p>
+<ol>
+<li>remote_schema，外部数据库的schema名称。</li>
+<li>limit to (…)，只导入某几个表，圆括号内是需要导入的表名，比如我只导入user_ticket_info，则是limit to (user_ticket_info)</li>
+<li>except (…)，不导入哪些表，圆括号内是不导入的表明，用法同limit to一致。</li>
+<li>server_name，即外部数据库名。</li>
+<li>local_schema，即我们刚才创建的用于存放外部schema信息的那个新schema名。</li>
+<li>options，其实我也不太清楚这条命令里，options具体能干啥，但一般来说不填即可，PostgreSQL官方文档上的说法是：“specific to each foreign data wrapper”。</li>
+</ol>
+<p>写出本案例中的import命令。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import <span class="keyword">foreign</span> schema public <span class="keyword">from</span> server demo_db2 <span class="keyword">into</span> temp_schema</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看并使用外部数据"><a href="#查看并使用外部数据" class="headerlink" title="查看并使用外部数据"></a>查看并使用外部数据</h2><p>上一步导入了foreign schema后，我们就可以像使用本地schema一样访问外部的schema了。</p>
+<p><img src="image-20210829213646559.png" alt="image-20210829213646559"></p>
+<p>尝试使用join语法关联查询，注意需要区分schema。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> u.id, u.name, u.id_card_no, uti.ticket_type, uti.remaining_number <span class="keyword">from</span> public.user u</span><br><span class="line">    <span class="keyword">left</span> <span class="keyword">join</span> temp_schema.user_ticket_info uti <span class="keyword">on</span> uti.id<span class="operator">=</span>u.id;</span><br></pre></td></tr></table></figure>
+
+<p>查询结果如下，实验成功。</p>
+<p><img src="image-20210829213920015.png" alt="image-20210829213920015"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>使用fdw可以让我们像使用本地数据那样使用外部数据，并且postgres_fdw是PostgreSQL官方提供的插件，并不需要使用其他分库分表的中间件，快捷、高效，在跨库查询的需求相对简单来说，是一个很不错的选择。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/PostgreSQL/" rel="tag"><i class="fa fa-tag"></i> PostgreSQL</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+              <a href="/tags/%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/" rel="tag"><i class="fa fa-tag"></i> 跨库查询</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/" rel="prev" title="SpringCloudStream入门及案例">
+                  <i class="fa fa-chevron-left"></i> SpringCloudStream入门及案例
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/03/SpringApplicationEvent%E4%BD%BF%E7%94%A8%E6%A1%88%E4%BE%8B/" rel="next" title="SpringApplicationEvent使用案例">
+                  SpringApplicationEvent使用案例 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2021020918号 </a>
+      <img src="/uploads/beian.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021020918" rel="noopener" target="_blank">浙ICP备2021020918号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ZenoXen/ZenoXen.github.io","issue_term":"title","theme":"github-light","cdn":"https://utteranc.es/client.js"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>

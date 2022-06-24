@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 5.4.2">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="SuTVn6gv8weF_knNFdEx4AKRDjWs3RjZB-9bXgcb_WU">
+  <meta name="baidu-site-verification" content="code-BQ7MD7iclp">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.zenoxen.cn","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"utterances","storage":true,"lazyload":false,"nav":null,"activeClass":"utterances"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在微服务项目中，我们需要通过消息队列来传递不同服务之间的数据和消息，而SpringCloudStream则可以为不同种类的消息队列提供一个统一的高层api使用入口">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringCloudStream入门及案例">
+<meta property="og:url" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/index.html">
+<meta property="og:site_name" content="ZenoX博客">
+<meta property="og:description" content="在微服务项目中，我们需要通过消息队列来传递不同服务之间的数据和消息，而SpringCloudStream则可以为不同种类的消息队列提供一个统一的高层api使用入口">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210729200443316.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210729205413063.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210729205815454.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210729205927900.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210808191908850.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210808194437896.png">
+<meta property="og:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210808200956001.png">
+<meta property="article:published_time" content="2021-07-11T03:03:38.000Z">
+<meta property="article:modified_time" content="2022-06-23T03:49:53.107Z">
+<meta property="article:author" content="ZenoX">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="SpringCloudStream">
+<meta property="article:tag" content="rabbitMQ">
+<meta property="article:tag" content="消息队列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/image-20210729200443316.png">
+
+
+<link rel="canonical" href="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/","path":"2021/07/11/SpringCloudStream入门及案例/","title":"SpringCloudStream入门及案例"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SpringCloudStream入门及案例 | ZenoX博客</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ZenoX博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人笔记本</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%B6%88%E8%B4%B9%E8%80%85%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">定义消费者程序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BASpringBoot%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">创建SpringBoot项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E5%AE%9E%E4%BD%93"><span class="nav-number">2.2.</span> <span class="nav-text">定义消息实体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E6%B6%88%E8%B4%B9%E8%80%85"><span class="nav-number">2.3.</span> <span class="nav-text">定义消费者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%B8%80%E4%B8%AA%E7%94%A8%E4%BA%8E%E6%B5%8B%E8%AF%95%E7%9A%84%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.4.</span> <span class="nav-text">安装一个用于测试的消息队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E9%80%81Person%E6%B6%88%E6%81%AF%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95"><span class="nav-number">2.5.</span> <span class="nav-text">发送Person消息进行测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%94%9F%E4%BA%A7%E8%80%85%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">定义生产者程序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Supplier%E7%B1%BB%E5%9E%8B%E7%9A%84%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">3.1.</span> <span class="nav-text">Supplier类型的生产者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8StreamBridge%E6%9D%A5%E5%85%85%E5%BD%93%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">3.2.</span> <span class="nav-text">使用StreamBridge来充当生产者</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#send%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90"><span class="nav-number">3.2.1.</span> <span class="nav-text">send方法解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEbinding"><span class="nav-number">3.2.2.</span> <span class="nav-text">配置binding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%B9%B6%E8%B0%83%E7%94%A8StreamBridge"><span class="nav-number">3.2.3.</span> <span class="nav-text">声明并调用StreamBridge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.2.4.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#group%E6%A6%82%E5%BF%B5"><span class="nav-number">4.</span> <span class="nav-text">group概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgroup"><span class="nav-number">4.1.</span> <span class="nav-text">配置group</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">6.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ZenoX"
+      src="/uploads/avatar.png">
+  <p class="site-author-name" itemprop="name">ZenoX</p>
+  <div class="site-description" itemprop="description">百无聊赖的生活</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zenoxen" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zenoxen" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zenox2105@gmail.com" title="E-Mail → mailto:zenox2105@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.zenoxen.cn/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.png">
+      <meta itemprop="name" content="ZenoX">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZenoX博客">
+      <meta itemprop="description" content="百无聊赖的生活">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SpringCloudStream入门及案例 | ZenoX博客">
+      <meta itemprop="description" content="在微服务项目中，我们需要通过消息队列来传递不同服务之间的数据和消息，而SpringCloudStream则可以为不同种类的消息队列提供一个统一的高层api使用入口">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringCloudStream入门及案例
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-11 11:03:38" itemprop="dateCreated datePublished" datetime="2021-07-11T11:03:38+08:00">2021-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-06-23 11:49:53" itemprop="dateModified" datetime="2022-06-23T11:49:53+08:00">2022-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/SpringCloudStream/" itemprop="url" rel="index"><span itemprop="name">SpringCloudStream</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/" class="post-meta-item leancloud_visitors" data-flag-title="SpringCloudStream入门及案例" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7.7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">在微服务项目中，我们需要通过消息队列来传递不同服务之间的数据和消息，而SpringCloudStream则可以为不同种类的消息队列提供一个统一的高层api使用入口</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在微服务架构流行的今天，消息队列的应用显得尤为重要，然而对于一个Java或者说一个Spring项目来说，不同的消息队列需要导入不同的driver依赖，这种情况下，就产生了一个痛点，即项目极有可能深度与某个特定的消息队列绑定，而通过本文所述的这项技术Spring Cloud Stream，可以将消息队列driver的实现与应用代码分离，即开发者不需要再写带有“mq特色”的代码了。</p>
+<p>过去，我们可以通过Spring Integration来集成各种企业级别应用的外部系统，比如数据库、消息队列，随着Spring Boot的不断壮大和流行，官方将Spring Integration与Spring Boot整合到了一块，形成了一个新的项目–Spring Cloud Stream。</p>
+<h1 id="定义消费者程序"><a href="#定义消费者程序" class="headerlink" title="定义消费者程序"></a>定义消费者程序</h1><p>以下的案例根据Spring官方文档编写。</p>
+<h2 id="创建SpringBoot项目"><a href="#创建SpringBoot项目" class="headerlink" title="创建SpringBoot项目"></a>创建SpringBoot项目</h2><p>由于Spring Cloud Stream项目是基于Spring Boot的，那么自然可以使用Spring Initializr进行快速构建，这个案例需要以下的依赖，这里用到的消息队列实现是RabbitMQ，当然如果你用的是Kafka、RocketMQ等，SpringCloudStream也支持，其他消息队列具体如何集成、配置都可以从<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-cloud-stream/docs/3.1.3/reference/html/index.html">官方文档</a>上找到。</p>
+<ul>
+<li>Spring-RabbitMQ集成</li>
+<li>Spring Cloud Stream</li>
+</ul>
+<p><img src="image-20210729200443316.png" alt="image-20210729200443316"></p>
+<h2 id="定义消息实体"><a href="#定义消息实体" class="headerlink" title="定义消息实体"></a>定义消息实体</h2><p>在这个项目中，我们一定是希望将Java对象作为消息在微服务之间传递，假设要传递的对象就是Person类，包含他的名字、年龄等信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(Integer age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定义消费者"><a href="#定义消费者" class="headerlink" title="定义消费者"></a>定义消费者</h2><p>由于相对比较复杂，这里暂时先不讨论生产者是如何定义的，而是先说说怎么定义消费者。</p>
+<p>创建一个Configuration类（或者用Component、Service等注解都是可以的），然后其中定义一个Consumer的Bean，其职责就是用来接收并消费Person消息，如下所示。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Consumer&lt;Person&gt; <span class="title">consumerPerson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> person -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;接收到Person信息：&quot;</span> + person.getName() + <span class="string">&quot;,&quot;</span> + <span class="string">&quot;年龄&quot;</span> + person.getAge());</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这边使用了java.util.function.Consumer，使用过java 8特性函数式编程的朋友应该不陌生，这里不展开介绍java 8的函数式编程和lamda表达式，如果有需要的话，这里推介一个我比较喜欢的知乎博主的文章 <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/37872003/answer/1009015660">在Java代码中写Lambda表达式是种怎样的体验？</a></p>
+<p>这里需要说一下，SpringCloudStream目前的最新版本3.1.3支持两种编程模式，第一种就是我上面的这种，即函数式编程，也是官方主推的使用方式；而另一种基于注解的使用方式，虽然3.1.3版本也支持，但按照官方说法，在不久的将来也许就要废弃了，所以本文后续使用的都是Spring官方主推的函数式编程。</p>
+<h2 id="安装一个用于测试的消息队列"><a href="#安装一个用于测试的消息队列" class="headerlink" title="安装一个用于测试的消息队列"></a>安装一个用于测试的消息队列</h2><p>定义好消费者代码后，实际上这个应用程序就已经具备了接收Person对象的能力，但还有两个问题，从<strong>哪里</strong>消费？<strong>如何</strong>消费？</p>
+<p>先回答第一个问题，由于我们导入的是RabbitMQ与Spring的集成依赖，如果你不进行任何配置，在SpringBoot程序启动时自动尝试去连接localhost的5672端口，即RabbitMQ的默认端口，连接上后，框架自己会使用默认的配置创建一个exchange和一个对应的queue。</p>
+<p>第二个问题，如何消费，正常情况下，我们一般会有一个对应的生产者程序，但这个例子里，我们只是演示如何使用Consumer端，那么可以直接使用RabbitMQ的管理端来发送测试消息，消费者会自动从消息队列中取出消息（一般来说就是json字符串），并自动转换为java对象。</p>
+<p>了解消费者的工作模式后，就来安装一个RabbitMQ吧，我这里使用的是Docker镜像，可以参考下面的Docker指令，创建的RabbitMQ容器默认向外暴露5672和15672两个端口，即可以直接通过浏览器访问RabbitMQ管理端。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">拉取镜像rabbitmq:management，自带管理界面</span></span><br><span class="line">docker pull rabbitmq:management</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">运行镜像，这里简单配置了端口映射，账户名密码使用默认的guest guest</span></span><br><span class="line">docker run --name rabbitmq-test -p 15672:15672 -p 5672:5672 rabbitmq:management</span><br></pre></td></tr></table></figure>
+
+<p>运行完成后，可以访问localhost:15672来查看是否安装成功。</p>
+<p>当然如果你改一下Spring连接RabbitMQ的配置，通过配置文件application.properties或者application.yml修改即可。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">5672</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">guest</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">guest</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="发送Person消息进行测试"><a href="#发送Person消息进行测试" class="headerlink" title="发送Person消息进行测试"></a>发送Person消息进行测试</h2><p>将程序运行起来，可以看到控制台输出了几句话，一般是这样的。</p>
+<p><img src="image-20210729205413063.png" alt="image-20210729205413063"></p>
+<p>如果有上面这几句输出，一般说明程序成功连接上rabbitMQ并且根据consumer的定义自行创建了exchange和queue。</p>
+<p>前往rabbitMQ管理端，找到对应的queue，在payload内填入json数据，包括Person的两个字段，点击publish message。</p>
+<p><img src="image-20210729205815454.png" alt="image-20210729205815454"></p>
+<p>查看应用程序的控制台，可以发现消费者已经将刚才发送的消息打印了出来。</p>
+<p><img src="image-20210729205927900.png" alt="image-20210729205927900"></p>
+<p>当然这仅仅是一个简单的消费者使用案例，如何定义生产者？以及如何控制SpringCloudStream操作RabbitMQ等，这都需要更多的配置，在本文后续会讲到。</p>
+<h1 id="定义生产者程序"><a href="#定义生产者程序" class="headerlink" title="定义生产者程序"></a>定义生产者程序</h1><p>在上面的简单示例中，我们看了SpringCloudStream是如何定义消费者的，但一个完整的程序当然少不了生产者端，但相较于生产者程序，要稍微复杂一些。</p>
+<h2 id="Supplier类型的生产者"><a href="#Supplier类型的生产者" class="headerlink" title="Supplier类型的生产者"></a>Supplier类型的生产者</h2><p>既然生产者是通过定义一个java.util.function.Consumer来实现的，如果你了解Java函数式的使用，可能会猜想，生产者程序是不是通过java.util.function.Supplier来实现呢？可以这么说，但不完全对，这只是定义生产者程序其中一种方式。</p>
+<p>在上面消费者的例子上，将原先的Consumer修改一下，改为Supplier，为Person实体声明一个生产者的Bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function">Supplier&lt;Person&gt; <span class="title">producePerson</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> () -&gt; <span class="keyword">new</span> Person(<span class="string">&quot;zenox&quot;</span>, <span class="number">24</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码非常简单，仅仅是声明了一个Supplier类型的Bean，那么它是如何生产Person类型的消息的呢？事实上，Supplier类型会定期（默认一秒钟一次）自动生产对应的消息，然后发送到消息队列。</p>
+<p>这大概不是你想要的答案吧？没错，一开始我也觉得怪，但这种Supplier的方式是官方文档上介绍的。</p>
+<p>一般情况下，我们使用消息队列的场景可能是这样的，一个web请求过来了，触发了某些需要异步处理的事务，于是产生一条消息，发送至消息队列，消费者端监听到这条消息后，才开始执行异步这个事务。</p>
+<p>好在Spring官方也提供了这种支持。</p>
+<h2 id="使用StreamBridge来充当生产者"><a href="#使用StreamBridge来充当生产者" class="headerlink" title="使用StreamBridge来充当生产者"></a>使用StreamBridge来充当生产者</h2><p>StreamBridge可以理解为一个管道，它提供了一个send方法，可以将消息发送至某个消息队列，我们可以使用它来实现生产者的功能。</p>
+<h3 id="send方法解析"><a href="#send方法解析" class="headerlink" title="send方法解析"></a>send方法解析</h3><p>我们先来看一看StreamBridge中关于send的源码注释。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Sends &#x27;data&#x27; to an output binding specified by &#x27;bindingName&#x27; argument while</span></span><br><span class="line"><span class="comment"> * using default content type to deal with output type conversion (if necessary).</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> bindingName the name of the output binding</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data the data to send</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> true if data was sent successfully, otherwise false or throws an exception.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">send</span><span class="params">(String bindingName, Object data)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">this</span>.send(bindingName, data, MimeTypeUtils.APPLICATION_JSON);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释的大意基本是这样的：将data，也就是我们的消息对象，以默认的JSON格式发送到<strong>“binding”</strong>那边，如果发送成功，会返回true，如果发送失败，则返回false或者抛出异常。</p>
+<p>这里需要了解binding是个啥？这里也不卖关子了，binding可以理解为一个绑定关系，绑定的双方实际上就是消费者方法和消息队列，这里可能让你比较迷惑，为什么讲生产者，又扯起消费者队列了？但你可以这么想想，StreamBridge就是个管道，我们通过这个管道，将消息或数据发送至消费者队列，binding即目标消息队列，这样是不是就好理解了？</p>
+<p>那这边binding该怎么定义？</p>
+<h3 id="配置binding"><a href="#配置binding" class="headerlink" title="配置binding"></a>配置binding</h3><p>在原有的消费者程序基础上，配置application.yml。这里需要注意一下，我们在Consumer程序中定义的那个Consumer方法名为consumePerson。默认情况下，SpringCloudStream会自动为Consumer和Supplier类型的方法生成binding，比如这里的consumePerson即自动生成consumePerson-in-0的binding，而如果是Supplier类型的方法，则生成xxxx-out-0。</p>
+<p>我们可以修改默认的binding名，使用spring.cloud.stream.function.defination和spring.cloud.stream.function.bindings即可。</p>
+<p>假设，这里，我们希望将原来长长的那一串consumePerson-in-0改的容易理解一些，改成person-receive，可以像下面这样。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">function:</span></span><br><span class="line">        <span class="attr">definition:</span> <span class="string">consumePerson</span></span><br><span class="line">        <span class="attr">bindings:</span> </span><br><span class="line">          <span class="attr">consumePerson-in-0:</span> <span class="string">person-receive</span>  </span><br></pre></td></tr></table></figure>
+
+<p>其中spring.cloud.stream.function.defination是消费者方法定义的声明，你所定义的消费者方法必须写在这边，来为它们修改binding。</p>
+<p>这个例子中，我们只有一个消费者方法名为consumePerson，我们将其binding名改为person-receive。</p>
+<p>那么，binding如何跟queue对应呢？默认情况下，binding名即为queue名，按现在的配置，启动程序后，SpringCloudStream会自动为我们声明一个person-receive的queue。</p>
+<p>我们也可以修改这个queue的名称，仍然使用application.yml进行配置即可。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">function:</span></span><br><span class="line">        <span class="attr">definition:</span> <span class="string">consumePerson</span></span><br><span class="line">        <span class="attr">bindings:</span></span><br><span class="line">          <span class="attr">consumePerson-in-0:</span> <span class="string">person-receive</span></span><br><span class="line">      <span class="comment"># 新增的配置</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">person-receive:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">person-receive-channel</span></span><br></pre></td></tr></table></figure>
+
+<p>如上述配置所示，我们将binding person-receive的目标指向一个叫person-receive-channel的queue，使用的是spring.cloud.stream.bindings.xxx.destination，该配置项可以让我们自行指定binding与queue之间的映射关系。</p>
+<p>启动程序，查看RabbitMQ界面，果然发现自动生成的是person-receive-channel，但可以发现，person-receive-channel名称后面还有一串奇怪的字符串，这实际上是<strong>group</strong>，本文后面会讲到。</p>
+<p><img src="image-20210808191908850.png" alt="image-20210808191908850"></p>
+<h3 id="声明并调用StreamBridge"><a href="#声明并调用StreamBridge" class="headerlink" title="声明并调用StreamBridge"></a>声明并调用StreamBridge</h3><p>既然现在已经了解了binding到底是什么东西，我们就可以比较方便的使用StreamBridge了，参照下面的代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StreamBridge streamBridge;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendPerson</span><span class="params">(Person person)</span> </span>&#123;</span><br><span class="line">        streamBridge.send(<span class="string">&quot;person-receive&quot;</span>, person);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以将StreamBridge给注入到需要使用的地方，比如Service层或者Controller层。然后调用send方法，如前文所述，StreamBridge会将Person对象以json格式发送到对应binding的queue上，这个例子中，我们已经配置了，binding为person-receive，binding对应的queue为person-receive-channel。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>这里为这边的配置做一个小结：spring.cloud.stream.function.defination为我们自己声明的消费者方法名，spring.cloud.stream.function.bindings为方法名到binding的映射（默认情况下，不配置的话，即根据方法名自动生成xxx-in-0这样的binding）；spring.cloud.stream.bindings.xxx.destination为binding到queue的映射（默认情况下，根据binding名自动生成一个对应的queue）。</p>
+<p>最后，通过StreamBridge，将Person对象发送到相应的queue内即可。</p>
+<h1 id="group概念"><a href="#group概念" class="headerlink" title="group概念"></a>group概念</h1><p>前面的生产者案例中，我们看到了如何声明消费者的binding和queue的对应关系，也发现了SpringCloudStream默认的生成的queue包含了一个奇怪的字符串，实际上这个后缀是该binding所属的group，这是啥？这一节，我们就来了解一下SpringCloudStream的group概念。</p>
+<p>对于消费者而言，SpringCloudStream提供了一个group的概念，下面举一个例子来更好的理解。</p>
+<p><img src="image-20210808194437896.png" alt="image-20210808194437896"></p>
+<p>上述例子中，数据源是HTTP，发送到raw-sensor-data（可以理解为数据处理层），然后raw-sensor-data将其分别发送给两个程序HDFS Write（写入数据库）和Average Calculator（参与计算），假设线上环境中，两个程序为了保证高可用，都是多实例的，HDFS Write有实例1和2，Average Calculator也有实例1和2。那么SpringCloudStream在这种情况下，如何保证多实例不会重复消费数据？这里就要引入group的概念，按照Spring官方的解释，同一个group下的多个相同消费者A、B、C，对于同一个消息info，虽然A、B、C都可以消费这个信息，但由于它们是同一个group，只有其中一个会去消费它。默认情况下，消费的顺序是轮询的，这次是A，下次是B，再下次是C，然后从头开始轮替。</p>
+<p>在上图的例子中，将两个HDFS Write的实例的group设为hdfsWrite，将两个Average Calculator的实例的group设为average，如此一来，两个程序都只有其中一个实例会消费消息，避免了消息的重复消费。</p>
+<h2 id="配置group"><a href="#配置group" class="headerlink" title="配置group"></a>配置group</h2><p>回到我们自己的例子上来，假设现在我们的程序也有两个实例，此时也需要设置group来防止重复消费，我们可以通过两种配置方式来设置它。</p>
+<ol>
+<li><p>spring.cloud.stream.default.group</p>
+</li>
+<li><p>spring.cloud.stream.bindings.xxx.group</p>
+</li>
+</ol>
+<p>第一种方式的配置会被所有consumer共享，即所有的consumer都属于这个group，第二种方式是为指定binding的group，随意使用其中哪种都可以实现我们的目标。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">function:</span></span><br><span class="line">        <span class="attr">definition:</span> <span class="string">consumePerson</span></span><br><span class="line">        <span class="attr">bindings:</span></span><br><span class="line">          <span class="attr">consumePerson-in-0:</span> <span class="string">person-receive</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">person-receive:</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">person-receive-channel</span></span><br><span class="line">          <span class="comment"># 配置group</span></span><br><span class="line">          <span class="attr">group:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+
+<p>启动程序，发现生成的queue名自带了main后缀，无论启动多少个实例，一条消息只会供其中一个消费者消费，而不是每个实例都去消费一遍。</p>
+<p><img src="image-20210808200956001.png" alt="image-20210808200956001"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文简述了Spring Cloud Stream的作用、使用，但3.0以上的Spring Cloud Stream无论是功能、特性，都远比本文所述的要多得多，比如对单元测试的支持、响应式编程、错误处理机制等，若你还有更多疑问，可以参考<a target="_blank" rel="noopener" href="https://spring.io/projects/spring-cloud-stream">Spring Cloud Stream的官方文档</a>。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a target="_blank" rel="noopener" href="https://spring.io/projects/spring-cloud-stream">Spring Cloud Stream的官方文档</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.baeldung.com/spring-cloud-stream">Introduction to Spring Cloud Stream</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/83938579">Spring Cloud系列之Spring Cloud Stream</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+              <a href="/tags/SpringCloudStream/" rel="tag"><i class="fa fa-tag"></i> SpringCloudStream</a>
+              <a href="/tags/rabbitMQ/" rel="tag"><i class="fa fa-tag"></i> rabbitMQ</a>
+              <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag"><i class="fa fa-tag"></i> 消息队列</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/07/04/%E4%B8%AA%E4%BA%BA%E8%BF%91%E6%9C%9F%E7%8A%B6%E6%80%81%E5%88%86%E6%9E%90%E5%92%8C%E6%80%BB%E7%BB%93/" rel="prev" title="个人近期状态分析和总结">
+                  <i class="fa fa-chevron-left"></i> 个人近期状态分析和总结
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/" rel="next" title="PostgreSQL使用fdw实现跨库查询">
+                  PostgreSQL使用fdw实现跨库查询 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments utterances-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">浙ICP备2021020918号 </a>
+      <img src="/uploads/beian.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=2021020918" rel="noopener" target="_blank">浙ICP备2021020918号-1 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZenoX</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"18kXE9grlsG6iGdodFBPKRhS-gzGzoHsz","app_key":"Cr75M3StnSKrVX6uAoGUkYKr","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="utterances" type="application/json">{"enable":true,"repo":"ZenoXen/ZenoXen.github.io","issue_term":"title","theme":"github-light","cdn":"https://utteranc.es/client.js"}</script>
+<script src="/js/third-party/comments/utterances.js"></script>
+
+</body>
+</html>
