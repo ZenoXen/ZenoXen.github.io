@@ -129,6 +129,71 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
+    <title>IDEA常用快捷键与操作汇总</title>
+    <url>/2022/06/24/IDEA%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE%E4%B8%8E%E6%93%8D%E4%BD%9C%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<h2 id="上下文与搜索功能"><a href="#上下文与搜索功能" class="headerlink" title="上下文与搜索功能"></a>上下文与搜索功能</h2><ol>
+<li>智能代码修正：alt+enter</li>
+<li>全局搜索（类、方法、变量、文件、）：双击shift弹出搜索栏；在搜索结果条目下按ctrl+Q可以显示该条目相关文档</li>
+</ol>
+<h2 id="代码编辑"><a href="#代码编辑" class="headerlink" title="代码编辑"></a>代码编辑</h2><ol>
+<li>扩大代码选取：ctrl+w；包括字符串选取都可以用这个方法扩大</li>
+<li>缩小代码选取：ctrl+shift+w</li>
+<li>注释：ctrl+/</li>
+<li>复制代码：ctrl+d；可配合使用shift+方向键上包含选取上一行后再复制</li>
+<li>删除代码：ctrl+y</li>
+<li>移动代码行：alt+shift+方向键上/方向键下</li>
+<li>移动方法：光标移到方法头，按ctrl+shift+方向键上/方向键下</li>
+<li>折叠代码块：ctrl+减号</li>
+<li>打开代码块：ctrl+等号</li>
+<li>打开当前文件所有代码块：ctrl+shift+等号</li>
+<li>折叠当前文件所有代码块：ctrl+shift+减号</li>
+<li>包裹当前代码：ctrl+alt+t，如if、try catch、for、while</li>
+<li>取消包裹代码：ctrl+shift+delete</li>
+<li>选取符号：alt+j，一直按可以一直选取下一个同类符号</li>
+<li>取消选取上一个符号：alt+shift+j</li>
+<li>选取所有同类符号：ctrl+alt+shift+j</li>
+</ol>
+<h2 id="代码补全"><a href="#代码补全" class="headerlink" title="代码补全"></a>代码补全</h2><ol>
+<li>自动补全：ctrl+space，选择补全选项后，使用tab，可以替换当前光标内的字符，而不是插入</li>
+<li>添加分号：ctrl+shift+enter</li>
+<li>自动类型补全：ctrl+shift+space，可以用在赋值声明和return语句上</li>
+<li>后缀补全：在一条已经写好的表达式后面使用句号，可以选择合适的补全方式</li>
+<li>语句补全：ctrl+shift+enter，可以补全if、for的圆括号、大括号</li>
+</ol>
+<h2 id="快速重构"><a href="#快速重构" class="headerlink" title="快速重构"></a>快速重构</h2><ol>
+<li>重命名：shift+F6</li>
+<li>提取变量：ctrl+alt+v</li>
+<li>提取方法：ctrl+alt+m</li>
+<li>重构菜单：ctrl+alt+shift+t，可以用于提取参数、提取行内变量、提取常量等</li>
+</ol>
+<h2 id="Local-History"><a href="#Local-History" class="headerlink" title="Local History"></a>Local History</h2><p>git history只能显示本次提交与上次提交之间的区别，假设本次修改了许多东西，而我们想回滚其中一部分的改动，则撤回操作就不那么好用了，此时可以使用IDEA的Local History功能，在编辑页面右键选择Local History，每次编辑代码时都会产生一个新的版本，选择其中的版本，并回滚自己需要的改动就可以了</p>
+<h2 id="代码助手"><a href="#代码助手" class="headerlink" title="代码助手"></a>代码助手</h2><ol>
+<li>格式化代码：ctrl+alt+l</li>
+<li>显示格式化代码设置：ctrl+alt+shift+l</li>
+<li>查看方法签名：ctrl+p</li>
+<li>快速查看文档：ctrl+q</li>
+<li>快速查看定义：对方法、变量等，可以使用ctrl+shift+i查看其定义</li>
+<li>跳转到下一个错误：F2</li>
+<li>高亮所有引用处：ctrl+shift+F7</li>
+</ol>
+<h2 id="导航"><a href="#导航" class="headerlink" title="导航"></a>导航</h2><ol>
+<li>全局搜索字符串：ctrl+shift+f，搜出来的结果可能是包含搜索的字符串，如果想要匹配整个词语，可以使用alt+w限定整词查询</li>
+<li>全局替换字符串：ctrl+shift+r</li>
+<li>文件结构导航：ctrl+F12，可以查看该文件的整体结构，所有定义，而不必关注它各个方法的实现</li>
+<li>查看实现：ctrl+alt+b，使用ctrl+u可以返回父级</li>
+<li>查看近期打开的文件：ctrl+e</li>
+<li>预览近期打开的文件：ctrl+shift+e，可以搜索这些文件中的字符串</li>
+</ol>
+]]></content>
+      <categories>
+        <category>生产工具</category>
+      </categories>
+      <tags>
+        <tag>IDEA</tag>
+        <tag>生产工具</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>PostgreSQL使用fdw实现跨库查询</title>
     <url>/2021/08/29/PostgreSQL%E4%BD%BF%E7%94%A8fdw%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%BA%93%E6%9F%A5%E8%AF%A2/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>PostgreSQL如果想要进行跨库查询，需要使用一个叫做fdw的插件，使用pgsql的命令即可创建，简单实用。</p>
@@ -327,6 +392,65 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
+    <title>SpringValidation使用指南--Controller与Service入参校验</title>
+    <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
+    <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
+<h1 id="JSR-303、Hibernate-Validator与Spring-Validation之间的关系"><a href="#JSR-303、Hibernate-Validator与Spring-Validation之间的关系" class="headerlink" title="JSR-303、Hibernate Validator与Spring Validation之间的关系"></a>JSR-303、Hibernate Validator与Spring Validation之间的关系</h1><p>做SpingBoot程序时，我们经常需要进行方法参数校验，相信很多人都用过@Valid注解以及@NotNull、@NotEmpty、@Min、@Max这样的注解，这些注解实际上是Java标准JSR-303定义的，而且JDK本身不提供这些参数校验的实现。</p>
+<p>Hibernate为JSR-303提供了一套实现，并在原先的基础上又扩展了一些功能，即Hibernate Validator，它可以单独引入使用，比如这样。</p>
+<p><img src="1.png" alt="1"></p>
+<p>Spring的不少模块都集成了Hibernate Validator，所以现在的主流的开发环境一般都是通过Spring或者Spring Boot的起步依赖将其引入的,比如spring-boot-starter-validation，其内部就包含了Hibernate Validator。在Hibernate的基础上，Spring Validation又提供了一系列AOP支持，使各种自定义的Validator以及校验注解能更方便的整合进我们的Spring程序中。</p>
+<p><img src="2.png" alt="2"></p>
+<p>如此，JSR-303、HIbernate Validator以及Spring Validation之间的关系就明朗了。</p>
+<p>JSR-303 &lt;– Hibernate Validator实现 &lt;–Spring Validation二次封装</p>
+<h1 id="Spring-Validation的功能"><a href="#Spring-Validation的功能" class="headerlink" title="Spring Validation的功能"></a>Spring Validation的功能</h1><h2 id="Request-Body校验"><a href="#Request-Body校验" class="headerlink" title="Request Body校验"></a>Request Body校验</h2><p>大部人最先接触到的一般是Spring MVC的Controller层入参校验，比如下面这个例子。</p>
+<p><img src="3.png" alt="3"></p>
+<p>RequestBody绑定了一个DTO（Data Transfer Object）对象，里面的一些字段需要进行校验。</p>
+<p><img src="4.png" alt="4"></p>
+<p>在Controller方法的入参前面加上一个@Valid注解，Spring Validation就会自动校验DTO中的数据，若一个或多个字段没通过校验，那么就会抛出MethodArgumentNotValidException。</p>
+<p>这里的Valid注解是JSR-303定义的，可以替换为@Validated注解，它是SpringValidation提供的，虽然两者功能不同，但在这个场景下，它们作用是一样的。</p>
+<p>稍微复杂有点的情况是，如果DTO中又包含了另一个需要校验的复杂对象，比如下面这个例子。</p>
+<p><img src="7.png" alt="7"></p>
+<p>假设NameBo里也有一些需要校验的字段，那么应该在NameBo字段上再加一个@Valid注解，当Spring检测到这个NameBo字段时，会递归进行校验，可以看看@Valid注解的源码。</p>
+<p><img src="8.png" alt="8"></p>
+<p>源码的注释已经说明了，这种校验行为会递归进行。</p>
+<h2 id="方法入参校验"><a href="#方法入参校验" class="headerlink" title="方法入参校验"></a>方法入参校验</h2><p>有时候我们希望不只是在Controller层进行校验，而是在各种各样的地方应用校验，比如Service层，也希望能对平铺开来的参数进行校验，而不单纯的是对DTO进行校验，比如下面这样。</p>
+<p><img src="5.png" alt="5"></p>
+<p>但与Controller层的情况稍微不同了，在非Controller类中想要让Spring自动校验，需要在类定义加上一个@Validated注解。</p>
+<p><img src="6.png" alt="6"></p>
+<p>如此一来，MyService类中的所有方法，一旦入参上加了校验注解，都会被SpringValidation处理，如果有参数没通过校验，抛出的是ConstraintViolationException，与前面提到的MethodArgumentNotValidException不同，ConstraintViolationException是JSR-303提供的，而它是Spring提供的。</p>
+<p>如果想要对Controller内的入参（不是RequestBody）进行校验，也需要在Controller类上加@Validated注解，比如下面这个例子，是对PathVariable和RequestParam进行校验。</p>
+<p><img src="9.png" alt="9"></p>
+<p>如果想要在Service层对DTO内的字段进行校验，在Service类上已经使用了@Validated注解的前提下，只需要在DTO入参的前面加上@Valid注解即可。</p>
+<p><img src="10.png" alt="10"></p>
+<h1 id="自定义校验规则"><a href="#自定义校验规则" class="headerlink" title="自定义校验规则"></a>自定义校验规则</h1><h2 id="定义Validator"><a href="#定义Validator" class="headerlink" title="定义Validator"></a>定义Validator</h2><p>相信你已经发现了，JSR-303这一套校验规范实际上是围绕注解展开的，比如@NotNull、@NotEmpty这些，针对这些JSR-303已有的注解，SpringValidation或者HibernateValidator实现了一部分，但如果现在有一个自定义的DTO类，需要同时检查多个字段，比如下面这个类。</p>
+<p><img src="11.png" alt="11"></p>
+<p>按照User类的定义，对其进行校验时需要同时检查username和password，单检查一个username或者单检查一个password都是没有意义的，此时预设的注解就无法满足我们的需求了，我们自己手动写一套校验规则。</p>
+<p>首先写自定义类型的校验器，实现ConstraintValidator接口，第一个泛型是我们自定义的校验注解，后面会讲到，第二个泛型是我们要校验的类型，这里我们要同时检查username和password，所以直接检查整个User对象。</p>
+<p><img src="12.png" alt="12"></p>
+<p>一般来说重写isValid方法即可，校验时调用的是这个方法,如果isValid返回true，则说明校验通过，程序正常运行，若返回false，则校验不通过，触发ConstraintViolationException。</p>
+<h2 id="自定义校验注解"><a href="#自定义校验注解" class="headerlink" title="自定义校验注解"></a>自定义校验注解</h2><p>有了Validator还不够，因为此时Spring的校验代理还不知道应该对User执行UserValidator的校验方法，为了让Spring去自动校验User，我们要写一个自定义注解标注在User类上，就像给一个产品打上标签，指明它该使用哪种机器处理。</p>
+<p><img src="13.png" alt="13"></p>
+<p>由于要校验的是整个User类，所以@Target指定的是TYPE，@Constraint(validatedBy=UserValidator.class)则代表这个注解所标注的类应该被UserVlidator校验。</p>
+<p>message方法有一个默认返回值，这里指定未通过校验时的message；groups方法是用于分组校验的，分组是什么概念？你可以理解为类似于Spring Profile的一种东西，指明了哪个分组下应该检查User，哪些分组下不应该检查User，具体的会在后续文章中说明，这里不展开。</p>
+<p><img src="14.png" alt="14"></p>
+<p>最后将UserValid注解标注在User类上，如上图所示，在Controller层或者Service层使用Valid注解做DTO校验的标注。</p>
+<p><img src="15.png" alt="15"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了SpringValidation与JSR-303、HibernateValidator的关系，并简单的对其使用进行了说明，但SpringValidation的功能实际上还不止如此，比如手动调用Validator、分组校验等等，后续文章会补全这些内容。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/205151764">Spring Validation最佳实践与实现原理</a></p>
+]]></content>
+      <categories>
+        <category>Spring</category>
+        <category>SpringValidation</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>数据校验</tag>
+        <tag>HibernateValidator</tag>
+        <tag>SpringValidation</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringCloudStream入门及案例</title>
     <url>/2021/07/11/SpringCloudStream%E5%85%A5%E9%97%A8%E5%8F%8A%E6%A1%88%E4%BE%8B/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在微服务架构流行的今天，消息队列的应用显得尤为重要，然而对于一个Java或者说一个Spring项目来说，不同的消息队列需要导入不同的driver依赖，这种情况下，就产生了一个痛点，即项目极有可能深度与某个特定的消息队列绑定，而通过本文所述的这项技术Spring Cloud Stream，可以将消息队列driver的实现与应用代码分离，即开发者不需要再写带有“mq特色”的代码了。</p>
@@ -435,65 +559,6 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
-    <title>SpringValidation使用指南--Controller与Service入参校验</title>
-    <url>/2021/03/04/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97--Controller%E4%B8%8EService%E5%85%A5%E5%8F%82%E6%A0%A1%E9%AA%8C/</url>
-    <content><![CDATA[<p>由于近期需要对公司项目中现有的一些Controller和Service方法入参做校验，于是专门去学习了一下HibernateValidator，由于对Spring和Hibernate的校验技术背景不太了解，很多地方简直看的一脸懵，但这两天看了几篇质量极高的博客后，对Spring这一套Validation技术稍微有了点了解，理清了它们之间的关系，最近这几天会慢慢把这篇文章完善起来。</p>
-<h1 id="JSR-303、Hibernate-Validator与Spring-Validation之间的关系"><a href="#JSR-303、Hibernate-Validator与Spring-Validation之间的关系" class="headerlink" title="JSR-303、Hibernate Validator与Spring Validation之间的关系"></a>JSR-303、Hibernate Validator与Spring Validation之间的关系</h1><p>做SpingBoot程序时，我们经常需要进行方法参数校验，相信很多人都用过@Valid注解以及@NotNull、@NotEmpty、@Min、@Max这样的注解，这些注解实际上是Java标准JSR-303定义的，而且JDK本身不提供这些参数校验的实现。</p>
-<p>Hibernate为JSR-303提供了一套实现，并在原先的基础上又扩展了一些功能，即Hibernate Validator，它可以单独引入使用，比如这样。</p>
-<p><img src="1.png" alt="1"></p>
-<p>Spring的不少模块都集成了Hibernate Validator，所以现在的主流的开发环境一般都是通过Spring或者Spring Boot的起步依赖将其引入的,比如spring-boot-starter-validation，其内部就包含了Hibernate Validator。在Hibernate的基础上，Spring Validation又提供了一系列AOP支持，使各种自定义的Validator以及校验注解能更方便的整合进我们的Spring程序中。</p>
-<p><img src="2.png" alt="2"></p>
-<p>如此，JSR-303、HIbernate Validator以及Spring Validation之间的关系就明朗了。</p>
-<p>JSR-303 &lt;– Hibernate Validator实现 &lt;–Spring Validation二次封装</p>
-<h1 id="Spring-Validation的功能"><a href="#Spring-Validation的功能" class="headerlink" title="Spring Validation的功能"></a>Spring Validation的功能</h1><h2 id="Request-Body校验"><a href="#Request-Body校验" class="headerlink" title="Request Body校验"></a>Request Body校验</h2><p>大部人最先接触到的一般是Spring MVC的Controller层入参校验，比如下面这个例子。</p>
-<p><img src="3.png" alt="3"></p>
-<p>RequestBody绑定了一个DTO（Data Transfer Object）对象，里面的一些字段需要进行校验。</p>
-<p><img src="4.png" alt="4"></p>
-<p>在Controller方法的入参前面加上一个@Valid注解，Spring Validation就会自动校验DTO中的数据，若一个或多个字段没通过校验，那么就会抛出MethodArgumentNotValidException。</p>
-<p>这里的Valid注解是JSR-303定义的，可以替换为@Validated注解，它是SpringValidation提供的，虽然两者功能不同，但在这个场景下，它们作用是一样的。</p>
-<p>稍微复杂有点的情况是，如果DTO中又包含了另一个需要校验的复杂对象，比如下面这个例子。</p>
-<p><img src="7.png" alt="7"></p>
-<p>假设NameBo里也有一些需要校验的字段，那么应该在NameBo字段上再加一个@Valid注解，当Spring检测到这个NameBo字段时，会递归进行校验，可以看看@Valid注解的源码。</p>
-<p><img src="8.png" alt="8"></p>
-<p>源码的注释已经说明了，这种校验行为会递归进行。</p>
-<h2 id="方法入参校验"><a href="#方法入参校验" class="headerlink" title="方法入参校验"></a>方法入参校验</h2><p>有时候我们希望不只是在Controller层进行校验，而是在各种各样的地方应用校验，比如Service层，也希望能对平铺开来的参数进行校验，而不单纯的是对DTO进行校验，比如下面这样。</p>
-<p><img src="5.png" alt="5"></p>
-<p>但与Controller层的情况稍微不同了，在非Controller类中想要让Spring自动校验，需要在类定义加上一个@Validated注解。</p>
-<p><img src="6.png" alt="6"></p>
-<p>如此一来，MyService类中的所有方法，一旦入参上加了校验注解，都会被SpringValidation处理，如果有参数没通过校验，抛出的是ConstraintViolationException，与前面提到的MethodArgumentNotValidException不同，ConstraintViolationException是JSR-303提供的，而它是Spring提供的。</p>
-<p>如果想要对Controller内的入参（不是RequestBody）进行校验，也需要在Controller类上加@Validated注解，比如下面这个例子，是对PathVariable和RequestParam进行校验。</p>
-<p><img src="9.png" alt="9"></p>
-<p>如果想要在Service层对DTO内的字段进行校验，在Service类上已经使用了@Validated注解的前提下，只需要在DTO入参的前面加上@Valid注解即可。</p>
-<p><img src="10.png" alt="10"></p>
-<h1 id="自定义校验规则"><a href="#自定义校验规则" class="headerlink" title="自定义校验规则"></a>自定义校验规则</h1><h2 id="定义Validator"><a href="#定义Validator" class="headerlink" title="定义Validator"></a>定义Validator</h2><p>相信你已经发现了，JSR-303这一套校验规范实际上是围绕注解展开的，比如@NotNull、@NotEmpty这些，针对这些JSR-303已有的注解，SpringValidation或者HibernateValidator实现了一部分，但如果现在有一个自定义的DTO类，需要同时检查多个字段，比如下面这个类。</p>
-<p><img src="11.png" alt="11"></p>
-<p>按照User类的定义，对其进行校验时需要同时检查username和password，单检查一个username或者单检查一个password都是没有意义的，此时预设的注解就无法满足我们的需求了，我们自己手动写一套校验规则。</p>
-<p>首先写自定义类型的校验器，实现ConstraintValidator接口，第一个泛型是我们自定义的校验注解，后面会讲到，第二个泛型是我们要校验的类型，这里我们要同时检查username和password，所以直接检查整个User对象。</p>
-<p><img src="12.png" alt="12"></p>
-<p>一般来说重写isValid方法即可，校验时调用的是这个方法,如果isValid返回true，则说明校验通过，程序正常运行，若返回false，则校验不通过，触发ConstraintViolationException。</p>
-<h2 id="自定义校验注解"><a href="#自定义校验注解" class="headerlink" title="自定义校验注解"></a>自定义校验注解</h2><p>有了Validator还不够，因为此时Spring的校验代理还不知道应该对User执行UserValidator的校验方法，为了让Spring去自动校验User，我们要写一个自定义注解标注在User类上，就像给一个产品打上标签，指明它该使用哪种机器处理。</p>
-<p><img src="13.png" alt="13"></p>
-<p>由于要校验的是整个User类，所以@Target指定的是TYPE，@Constraint(validatedBy=UserValidator.class)则代表这个注解所标注的类应该被UserVlidator校验。</p>
-<p>message方法有一个默认返回值，这里指定未通过校验时的message；groups方法是用于分组校验的，分组是什么概念？你可以理解为类似于Spring Profile的一种东西，指明了哪个分组下应该检查User，哪些分组下不应该检查User，具体的会在后续文章中说明，这里不展开。</p>
-<p><img src="14.png" alt="14"></p>
-<p>最后将UserValid注解标注在User类上，如上图所示，在Controller层或者Service层使用Valid注解做DTO校验的标注。</p>
-<p><img src="15.png" alt="15"></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了SpringValidation与JSR-303、HibernateValidator的关系，并简单的对其使用进行了说明，但SpringValidation的功能实际上还不止如此，比如手动调用Validator、分组校验等等，后续文章会补全这些内容。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://reflectoring.io/bean-validation-with-spring-boot/">Complete Guide to Validation With Spring Boot</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/205151764">Spring Validation最佳实践与实现原理</a></p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-        <category>SpringValidation</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>数据校验</tag>
-        <tag>HibernateValidator</tag>
-        <tag>SpringValidation</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringValidation使用指南--手动与分组校验以及自定义异常处理</title>
     <url>/2021/03/17/SpringValidation%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97-%E6%89%8B%E5%8A%A8%E4%B8%8E%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C/</url>
     <content><![CDATA[<p>上一篇文章主要讲了如何利用SpringValidation提供的便利，来进行多种场景下的自动数据校验，虽然功能很强，但有时候我们想要自己触发校验机制，将主动权掌握在自己手中，而不是将校验时机完全交给Spring，那么可以不使用方法入参校验。</p>
@@ -542,6 +607,43 @@ if(random_num(0, 9)&gt;6)
         <tag>数据校验</tag>
         <tag>HibernateValidator</tag>
         <tag>SpringValidation</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring实现手机号脱敏处理</title>
+    <url>/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先介绍一下我这边的开发场景，数据库中存的是完整的手机号，即没有加密过的字符串，但需求希望将数据返回前端时进行脱敏处理，将手机号中间4位替换为*号。</p>
+<p>这里还有一点值得一提，返回的ResponseBody中，可能存在一些手机号是夹杂在一个字符串中间的，需要在保留字符串原来内容的前提下，对这些手机号进行脱敏处理。</p>
+<h1 id="正则表达式实现数据脱敏"><a href="#正则表达式实现数据脱敏" class="headerlink" title="正则表达式实现数据脱敏"></a>正则表达式实现数据脱敏</h1><p>实现这个功能的思路是，使用正则表达式替换一个字符串中的所有符合手机号码特征的子串，Java的String类本身就提供了replaceAll方法，我们可以用该方法实现这个功能。</p>
+<p>首先来看看匹配手机号码的正则和手机模糊化的正则。</p>
+<h2 id="中国手机号码的结构特征"><a href="#中国手机号码的结构特征" class="headerlink" title="中国手机号码的结构特征"></a>中国手机号码的结构特征</h2><p>一般中国的手机号码是11位，前三位是根据运营商而定的，4到7位为地区编码，8到11位是随机分配给用户的号码，一般加密是给中间四位地区码加密。</p>
+<p>同时前三位手机号，第一位就是1，第二位和第三位各个运营商各有不同，基本规律我写在下面的代码中，即3可以组合0-9，4组合5或7，5组合0-3或5-9……</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>而将中间四位替换为星号的话，需要在正则表达式中使用圆括号划分出两个区域，即第二和第三位与最后四位之间的位置。</p>
+<h1 id="自定义ResponseBody数据转换"><a href="#自定义ResponseBody数据转换" class="headerlink" title="自定义ResponseBody数据转换"></a>自定义ResponseBody数据转换</h1><p>一般来说，在我们的系统中并不是所有地方都必须得将手机号进行脱敏，有些地方可能还是需要将手机号暴露给用户的，对于不同的接口或者说对于不同的ResponseBody，可以使用Jackson的序列化器来指定如何将JSON序列化给前端。</p>
+<h2 id="自定义JsonSerializer"><a href="#自定义JsonSerializer" class="headerlink" title="自定义JsonSerializer"></a>自定义JsonSerializer</h2><p>自定义一个DesensitizeSerializer，继承JsonSerializer&lt;String&gt;，即它是用于字符串的序列化，在方法中直接调用String的replaceAll方法，将所有符合PHONE_REGEX的字串使用PHONE_BLUR_REGEX替换为加密过的字符串。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DesensitizeSerializer</span> <span class="keyword">extends</span> <span class="title">JsonSerializer</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(String s, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        jsonGenerator.writeString(<span class="keyword">this</span>.encryptPhoneNumber(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">encryptPhoneNumber</span><span class="params">(String phoneNumber)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Objects.nonNull(phoneNumber)) &#123;</span><br><span class="line">            <span class="keyword">return</span> phoneNumber.replaceAll(PHONE_REGEX, PHONE_BLUR_REGEX);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用JsonSerializer"><a href="#应用JsonSerializer" class="headerlink" title="应用JsonSerializer"></a>应用JsonSerializer</h2><p>一般我们使用ResponseBody注解将一个Pojo类或者JPA的interface-based projection返回给前端，虽然我们的确可以在SQL层面做预处理，但那样就容易受需求变更的影响了，而如果是在返回给前端的最后一步之前，也就是将ResponseBody序列化为Json的这一步做处理，那么就很容易面临需求的变更了。</p>
+<p>假设现在有个UserAccount类作为ResponseBody返回给前端，其中的mobile字段需要加密，我们可以像下面这样应用之前写好的JsonSerializer。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserAccount</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonSerialize(using = DesensitizeSerializer.class)</span></span><br><span class="line">    <span class="keyword">private</span> String mobile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>@JsonSerialize注解可以用在getter方法上或者是类字段上，使用using属性可以为这个字段指定一个JsonSerializer。</p>
+<p>写一个测试接口，来看看结果。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;mobile&quot;</span>:<span class="string">&quot;135****3843&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果手机号是混杂在一个很长的字符串里的，也不必担心，String的replaceAll方法可以将整个字符串中所有的手机号加密。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.pianshen.com/article/7263153515/">手机号校验与脱敏处理</a></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+        <tag>Java</tag>
+        <tag>信息脱敏</tag>
+        <tag>正则表达式</tag>
       </tags>
   </entry>
   <entry>
@@ -1043,43 +1145,6 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
-    <title>Spring实现手机号脱敏处理</title>
-    <url>/2021/04/20/Spring%E5%AE%9E%E7%8E%B0%E6%89%8B%E6%9C%BA%E5%8F%B7%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先介绍一下我这边的开发场景，数据库中存的是完整的手机号，即没有加密过的字符串，但需求希望将数据返回前端时进行脱敏处理，将手机号中间4位替换为*号。</p>
-<p>这里还有一点值得一提，返回的ResponseBody中，可能存在一些手机号是夹杂在一个字符串中间的，需要在保留字符串原来内容的前提下，对这些手机号进行脱敏处理。</p>
-<h1 id="正则表达式实现数据脱敏"><a href="#正则表达式实现数据脱敏" class="headerlink" title="正则表达式实现数据脱敏"></a>正则表达式实现数据脱敏</h1><p>实现这个功能的思路是，使用正则表达式替换一个字符串中的所有符合手机号码特征的子串，Java的String类本身就提供了replaceAll方法，我们可以用该方法实现这个功能。</p>
-<p>首先来看看匹配手机号码的正则和手机模糊化的正则。</p>
-<h2 id="中国手机号码的结构特征"><a href="#中国手机号码的结构特征" class="headerlink" title="中国手机号码的结构特征"></a>中国手机号码的结构特征</h2><p>一般中国的手机号码是11位，前三位是根据运营商而定的，4到7位为地区编码，8到11位是随机分配给用户的号码，一般加密是给中间四位地区码加密。</p>
-<p>同时前三位手机号，第一位就是1，第二位和第三位各个运营商各有不同，基本规律我写在下面的代码中，即3可以组合0-9，4组合5或7，5组合0-3或5-9……</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<p>而将中间四位替换为星号的话，需要在正则表达式中使用圆括号划分出两个区域，即第二和第三位与最后四位之间的位置。</p>
-<h1 id="自定义ResponseBody数据转换"><a href="#自定义ResponseBody数据转换" class="headerlink" title="自定义ResponseBody数据转换"></a>自定义ResponseBody数据转换</h1><p>一般来说，在我们的系统中并不是所有地方都必须得将手机号进行脱敏，有些地方可能还是需要将手机号暴露给用户的，对于不同的接口或者说对于不同的ResponseBody，可以使用Jackson的序列化器来指定如何将JSON序列化给前端。</p>
-<h2 id="自定义JsonSerializer"><a href="#自定义JsonSerializer" class="headerlink" title="自定义JsonSerializer"></a>自定义JsonSerializer</h2><p>自定义一个DesensitizeSerializer，继承JsonSerializer&lt;String&gt;，即它是用于字符串的序列化，在方法中直接调用String的replaceAll方法，将所有符合PHONE_REGEX的字串使用PHONE_BLUR_REGEX替换为加密过的字符串。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DesensitizeSerializer</span> <span class="keyword">extends</span> <span class="title">JsonSerializer</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_REGEX = <span class="string">&quot;1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d&#123;4&#125;(\\d&#123;4&#125;)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String PHONE_BLUR_REGEX = <span class="string">&quot;1$1****$2&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">serialize</span><span class="params">(String s, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        jsonGenerator.writeString(<span class="keyword">this</span>.encryptPhoneNumber(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">encryptPhoneNumber</span><span class="params">(String phoneNumber)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Objects.nonNull(phoneNumber)) &#123;</span><br><span class="line">            <span class="keyword">return</span> phoneNumber.replaceAll(PHONE_REGEX, PHONE_BLUR_REGEX);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="应用JsonSerializer"><a href="#应用JsonSerializer" class="headerlink" title="应用JsonSerializer"></a>应用JsonSerializer</h2><p>一般我们使用ResponseBody注解将一个Pojo类或者JPA的interface-based projection返回给前端，虽然我们的确可以在SQL层面做预处理，但那样就容易受需求变更的影响了，而如果是在返回给前端的最后一步之前，也就是将ResponseBody序列化为Json的这一步做处理，那么就很容易面临需求的变更了。</p>
-<p>假设现在有个UserAccount类作为ResponseBody返回给前端，其中的mobile字段需要加密，我们可以像下面这样应用之前写好的JsonSerializer。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserAccount</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@JsonSerialize(using = DesensitizeSerializer.class)</span></span><br><span class="line">    <span class="keyword">private</span> String mobile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>@JsonSerialize注解可以用在getter方法上或者是类字段上，使用using属性可以为这个字段指定一个JsonSerializer。</p>
-<p>写一个测试接口，来看看结果。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;mobile&quot;</span>:<span class="string">&quot;135****3843&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果手机号是混杂在一个很长的字符串里的，也不必担心，String的replaceAll方法可以将整个字符串中所有的手机号加密。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.pianshen.com/article/7263153515/">手机号校验与脱敏处理</a></p>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-        <tag>Java</tag>
-        <tag>信息脱敏</tag>
-        <tag>正则表达式</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>hexo博客的定制化</title>
     <url>/2021/02/14/hexo%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%AE%9A%E5%88%B6%E5%8C%96/</url>
     <content><![CDATA[<h1 id="前文"><a href="#前文" class="headerlink" title="前文"></a>前文</h1><p>如果你已经看过我之前写的几篇文章，相信已经对Hexo有了一定了解了，包括怎么安装新主题、配置、部署、发文等，实际上这样对大多数人已经足够了，但你可能不满足于默认的几个功能，比如你还想加入评论、阅读量统计，或者改一下页面布局，这都没问题。</p>
@@ -1393,20 +1458,6 @@ if(random_num(0, 9)&gt;6)
       </tags>
   </entry>
   <entry>
-    <title>我的第一篇文章</title>
-    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
-    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
-<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
-<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
-]]></content>
-      <categories>
-        <category>随笔</category>
-      </categories>
-      <tags>
-        <tag>随笔</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何让hexo个人博客被搜索引擎收录</title>
     <url>/2021/03/10/%E5%A6%82%E4%BD%95%E8%AE%A9hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E8%A2%AB%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E6%94%B6%E5%BD%95/</url>
     <content><![CDATA[<p>之前发过几篇博客，讲了如何使用hexo这个框架生成静态博客页面，在<a href="https://blog.zenoxen.cn/2021/02/14/%E5%AF%B9%E5%8D%9A%E5%AE%A2%E5%B8%83%E5%B1%80%E8%BF%9B%E8%A1%8C%E4%B8%AA%E6%80%A7%E5%8C%96%E5%AE%9A%E5%88%B6/">hexo博客的定制化</a>这篇文章里也讲了我自己对Hexo博客是如何定制的，包括怎么启用评论、浏览量功能。<br>但如果大家都不知道你的博客，那评论也没啥意义了吧，这篇文章就讲一讲我自己是怎么让谷歌和百度收录我的博客的。</p>
@@ -1474,6 +1525,20 @@ if(random_num(0, 9)&gt;6)
       </categories>
       <tags>
         <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的第一篇文章</title>
+    <url>/2021/02/10/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/</url>
+    <content><![CDATA[<p>自从毕业后一直想弄一个个人博客，一开始是想自己搭一个站点部署到吃灰的阿里云上，后来发现其实没必要，毕竟Github上都那么多现成的博客生成框架了，况且Github Pages也不会因为自己的服务器到期而产生数据迁移的烦恼。</p>
+<p>最近这几天知乎上逛了一下，了解到现在有个Node.js的项目hexo，很适合用来搭建博客，仔细了解了一下，发现用它搭建静态博客确实比较方便，本着回馈互联网的原则，我打算下一篇文章就写写自己怎么搭建的这个Github Page。</p>
+<p>总之，之前日思夜想的博客总算是搞起来了，后续如果有什么有趣、有用的东西，可能都会发到这上面来吧，虽然不一定有人看。</p>
+]]></content>
+      <categories>
+        <category>随笔</category>
+      </categories>
+      <tags>
+        <tag>随笔</tag>
       </tags>
   </entry>
 </search>
